@@ -10,7 +10,7 @@ Création d'une plateforme d'agrégation de nouvelles pour regrouper et donner a
 
 **Choix : Réutilisation de la stack existante**
 
-- **Next.js 15.4.5** (App Router) - Framework React avec SSR/SSG
+- **Next.js 16.0.7** (App Router) - Framework React avec SSR/SSG
 - **TypeScript** - Type safety
 - **Tailwind CSS + Shadcn/UI** - Styling rapide et cohérent
 - **rss-parser** - Parsing des flux RSS
@@ -150,12 +150,19 @@ articles = allArticles.filter(
 
 ## État Actuel du Projet
 
+### Dépôt GitHub
+
+- ✅ **Code poussé sur GitHub** : https://github.com/mathieugrac/media
+- ✅ Remote `origin` configuré et branch `main` trackée
+- ✅ Commit initial effectué : "Initial commit: Media RSS aggregator with source filtering"
+
 ### Fonctionnalités Implémentées
 
 - ✅ Agrégation automatique depuis 5 sources RSS (Blast, Elucid, Les Jours, Off Investigation, Mediapart)
 - ✅ Affichage des articles avec toutes les métadonnées
 - ✅ Tags/catégories visibles
 - ✅ Filtrage des 5 derniers jours
+- ✅ Filtrage par source (sidebar avec activation/désactivation)
 - ✅ Revalidation automatique toutes les heures (ISR)
 - ✅ Interface moderne avec Shadcn/UI
 - ✅ Responsive design
@@ -168,18 +175,23 @@ articles = allArticles.filter(
 │   ├── source-filter-client.tsx # Composant client gérant le filtrage par source et le layout sidebar + liste d'articles
 │   └── layout.tsx              # Layout avec metadata
 ├── components/
-│   └── ui/               # Composants Shadcn/UI (Card, Badge)
+│   └── ui/                      # Composants Shadcn/UI (Card, Badge)
 ├── lib/
-│   └── rss-fetcher.ts    # Logique de récupération et parsing RSS
+│   ├── rss-fetcher.ts           # Logique de récupération et parsing RSS
+│   ├── stop-words-french.ts    # Liste des stop words français
+│   ├── title-stop-words.ts     # Stop words spécifiques aux titres
+│   └── utils.ts                 # Utilitaires (cn pour className)
 ├── types/
-│   └── article.ts        # Types TypeScript pour Article et MediaSource
-└── README.md             # Documentation du projet
+│   └── article.ts               # Types TypeScript pour Article et MediaSource
+├── README.md                    # Documentation du projet
+└── agent.md                     # Ce fichier - Résumé technique et décisions
 ```
 
 ## Prochaines Étapes Possibles
 
 ### Court Terme
 
+- [ ] Connecter le dépôt GitHub à Vercel pour le déploiement automatique
 - [ ] Tester avec plus de sources médias
 - [ ] Ajuster le design selon les retours utilisateurs
 - [ ] Optimiser les performances si nécessaire
@@ -187,7 +199,7 @@ articles = allArticles.filter(
 ### Moyen Terme
 
 - [ ] Ajouter Supabase pour persistance et déduplication
-- [ ] Ajouter des filtres (par source, par tag)
+- [ ] Ajouter des filtres par tag (en plus du filtre par source)
 - [ ] Ajouter une fonctionnalité de recherche
 - [ ] Ajouter plus de médias sources depuis l'atlas RSS
 
@@ -213,6 +225,21 @@ La revalidation est configurée à 1 heure (`revalidate: 3600`). Cela signifie q
 
 Actuellement basique : si une source RSS échoue, elle est loggée mais les autres sources continuent de fonctionner. L'utilisateur voit un message d'erreur si toutes les sources échouent.
 
+## Déploiement
+
+### Statut Actuel
+
+- ✅ Code versionné et poussé sur GitHub (https://github.com/mathieugrac/media)
+- ⏳ Déploiement sur Vercel : À connecter depuis le dashboard Vercel
+
+### Étapes pour Déploiement Vercel
+
+1. Se connecter à Vercel
+2. Importer le projet depuis GitHub (https://github.com/mathieugrac/media)
+3. La configuration Next.js sera détectée automatiquement
+4. Le déploiement se fera automatiquement à chaque push sur `main`
+5. La revalidation ISR (1 heure) fonctionnera automatiquement
+
 ## Conclusion
 
-Le projet a été développé avec une approche pragmatique : réutilisation de la stack existante, MVP simplifié sans base de données, et focus sur les fonctionnalités essentielles. Cette approche permet un déploiement rapide et une validation du concept avant d'ajouter de la complexité.
+Le projet a été développé avec une approche pragmatique : réutilisation de la stack existante, MVP simplifié sans base de données, et focus sur les fonctionnalités essentielles. Cette approche permet un déploiement rapide et une validation du concept avant d'ajouter de la complexité. Le code est maintenant versionné sur GitHub et prêt pour le déploiement sur Vercel.

@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Médias Indépendants - News Aggregator
 
-## Getting Started
+Plateforme d'agrégation de nouvelles des médias indépendants français.
 
-First, run the development server:
+## Stack Technique
+
+- **Next.js 15.4.5** (App Router) - Framework React avec SSR/SSG
+- **TypeScript** - Type safety
+- **Tailwind CSS + Shadcn/UI** - Styling
+- **rss-parser** - Parsing des flux RSS
+- **date-fns** - Formatage des dates
+- **Vercel** - Déploiement
+
+## Fonctionnalités
+
+- ✅ Agrégation automatique des articles depuis les flux RSS
+- ✅ Affichage des articles triés par date de publication
+- ✅ Revalidation automatique toutes les heures (ISR)
+- ✅ Interface moderne avec Shadcn/UI
+
+## Médias Sources
+
+Actuellement configurés :
+
+- **Blast** (https://www.blast-info.fr)
+- **Elucid** (https://elucid.media)
+
+## Configuration RSS
+
+Les URLs RSS peuvent nécessiter une vérification. Si un média ne fonctionne pas, vérifiez :
+
+1. L'URL du flux RSS sur le site du média
+2. Les chemins communs : `/feed`, `/rss`, `/rss.xml`, `/feed.xml`
+3. Mettez à jour `lib/rss-fetcher.ts` avec la bonne URL
+
+## Ressources
+
+- **[Atlas des flux RSS - Presse alternative française](https://atlasflux.saynete.net/atlas_des_flux_rss_fra_alternatif.htm)** - Référence utile pour trouver de nouveaux médias indépendants et leurs flux RSS à ajouter à la plateforme.
+
+## Développement
 
 ```bash
+# Installer les dépendances
+npm install
+
+# Lancer le serveur de développement
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Build de production
+npm run build
+
+# Démarrer en production
+npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Déploiement
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Le projet est prêt pour un déploiement sur Vercel :
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Push le code sur GitHub
+2. Connecter le repo à Vercel
+3. Le déploiement se fait automatiquement
 
-## Learn More
+La revalidation ISR (1 heure) fonctionne automatiquement sur Vercel.
 
-To learn more about Next.js, take a look at the following resources:
+## Structure du Projet
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+├── app/
+│   ├── page.tsx          # Page principale avec ISR
+│   └── layout.tsx         # Layout avec metadata
+├── components/
+│   └── ui/               # Composants Shadcn/UI
+├── lib/
+│   └── rss-fetcher.ts    # Logique de récupération RSS
+├── types/
+│   └── article.ts        # Types TypeScript
+└── README.md
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Prochaines Étapes (Optionnel)
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [ ] Ajouter Supabase pour la persistance et déduplication
+- [ ] Ajouter des filtres par source
+- [ ] Ajouter une recherche
+- [ ] Ajouter plus de médias sources
+- [ ] Améliorer la gestion d'erreurs
+- [ ] Ajouter des tests

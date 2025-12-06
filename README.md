@@ -13,7 +13,7 @@ Plateforme d'agrégation de nouvelles des médias indépendants français.
 
 ## Fonctionnalités
 
-- ✅ Agrégation automatique des articles depuis 5 flux RSS
+- ✅ Agrégation automatique des articles depuis 6 flux RSS
 - ✅ Affichage des articles triés par date de publication
 - ✅ Filtrage par source (sidebar avec activation/désactivation)
 - ✅ Filtrage temporel (articles des 5 derniers jours uniquement)
@@ -24,7 +24,7 @@ Plateforme d'agrégation de nouvelles des médias indépendants français.
 
 ## Médias Sources
 
-Actuellement configurés (5 sources) :
+Actuellement configurés (6 sources) :
 
 1. **Blast** (https://www.blast-info.fr)
 
@@ -49,6 +49,10 @@ Actuellement configurés (5 sources) :
 5. **Mediapart** (https://www.mediapart.fr)
    - RSS Feed : `https://www.mediapart.fr/articles/feed`
    - Format : Flux RSS 2.0 standard avec catégories et auteurs
+
+6. **60 Millions de Consommateurs** (https://www.60millions-mag.com)
+   - RSS Feed : `https://www.60millions-mag.com/rss.xml`
+   - Format : Flux RSS 2.0 standard avec catégories
 
 ## Configuration RSS
 

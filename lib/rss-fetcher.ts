@@ -116,6 +116,11 @@ export const mediaSources: MediaSource[] = [
     rssUrl: "https://www.mediapart.fr/articles/feed",
     baseUrl: "https://www.mediapart.fr",
   },
+  {
+    name: "60 Millions de Consommateurs",
+    rssUrl: "https://www.60millions-mag.com/rss.xml",
+    baseUrl: "https://www.60millions-mag.com",
+  },
 ];
 
 export async function fetchArticlesFromRSS(): Promise<Article[]> {

@@ -4,6 +4,132 @@
 
 Création d'une plateforme d'agrégation de nouvelles pour regrouper et donner accès aux derniers articles d'une sélection de médias indépendants français. L'objectif est de créer une alternative aux grands médias corporatifs en rassemblant des sources indépendantes qui, individuellement, peuvent paraître divisées et faibles dans le paysage médiatique.
 
+## 🎯 Principes d'Architecture (TOUJOURS RESPECTER)
+
+### Philosophie : Clean, Lisible, Scalable
+
+**Principe fondamental** : Toujours privilégier la **séparation des responsabilités** et les **composants réutilisables**.
+
+### 1. Séparation des Données et de la Logique
+
+✅ **FAIRE** :
+
+- **Isoler les données** dans des fichiers dédiés (`lib/data/`)
+- **Séparer la logique métier** de la configuration
+- **Utiliser des fonctions pures** quand possible
+
+❌ **NE PAS FAIRE** :
+
+- Mélanger données et logique dans le même fichier
+- Hardcoder des valeurs dans les fonctions
+- Créer des dépendances circulaires
+
+**Exemple** :
+
+```typescript
+// ✅ BON : Sources isolées
+// lib/data/sources.ts
+export const MEDIA_SOURCES = [...];
+
+// lib/rss-fetcher.ts
+import { getEnabledSources } from "@/lib/data/sources";
+
+// ❌ MAUVAIS : Données dans la logique
+// lib/rss-fetcher.ts
+const sources = [{ name: "...", url: "..." }]; // Hard-codé
+```
+
+### 2. Types Enrichis avec Métadonnées
+
+✅ **FAIRE** :
+
+- **Enrichir les types** avec des métadonnées utiles
+- **Documenter les interfaces** avec JSDoc
+- **Ajouter des champs optionnels** pour évolutivité
+
+**Exemple** :
+
+```typescript
+export interface MediaSource {
+  id: string; // Identifiant unique
+  name: string;
+  rssUrl: string;
+  baseUrl: string;
+  enabled: boolean; // Toggle facile
+  category?: string; // Organisation
+  priority?: number; // Tri
+  description?: string; // Documentation
+}
+```
+
+### 3. Fonctions Modulaires et Testables
+
+✅ **FAIRE** :
+
+- **Une fonction = une responsabilité**
+- **Extraire les sous-fonctions** complexes
+- **Nommer clairement** les fonctions
+
+❌ **NE PAS FAIRE** :
+
+- Créer des fonctions monolithiques de 200 lignes
+- Imbriquer trop de logique
+
+**Exemple** :
+
+```typescript
+// ✅ BON : Modulaire
+async function fetchArticlesFromSource(source) {
+  const feed = await fetchWithRetry(source.url);
+  return feed.items.map((item) => parseRSSItem(item, source));
+}
+
+// ❌ MAUVAIS : Tout mélangé
+async function fetchAll() {
+  // 200 lignes de code...
+}
+```
+
+### 4. Gestion des Erreurs et Résilience
+
+✅ **FAIRE** :
+
+- **Retry mechanism** pour les requêtes réseau
+- **Logging structuré** des erreurs
+- **Continuer malgré les échecs** (fail gracefully)
+
+### 5. Performance et Optimisation
+
+✅ **FAIRE** :
+
+- **Caching intelligent** des données
+- **Parallel execution** quand possible
+- **Lazy loading** si nécessaire
+
+### 6. Organisation des Fichiers
+
+```
+lib/
+├── data/              # 📦 DONNÉES isolées
+│   └── sources.ts     # Configuration des sources
+├── rss-cache.ts       # 🚀 Optimisations (cache)
+├── rss-fetcher.ts     # 🔧 Logique métier
+└── utils.ts           # 🛠️ Utilitaires
+
+types/
+└── article.ts         # 📝 Types enrichis avec JSDoc
+```
+
+### 7. Documentation
+
+✅ **FAIRE** :
+
+- **Commenter les fichiers** avec leur rôle
+- **Documenter les décisions** dans agent.md
+- **Expliquer le "pourquoi"** pas juste le "quoi"
+
+---
+
 ## Décisions Techniques
 
 ### Stack Technique
@@ -55,10 +181,12 @@ Création d'une plateforme d'agrégation de nouvelles pour regrouper et donner a
    - Format : Tags standards RSS
 
 3. **Les Jours** (https://lesjours.fr)
+
    - RSS Feed : `https://lesjours.fr/rss.xml`
    - Format : Peu ou pas de catégories exploitées, génération de tags côté app
 
 4. **Off Investigation** (https://www.off-investigation.fr)
+
    - RSS Feed : `https://www.off-investigation.fr/feed/`
    - Format : Flux WordPress standard avec catégories dans des balises `<category>` (strings simples)
 
@@ -134,6 +262,99 @@ articles = allArticles.filter(
 
 **Pourquoi :** Garde le contenu frais et pertinent. Évite l'encombrement avec des articles trop anciens. Facilite la découverte de l'actualité récente.
 
+## Refactorisation Majeure : Architecture Modulaire (Décembre 2025)
+
+### Motivation
+
+Passage d'une architecture monolithique à une architecture modulaire pour :
+
+- ✅ **Maintenabilité** : Code plus facile à comprendre et à modifier
+- ✅ **Scalabilité** : Ajout facile de nouvelles sources
+- ✅ **Testabilité** : Fonctions isolées et testables
+- ✅ **Performance** : Cache et parallélisation
+- ✅ **Résilience** : Retry mechanism et gestion d'erreurs
+
+### Changements Apportés
+
+#### 1. Séparation des Sources et de la Logique
+
+**Avant** :
+
+```typescript
+// lib/rss-fetcher.ts (200+ lignes)
+export const mediaSources = [
+  // 17 sources hard-codées...
+];
+export async function fetchArticlesFromRSS() {
+  // Logique de fetching...
+}
+```
+
+**Après** :
+
+```typescript
+// lib/data/sources.ts
+export const MEDIA_SOURCES = [
+  // Sources avec métadonnées enrichies
+];
+
+// lib/rss-fetcher.ts
+import { getEnabledSources } from "@/lib/data/sources";
+// Uniquement la logique de fetching
+```
+
+#### 2. Enrichissement des Types
+
+Ajout de métadonnées aux sources :
+
+- `id` : Identifiant unique
+- `enabled` : Toggle activation
+- `category` : Catégorisation
+- `priority` : Ordre d'affichage
+- `maxArticles` : Limite par source
+- `cacheMinutes` : Durée de cache
+- `description` : Documentation
+
+#### 3. Système de Cache
+
+Nouveau fichier `lib/rss-cache.ts` :
+
+- Cache en mémoire avec TTL
+- Invalidation automatique
+- Nettoyage périodique
+- Stats de cache
+
+#### 4. Modularisation du Fetching
+
+Découpage en fonctions réutilisables :
+
+- `fetchWithRetry()` : Retry avec exponential backoff
+- `parseRSSItem()` : Parsing d'un article
+- `fetchArticlesFromSource()` : Fetch d'une source
+- `fetchArticlesFromRSS()` : Orchestration globale
+
+#### 5. Parallel Execution
+
+Fetching parallèle avec contrôle de concurrence pour optimiser les performances.
+
+### Bénéfices Immédiats
+
+1. **Ajout de sources** : Éditer uniquement `lib/data/sources.ts`
+2. **Performance** : Cache réduit les requêtes réseau
+3. **Fiabilité** : Retry automatique en cas d'échec
+4. **Monitoring** : Stats et logging structurés
+
+### Philosophie pour l'Avenir
+
+**TOUJOURS** :
+
+- Séparer données et logique
+- Créer des fonctions modulaires
+- Documenter les décisions
+- Privilégier la lisibilité
+
+---
+
 ## Problèmes Résolus
 
 ### 1. Erreur de Build - Tags non sérialisables
@@ -171,21 +392,33 @@ articles = allArticles.filter(
 
 ```
 ├── app/
-│   ├── page.tsx                # Page principale avec ISR, filtre temporel et préparation des données (articles + sources)
-│   ├── source-filter-client.tsx # Composant client gérant le filtrage par source et le layout sidebar + liste d'articles
-│   └── layout.tsx              # Layout avec metadata
+│   ├── page.tsx                    # Page principale avec ISR, filtre temporel et préparation des données
+│   ├── source-filter-client.tsx   # Composant client gérant le filtrage par source et le layout
+│   └── layout.tsx                  # Layout avec metadata
 ├── components/
-│   └── ui/                      # Composants Shadcn/UI (Card, Badge)
+│   └── ui/                         # Composants Shadcn/UI (Card, Badge)
 ├── lib/
-│   ├── rss-fetcher.ts           # Logique de récupération et parsing RSS
-│   ├── stop-words-french.ts    # Liste des stop words français
-│   ├── title-stop-words.ts     # Stop words spécifiques aux titres
-│   └── utils.ts                 # Utilitaires (cn pour className)
+│   ├── data/                       # 📦 DONNÉES (isolées de la logique)
+│   │   └── sources.ts              # Configuration des sources RSS avec métadonnées
+│   ├── rss-fetcher.ts              # 🔧 Logique de récupération et parsing RSS (modulaire)
+│   ├── rss-cache.ts                # 🚀 Système de cache en mémoire
+│   ├── stop-words-french.ts        # Liste des stop words français
+│   ├── title-stop-words.ts         # Stop words spécifiques aux titres
+│   └── utils.ts                    # Utilitaires (cn pour className)
+├── scripts/
+│   └── check-feed-counts.ts        # Script de vérification des flux RSS
 ├── types/
-│   └── article.ts               # Types TypeScript pour Article et MediaSource
-├── README.md                    # Documentation du projet
-└── agent.md                     # Ce fichier - Résumé technique et décisions
+│   └── article.ts                  # Types TypeScript enrichis (Article, MediaSource, FetchConfig)
+├── README.md                       # Documentation du projet
+└── agent.md                        # Ce fichier - Résumé technique et décisions
 ```
+
+**Architecture Modulaire** :
+
+- **Données isolées** : `lib/data/sources.ts` contient toutes les sources avec métadonnées
+- **Logique séparée** : `lib/rss-fetcher.ts` ne contient que la logique de fetching
+- **Cache optimisé** : `lib/rss-cache.ts` gère le cache en mémoire
+- **Types enrichis** : `types/article.ts` avec catégories, priorités, etc.
 
 ## Prochaines Étapes Possibles
 

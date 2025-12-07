@@ -1,7 +1,16 @@
+/**
+ * RSS Fetcher
+ *
+ * Modular RSS fetching with retry, caching, and parallel execution.
+ * Philosophy: Separate concerns, make it testable, keep it maintainable.
+ */
+
 import Parser from "rss-parser";
-import { Article, MediaSource } from "@/types/article";
+import { Article, MediaSource, FetchConfig } from "@/types/article";
 import { FRENCH_STOP_WORDS } from "@/lib/stop-words-french";
 import { TITLE_STOP_WORDS } from "@/lib/title-stop-words";
+import { getEnabledSources } from "@/lib/data/sources";
+import { rssCache } from "@/lib/rss-cache";
 
 const parser = new Parser();
 
@@ -22,7 +31,11 @@ const TITLE_STOP_WORDS_SET = new Set(
 );
 
 const PROPER_NAME_REGEX =
-  /([A-ZÀÂÄÇÉÈÊËÎÏÔÖÙÛÜŸ][\wÀ-ÖØ-öø-ÿ'’-]+(?:\s+[A-ZÀÂÄÇÉÈÊËÎÏÔÖÙÛÜŸ][\wÀ-ÖØ-öø-ÿ'’-]+)+)/g;
+  /([A-ZÀÂÄÇÉÈÊËÎÏÔÖÙÛÜŸ][\wÀ-ÖØ-öø-ÿ''-]+(?:\s+[A-ZÀÂÄÇÉÈÊËÎÏÔÖÙÛÜŸ][\wÀ-ÖØ-öø-ÿ''-]+)+)/g;
+
+// =============================================================================
+// TAG GENERATION (isolated for reusability)
+// =============================================================================
 
 function extractProperNameTags(title: string): string[] {
   const matches = title.match(PROPER_NAME_REGEX);
@@ -33,8 +46,8 @@ function extractProperNameTags(title: string): string[] {
   const unique: string[] = [];
   for (const match of matches) {
     const cleaned = match
-      .replace(/^[«“"'(]+/, "")
-      .replace(/[»”"')]+$/, "")
+      .replace(/^[«""'(]+/, "")
+      .replace(/[»""')]+$/, "")
       .trim();
     if (!cleaned) {
       continue;
@@ -88,130 +101,191 @@ function generateTagsFromTitle(title?: string, maxTags: number = 3): string[] {
   return tags;
 }
 
-// Define media sources
-// Note: RSS URLs may need to be verified/updated
-export const mediaSources: MediaSource[] = [
-  {
-    name: "Blast",
-    rssUrl: "https://api.blast-info.fr/rss_articles.xml",
-    baseUrl: "https://www.blast-info.fr",
-  },
-  {
-    name: "Elucid",
-    rssUrl: "https://elucid.media/feed",
-    baseUrl: "https://elucid.media",
-  },
-  {
-    name: "Les Jours",
-    rssUrl: "https://lesjours.fr/rss.xml",
-    baseUrl: "https://lesjours.fr",
-  },
-  {
-    name: "Off Investigation",
-    rssUrl: "https://www.off-investigation.fr/feed/",
-    baseUrl: "https://www.off-investigation.fr",
-  },
-  {
-    name: "Mediapart",
-    rssUrl: "https://www.mediapart.fr/articles/feed",
-    baseUrl: "https://www.mediapart.fr",
-  },
-  {
-    name: "60 Millions de Consommateurs",
-    rssUrl: "https://www.60millions-mag.com/rss.xml",
-    baseUrl: "https://www.60millions-mag.com",
-  },
-];
+// =============================================================================
+// ARTICLE PARSING (isolated for reusability)
+// =============================================================================
 
-export async function fetchArticlesFromRSS(): Promise<Article[]> {
-  const allArticles: Article[] = [];
+function parseRSSItem(item: any, source: MediaSource, index: number): Article {
+  // Parse publication date - check multiple date fields
+  const dateStr = item.pubDate || item.isoDate || item.date || item["dc:date"];
+  const pubDate = dateStr ? new Date(dateStr) : new Date();
 
-  for (const source of mediaSources) {
-    try {
-      const feed = await parser.parseURL(source.rssUrl);
+  // Extract excerpt from contentSnippet or content
+  const excerpt = item.contentSnippet
+    ? item.contentSnippet.substring(0, 200) + "..."
+    : item.content
+    ? item.content.replace(/<[^>]*>/g, "").substring(0, 200) + "..."
+    : "";
 
-      if (feed.items) {
-        const articles = feed.items.map((item, index) => {
-          // Parse publication date
-          const pubDate = item.pubDate ? new Date(item.pubDate) : new Date();
+  // Extract author from creator or dc:creator
+  const rawAuthor = item.creator || item["dc:creator"] || "";
+  const author =
+    typeof rawAuthor === "string" && rawAuthor.trim().length > 0
+      ? rawAuthor.trim()
+      : "";
 
-          // Extract excerpt from contentSnippet or content
-          const excerpt = item.contentSnippet
-            ? item.contentSnippet.substring(0, 200) + "..."
-            : item.content
-            ? item.content.replace(/<[^>]*>/g, "").substring(0, 200) + "..."
-            : "";
+  // Extract tags/categories and ensure they are strings
+  let tags: string[] = [];
+  if (item.categories && Array.isArray(item.categories)) {
+    for (const cat of item.categories) {
+      let tagValue: string | null = null;
 
-          // Extract author from creator or dc:creator
-          const rawAuthor =
-            (item as any).creator || (item as any)["dc:creator"] || "";
-          const author =
-            typeof rawAuthor === "string" && rawAuthor.trim().length > 0
-              ? rawAuthor.trim()
-              : "";
-
-          // Extract tags/categories and ensure they are strings
-          let tags: string[] = [];
-          if (item.categories && Array.isArray(item.categories)) {
-            for (const cat of item.categories) {
-              let tagValue: string | null = null;
-
-              if (typeof cat === "string") {
-                tagValue = cat;
-              } else if (cat && typeof cat === "object") {
-                // For RSS category objects (like Blast), the text is usually in '_'
-                // and attributes are in '$'. For other formats, try common properties.
-                const catObj = cat as any;
-                // Priority: _ (text content) > value > name > $ (if it's a string)
-                tagValue =
-                  catObj._ ||
-                  catObj.value ||
-                  catObj.name ||
-                  (typeof catObj.$ === "string" ? catObj.$ : null) ||
-                  null;
-                if (tagValue && typeof tagValue !== "string") {
-                  tagValue = null;
-                }
-              }
-
-              if (
-                tagValue &&
-                typeof tagValue === "string" &&
-                tagValue.trim() !== ""
-              ) {
-                tags.push(tagValue.trim());
-              }
-            }
-          }
-
-          // Fallback: if no tags from RSS, generate simple tags from title (solution #3)
-          if (tags.length === 0) {
-            tags = generateTagsFromTitle(item.title);
-          }
-
-          return {
-            id: `${source.name}-${item.guid || item.link || index}`,
-            title: item.title || "Sans titre",
-            excerpt: excerpt || "",
-            author: author,
-            publicationDate: pubDate,
-            source: source.name,
-            sourceUrl: source.baseUrl,
-            url: item.link || source.baseUrl,
-            tags: tags,
-          } as Article;
-        });
-
-        allArticles.push(...articles);
+      if (typeof cat === "string") {
+        tagValue = cat;
+      } else if (cat && typeof cat === "object") {
+        // For RSS category objects (like Blast), the text is usually in '_'
+        const catObj = cat as any;
+        tagValue =
+          catObj._ ||
+          catObj.value ||
+          catObj.name ||
+          (typeof catObj.$ === "string" ? catObj.$ : null) ||
+          null;
+        if (tagValue && typeof tagValue !== "string") {
+          tagValue = null;
+        }
       }
-    } catch (error) {
-      console.error(`Error fetching RSS from ${source.name}:`, error);
-      // Continue with other sources even if one fails
+
+      if (tagValue && typeof tagValue === "string" && tagValue.trim() !== "") {
+        tags.push(tagValue.trim());
+      }
     }
   }
 
+  // Fallback: if no tags from RSS, generate simple tags from title
+  if (tags.length === 0) {
+    tags = generateTagsFromTitle(item.title);
+  }
+
+  return {
+    id: `${source.id}-${item.guid || item.link || index}`,
+    title: item.title || "Sans titre",
+    excerpt: excerpt || "",
+    author: author,
+    publicationDate: pubDate,
+    source: source.name,
+    sourceUrl: source.baseUrl,
+    url: item.link || source.baseUrl,
+    tags: tags,
+  };
+}
+
+// =============================================================================
+// FETCH WITH RETRY (isolated for reusability)
+// =============================================================================
+
+async function fetchWithRetry(
+  url: string,
+  retries: number = 2,
+  delay: number = 1000
+): Promise<any> {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      return await parser.parseURL(url);
+    } catch (error) {
+      if (attempt === retries) {
+        throw error;
+      }
+      // Wait before retry (exponential backoff)
+      await new Promise((resolve) =>
+        setTimeout(resolve, delay * Math.pow(2, attempt))
+      );
+    }
+  }
+}
+
+// =============================================================================
+// FETCH FROM SINGLE SOURCE (isolated for testability)
+// =============================================================================
+
+async function fetchArticlesFromSource(
+  source: MediaSource,
+  config?: FetchConfig
+): Promise<Article[]> {
+  const cacheKey = `source:${source.id}`;
+
+  // Check cache first if enabled
+  if (config?.useCache !== false) {
+    const cached = rssCache.get(cacheKey);
+    if (cached) {
+      return cached;
+    }
+  }
+
+  try {
+    const feed = await fetchWithRetry(source.rssUrl, config?.retries);
+
+    if (!feed.items) {
+      return [];
+    }
+
+    const articles = feed.items
+      .slice(0, source.maxArticles || 100)
+      .map((item: any, index: number) => parseRSSItem(item, source, index));
+
+    // Cache the results
+    if (config?.useCache !== false) {
+      rssCache.set(cacheKey, articles, source.cacheMinutes || 60);
+    }
+
+    return articles;
+  } catch (error) {
+    console.error(`Error fetching RSS from ${source.name}:`, error);
+    return [];
+  }
+}
+
+// =============================================================================
+// FETCH ALL SOURCES (with parallel execution)
+// =============================================================================
+
+/**
+ * Fetch articles from all enabled RSS sources
+ * Uses parallel execution and caching for optimal performance
+ */
+export async function fetchArticlesFromRSS(
+  config?: FetchConfig
+): Promise<Article[]> {
+  const sources = getEnabledSources();
+  const maxConcurrent = config?.maxConcurrent || 5;
+
+  // Check if we have a global cache
+  const globalCacheKey = "all-articles";
+  if (config?.useCache !== false) {
+    const cached = rssCache.get(globalCacheKey);
+    if (cached) {
+      return cached;
+    }
+  }
+
+  // Fetch in batches for controlled concurrency
+  const allArticles: Article[] = [];
+  for (let i = 0; i < sources.length; i += maxConcurrent) {
+    const batch = sources.slice(i, i + maxConcurrent);
+    const batchResults = await Promise.all(
+      batch.map((source) => fetchArticlesFromSource(source, config))
+    );
+    allArticles.push(...batchResults.flat());
+  }
+
   // Sort by publication date (newest first)
-  return allArticles.sort(
+  const sorted = allArticles.sort(
     (a, b) => b.publicationDate.getTime() - a.publicationDate.getTime()
   );
+
+  // Cache globally
+  if (config?.useCache !== false) {
+    rssCache.set(globalCacheKey, sorted, 60); // Cache for 1 hour
+  }
+
+  return sorted;
 }
+
+// =============================================================================
+// LEGACY EXPORT (for backward compatibility)
+// =============================================================================
+
+/**
+ * @deprecated Use getEnabledSources() from @/lib/data/sources instead
+ */
+export const mediaSources = getEnabledSources();

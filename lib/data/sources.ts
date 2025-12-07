@@ -203,7 +203,7 @@ export const MEDIA_SOURCES: MediaSource[] = [
     category: "Politique",
     tags: ["politique", "social", "gauche"],
     priority: 95,
-    maxArticles: 200,
+    maxArticles: 100,
     description: "Journal d'informations politiques et sociales",
   },
   {

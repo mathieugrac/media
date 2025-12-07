@@ -1,10 +1,10 @@
 import { fetchArticlesFromRSS } from "@/lib/rss-fetcher";
-import { Article, MediaSource } from "@/types/article";
+import { Article } from "@/types/article";
 import { ClusteredDay } from "@/types/cluster";
 import { format } from "date-fns";
 import { SourceFilterClient } from "./source-filter-client";
 import { PageHeader } from "@/components/page-header";
-// import { clusterArticlesByTopic } from "@/lib/clustering"; // PAUSED
+import { clusterArticlesByTopic } from "@/lib/clustering";
 
 // Revalidate every hour (3600 seconds)
 export const revalidate = 3600;
@@ -38,86 +38,22 @@ export default async function Home() {
     articlesByDate.get(dateKey)!.push(article);
   }
 
-  // CLUSTERING PAUSED - Display articles without clustering
+  // Cluster articles by topic using Modal (BERTopic) + Groq (labels)
   const clusteredDays: ClusteredDay[] = [];
-  for (const [dateKey, dayArticles] of articlesByDate.entries()) {
-    // Display articles in a simple list without clustering
-    clusteredDays.push({
-      dateKey,
-      date: new Date(dateKey + "T00:00:00"),
-      clusters: [
-        {
-          id: "cluster-all",
-          topicLabel: "Articles du jour",
-          articles: dayArticles,
-        },
-      ],
-    });
-  }
 
-  /* CLUSTERING FUNCTION PAUSED
   for (const [dateKey, dayArticles] of articlesByDate.entries()) {
     try {
-      const { clusters, labels } = await clusterArticlesByTopic(
-        dayArticles,
-        0.30, // eps - seuil de similarité (remonté à 0.30 pour être plus strict)
-        2 // minPoints
-      );
+      // Call the new Modal-based clustering
+      const { clusters } = await clusterArticlesByTopic(dayArticles);
 
-      // Filtrer pour ne garder QUE les vrais clusters (>1 article)
-      const realClusters = clusters.filter(
-        (cluster) => cluster.articles.length > 1
-      );
-
-      if (realClusters.length > 0) {
-        // Il y a des vrais regroupements, les afficher
-        // MAIS aussi regrouper les articles isolés dans "Articles du jour"
-        const clusteredArticleIds = new Set(
-          realClusters.flatMap((c) => c.articles.map((a) => a.id))
-        );
-        const isolatedArticles = dayArticles.filter(
-          (a) => !clusteredArticleIds.has(a.id)
-        );
-
-        const finalClusters = [
-          ...realClusters.map((cluster) => ({
-            id: cluster.id,
-            topicLabel: labels.get(cluster.id) || "Sujet divers",
-            articles: cluster.articles,
-          })),
-        ];
-
-        // Ajouter les articles isolés dans un cluster "Autres articles"
-        if (isolatedArticles.length > 0) {
-          finalClusters.push({
-            id: "cluster-isolated",
-            topicLabel: "Autres articles",
-            articles: isolatedArticles,
-          });
-        }
-
-        clusteredDays.push({
-          dateKey,
-          date: new Date(dateKey + "T00:00:00"),
-          clusters: finalClusters,
-        });
-      } else {
-        // Aucun regroupement possible, afficher une liste simple
-        clusteredDays.push({
-          dateKey,
-          date: new Date(dateKey + "T00:00:00"),
-          clusters: [
-            {
-              id: "cluster-all",
-              topicLabel: "Articles du jour",
-              articles: dayArticles,
-            },
-          ],
-        });
-      }
+      clusteredDays.push({
+        dateKey,
+        date: new Date(dateKey + "T00:00:00"),
+        clusters: clusters,
+      });
     } catch (e) {
       console.error(`Error clustering articles for ${dateKey}:`, e);
-      // En cas d'erreur, créer un cluster par défaut avec tous les articles
+      // Fallback: show all articles without clustering
       clusteredDays.push({
         dateKey,
         date: new Date(dateKey + "T00:00:00"),
@@ -131,7 +67,6 @@ export default async function Home() {
       });
     }
   }
-  */
 
   // Trier par date (plus récent en premier)
   clusteredDays.sort((a, b) => b.dateKey.localeCompare(a.dateKey));

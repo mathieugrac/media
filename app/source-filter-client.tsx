@@ -1,20 +1,13 @@
-/* eslint-disable react/jsx-key */
 "use client";
 
 import { useMemo, useState } from "react";
 import { Article } from "@/types/article";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
+import { ClusteredDay } from "@/types/cluster";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale/fr";
+import { TopicCluster } from "@/components/topic-cluster";
+import { ArticleCard } from "@/components/article-card";
 
 type Source = {
   id: string;
@@ -22,13 +15,13 @@ type Source = {
 };
 
 interface SourceFilterClientProps {
-  articles: Article[];
   sources: Source[];
+  clusteredDays: ClusteredDay[];
 }
 
 export function SourceFilterClient({
-  articles,
   sources,
+  clusteredDays,
 }: SourceFilterClientProps) {
   const [disabledSourceIds, setDisabledSourceIds] = useState<Set<string>>(
     () => new Set()
@@ -50,36 +43,55 @@ export function SourceFilterClient({
     setDisabledSourceIds(new Set());
   };
 
-  const filteredArticles = useMemo(() => {
+  // Filtrer les clusters selon les sources désactivées
+  const filteredClusteredDays = useMemo(() => {
     if (disabledSourceIds.size === 0) {
-      return articles;
+      return clusteredDays;
     }
-    return articles.filter((article) => !disabledSourceIds.has(article.source));
-  }, [articles, disabledSourceIds]);
 
-  // Grouper les articles par date
-  const articlesByDate = useMemo(() => {
-    const grouped = new Map<string, Article[]>();
+    return clusteredDays
+      .map((day) => {
+        // Filtrer les articles de chaque cluster
+        const filteredClusters = day.clusters
+          .map((cluster) => {
+            const filteredArticles = cluster.articles.filter(
+              (article) => !disabledSourceIds.has(article.source)
+            );
 
-    filteredArticles.forEach((article) => {
-      // Normaliser la date au début de la journée pour le regroupement
-      const dateKey = format(article.publicationDate, "yyyy-MM-dd");
+            // Ne garder que les clusters qui ont encore des articles
+            if (filteredArticles.length === 0) {
+              return null;
+            }
 
-      if (!grouped.has(dateKey)) {
-        grouped.set(dateKey, []);
-      }
-      grouped.get(dateKey)!.push(article);
-    });
+            return {
+              ...cluster,
+              articles: filteredArticles,
+            };
+          })
+          .filter((cluster): cluster is typeof cluster => cluster !== null);
 
-    // Convertir en tableau trié par date (plus récent en premier)
-    return Array.from(grouped.entries())
-      .sort((a, b) => b[0].localeCompare(a[0]))
-      .map(([dateKey, articles]) => ({
-        dateKey,
-        date: new Date(dateKey + "T00:00:00"),
-        articles,
-      }));
-  }, [filteredArticles]);
+        // Ne garder que les jours qui ont encore des clusters
+        if (filteredClusters.length === 0) {
+          return null;
+        }
+
+        return {
+          ...day,
+          clusters: filteredClusters,
+        };
+      })
+      .filter((day): day is ClusteredDay => day !== null);
+  }, [clusteredDays, disabledSourceIds]);
+
+  // Calculer le nombre total d'articles filtrés
+  const totalFilteredArticles = useMemo(() => {
+    return filteredClusteredDays.reduce((total, day) => {
+      return (
+        total +
+        day.clusters.reduce((sum, cluster) => sum + cluster.articles.length, 0)
+      );
+    }, 0);
+  }, [filteredClusteredDays]);
 
   return (
     <div className="flex flex-col gap-8 md:flex-row">
@@ -124,76 +136,38 @@ export function SourceFilterClient({
         </Card>
       </aside>
 
-      {/* Liste des articles filtrés */}
+      {/* Liste des articles filtrés par thème */}
       <section className="flex-1 md:max-w-[680px]">
-        <div className="space-y-4">
-          {articlesByDate.map(({ date, articles }) => (
-            <div key={date.toISOString()} className="space-y-4">
+        <div className="space-y-6">
+          {filteredClusteredDays.map((day) => (
+            <div key={day.dateKey} className="space-y-4">
               {/* Titre de date */}
               <h2 className="text-2xl font-semibold text-foreground pt-2">
-                {format(date, "EEEE d MMMM yyyy", { locale: fr }).replace(
-                  /^\w/,
-                  (c) => c.toUpperCase()
-                )}
+                {format(
+                  day.date instanceof Date ? day.date : new Date(day.date),
+                  "EEEE d MMMM yyyy",
+                  { locale: fr }
+                ).replace(/^\w/, (c) => c.toUpperCase())}
               </h2>
 
-              {/* Articles de cette date */}
-              {articles.map((article) => (
-                <Card
-                  key={article.id}
-                  className="gap-3 hover:shadow-lg transition-shadow"
-                >
-                  <CardHeader>
-                    <div className="flex flex-wrap gap-2">
-                      <Badge variant="outline">{article.source}</Badge>
-                      {article.tags &&
-                        article.tags.length > 0 &&
-                        article.tags.slice(0, 5).map((tag, index) => (
-                          <Badge
-                            key={index}
-                            variant="secondary"
-                            className="text-xs"
-                          >
-                            {tag}
-                          </Badge>
-                        ))}
-                    </div>
-                  </CardHeader>
-                  {article.excerpt && (
-                    <CardContent>
-                      <CardTitle className="mb-3">
-                        <Link
-                          href={article.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="hover:underline"
-                        >
-                          {article.title}
-                        </Link>
-                      </CardTitle>
-                      <p className="text-sm line-clamp-3">{article.excerpt}</p>
-                    </CardContent>
-                  )}
-                  <CardFooter>
-                    <CardDescription className="flex items-center gap-2 flex-wrap">
-                      {article.author && article.author.trim().length > 0 && (
-                        <>
-                          <span>{article.author.trim()}</span>
-                          <span>•</span>
-                        </>
-                      )}
-                      <time dateTime={article.publicationDate.toISOString()}>
-                        {format(article.publicationDate, "d MMMM yyyy, HH:mm", {
-                          locale: fr,
-                        })}
-                      </time>
-                    </CardDescription>
-                  </CardFooter>
-                </Card>
-              ))}
+              {/* Clusters de thématiques pour cette date */}
+              <div className="space-y-3">
+                {day.clusters.map((cluster) => (
+                  <TopicCluster
+                    key={cluster.id}
+                    topicLabel={cluster.topicLabel}
+                    articles={cluster.articles}
+                    articleCount={cluster.articles.length}
+                    renderArticle={(article) => (
+                      <ArticleCard key={article.id} article={article} />
+                    )}
+                    defaultExpanded={cluster.articles.length <= 5}
+                  />
+                ))}
+              </div>
             </div>
           ))}
-          {filteredArticles.length === 0 && (
+          {totalFilteredArticles === 0 && (
             <p className="text-sm text-muted-foreground">
               Aucune source sélectionnée. Active au moins une source pour voir
               des articles.

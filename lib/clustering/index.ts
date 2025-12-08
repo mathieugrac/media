@@ -1,15 +1,15 @@
 /**
- * Main clustering module - uses Modal API (BERTopic) + Groq (labels)
+ * Main clustering module - uses LLM-based semantic clustering (Groq)
  *
- * This is the state-of-the-art approach:
- * 1. Modal runs BERTopic (embeddings → UMAP → HDBSCAN)
- * 2. Groq generates human-readable labels for each cluster
+ * This approach replicates Claude's method:
+ * 1. LLM analyzes all articles semantically
+ * 2. Identifies topics covered by multiple sources
+ * 3. Returns clusters with descriptive labels
  */
 
 import { Article } from "@/types/article";
 import { Cluster } from "@/types/cluster";
-import { clusterArticlesWithModal, ClusterResult } from "./modal-client";
-import { labelClusters } from "./groq-labeler";
+import { clusterArticlesWithLLM } from "./llm-clusterer";
 
 export interface ClusteredArticles {
   clusters: Cluster[];
@@ -17,7 +17,7 @@ export interface ClusteredArticles {
 }
 
 /**
- * Cluster articles by topic using Modal API (BERTopic) + Groq (labels)
+ * Cluster articles by topic using LLM semantic analysis
  *
  * @param articles List of articles to cluster
  * @returns Clusters with human-readable labels
@@ -44,78 +44,72 @@ export async function clusterArticlesByTopic(
   }
 
   try {
-    // Step 1: Call Modal API for clustering with BERTopic
     console.log(
-      `Clustering ${articles.length} articles with Modal/BERTopic...`
+      `Clustering ${articles.length} articles with LLM (semantic analysis)...`
     );
-    const modalResult = await clusterArticlesWithModal(articles);
+    const llmResult = await clusterArticlesWithLLM(articles);
 
-    if (modalResult.error || modalResult.clusters.length === 0) {
-      console.warn(
-        "Modal clustering failed or returned no clusters:",
-        modalResult.message
-      );
-      return createFallbackResult(articles);
-    }
+    if (llmResult.topics.length > 0) {
+      // Convert LLM results to Cluster format
+      const articleMap = new Map(articles.map((a, idx) => [idx, a]));
+      const clusters: Cluster[] = [];
+      const labels = new Map<string, string>();
 
-    // Step 2: Add human-readable labels using Groq
-    const articlesById = new Map(
-      articles.map((a) => [a.id, { title: a.title }])
-    );
+      for (const topic of llmResult.topics) {
+        const clusterArticles = topic.articleIndices
+          .map((idx) => articleMap.get(idx))
+          .filter((a): a is Article => a !== undefined);
 
-    const labeledClusters = await labelClusters(
-      modalResult.clusters,
-      articlesById
-    );
+        if (clusterArticles.length >= 2) {
+          // Format label: "Label — Description" to match Claude's format
+          // The count is displayed separately in the UI
+          const label = topic.description
+            ? `${topic.label} — ${topic.description}`
+            : topic.label;
 
-    // Step 3: Convert to the expected format
-    const articleMap = new Map(articles.map((a) => [a.id, a]));
-    const clusters: Cluster[] = [];
-    const labels = new Map<string, string>();
+          clusters.push({
+            id: topic.id,
+            topicLabel: label,
+            articles: clusterArticles,
+          });
 
-    for (const clusterResult of labeledClusters) {
-      const clusterArticles = clusterResult.articleIds
-        .map((id) => articleMap.get(id))
-        .filter((a): a is Article => a !== undefined);
-
-      if (clusterArticles.length >= 2) {
-        const label =
-          clusterResult.label ||
-          clusterResult.keywords.slice(0, 3).join(", ") ||
-          "Divers";
-
-        clusters.push({
-          id: clusterResult.id,
-          topicLabel: label,
-          articles: clusterArticles,
-        });
-
-        labels.set(clusterResult.id, label);
+          labels.set(topic.id, label);
+        }
       }
+
+      // Add unclustered articles
+      const clusteredIndices = new Set(
+        clusters.flatMap((c) =>
+          c.articles.map((a) => articles.findIndex((art) => art.id === a.id))
+        )
+      );
+      const unclustered = articles.filter(
+        (_, idx) => !clusteredIndices.has(idx)
+      );
+
+      if (unclustered.length > 0) {
+        clusters.push({
+          id: "cluster-unclustered",
+          topicLabel: "Autres articles",
+          articles: unclustered,
+        });
+        labels.set("cluster-unclustered", "Autres articles");
+      }
+
+      // Sort by cluster size (largest first)
+      clusters.sort((a, b) => b.articles.length - a.articles.length);
+
+      console.log(
+        `LLM clustering complete: ${clusters.length} clusters created`
+      );
+      return { clusters, labels };
     }
 
-    // Add unclustered articles to a separate group
-    const clusteredIds = new Set(
-      clusters.flatMap((c) => c.articles.map((a) => a.id))
-    );
-    const unclustered = articles.filter((a) => !clusteredIds.has(a.id));
-
-    if (unclustered.length > 0) {
-      clusters.push({
-        id: "cluster-unclustered",
-        topicLabel: "Autres articles",
-        articles: unclustered,
-      });
-      labels.set("cluster-unclustered", "Autres articles");
-    }
-
-    // Sort by cluster size (largest first)
-    clusters.sort((a, b) => b.articles.length - a.articles.length);
-
-    console.log(`Clustering complete: ${clusters.length} clusters created`);
-    return { clusters, labels };
+    // No topics found - return all articles in one group
+    console.warn("LLM clustering returned no topics");
+    return createFallbackResult(articles);
   } catch (error) {
-    console.error("Error during clustering:", error);
+    console.error("Error during LLM clustering:", error);
     return createFallbackResult(articles);
   }
 }
@@ -138,4 +132,3 @@ function createFallbackResult(articles: Article[]): ClusteredArticles {
 
 // Re-export types for convenience
 export type { Cluster } from "@/types/cluster";
-export type { ClusterResult } from "./modal-client";

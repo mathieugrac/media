@@ -6,11 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "analyze-similarities": "DOTENV_CONFIG_PATH=.env.local tsx scripts/analyze-similarities.ts"
+    "lint": "eslint"
   },
   "dependencies": {
-    "@huggingface/inference": "^4.13.4",
     "@radix-ui/react-slot": "^1.2.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

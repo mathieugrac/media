@@ -9,6 +9,7 @@ export function Header() {
   const links = [
     { href: "/", label: "Latest" },
     { href: "/topics", label: "Topics" },
+    { href: "/topics-2", label: "Topics 2" },
     { href: "/all", label: "Articles" },
     { href: "/sources", label: "Sources" },
   ];

@@ -7,6 +7,8 @@
 
 import Parser from "rss-parser";
 import { Article, MediaSource, FetchConfig } from "@/types/article";
+import * as fs from "fs";
+import * as path from "path";
 import { FRENCH_STOP_WORDS } from "@/lib/stop-words-french";
 import { TITLE_STOP_WORDS } from "@/lib/title-stop-words";
 import { getEnabledSources } from "@/lib/data/sources";
@@ -236,6 +238,71 @@ async function fetchArticlesFromSource(
 }
 
 // =============================================================================
+// EXPORT TO FILE (for LLM usage)
+// =============================================================================
+
+interface CleanArticle {
+  title: string;
+  excerpt: string;
+  source: string;
+  date: string;
+  url: string;
+}
+
+interface ArticlesExport {
+  exportedAt: string;
+  totalArticles: number;
+  sources: string[];
+  articles: CleanArticle[];
+}
+
+/**
+ * Clean article data for LLM consumption
+ * Removes internal IDs and formats dates as strings
+ */
+function cleanArticleForExport(article: Article): CleanArticle {
+  return {
+    title: article.title,
+    excerpt: article.excerpt || "",
+    source: article.source,
+    date: article.publicationDate.toISOString(),
+    url: article.url,
+  };
+}
+
+/**
+ * Export articles to a JSON file for LLM usage
+ * Creates a clean, structured file in the data directory
+ */
+export function exportArticlesToFile(articles: Article[]): void {
+  try {
+    const dataDir = path.join(process.cwd(), "data");
+
+    // Create data directory if it doesn't exist
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+
+    const cleanArticles = articles.map(cleanArticleForExport);
+    const uniqueSources = [...new Set(articles.map((a) => a.source))];
+
+    const exportData: ArticlesExport = {
+      exportedAt: new Date().toISOString(),
+      totalArticles: cleanArticles.length,
+      sources: uniqueSources,
+      articles: cleanArticles,
+    };
+
+    const filePath = path.join(dataDir, "articles.json");
+    fs.writeFileSync(filePath, JSON.stringify(exportData, null, 2), "utf-8");
+
+    console.log(`📄 Exported ${cleanArticles.length} articles to ${filePath}`);
+  } catch (error) {
+    console.error("Error exporting articles to file:", error);
+  }
+}
+
+// =============================================================================
 // FETCH ALL SOURCES (with parallel execution)
 // =============================================================================
 
@@ -244,7 +311,7 @@ async function fetchArticlesFromSource(
  * Uses parallel execution and caching for optimal performance
  */
 export async function fetchArticlesFromRSS(
-  config?: FetchConfig
+  config?: FetchConfig & { exportToFile?: boolean }
 ): Promise<Article[]> {
   const sources = getEnabledSources();
   const maxConcurrent = config?.maxConcurrent || 5;
@@ -254,6 +321,10 @@ export async function fetchArticlesFromRSS(
   if (config?.useCache !== false) {
     const cached = rssCache.get(globalCacheKey);
     if (cached) {
+      // Still export to file even if cached (if requested)
+      if (config?.exportToFile) {
+        exportArticlesToFile(cached);
+      }
       return cached;
     }
   }
@@ -277,6 +348,9 @@ export async function fetchArticlesFromRSS(
   if (config?.useCache !== false) {
     rssCache.set(globalCacheKey, sorted, 60); // Cache for 1 hour
   }
+
+  // Export to file for LLM usage (always export on fresh fetch)
+  exportArticlesToFile(sorted);
 
   return sorted;
 }

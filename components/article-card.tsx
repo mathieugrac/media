@@ -33,13 +33,13 @@ export function ArticleCard({ article }: ArticleCardProps) {
       <CardHeader>
         <div className="flex flex-wrap gap-2">
           <Badge variant="outline">{article.source}</Badge>
-          {article.tags &&
+          {/* {article.tags &&
             article.tags.length > 0 &&
             article.tags.slice(0, 5).map((tag, index) => (
               <Badge key={index} variant="secondary" className="text-xs">
                 {tag}
               </Badge>
-            ))}
+            ))} */}
         </div>
       </CardHeader>
       {article.excerpt && (
@@ -75,4 +75,3 @@ export function ArticleCard({ article }: ArticleCardProps) {
     </Card>
   );
 }
-

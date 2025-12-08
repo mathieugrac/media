@@ -105,10 +105,12 @@ export default async function TopicsPage() {
         )}
 
         {/* Layout with sidebar on the left and article list on the right */}
-        <TopicFilterClient
-          clusterLabels={clusterLabels}
-          articles={articlesWithCluster}
-        />
+        {articlesWithCluster.length > 0 && (
+          <TopicFilterClient
+            clusterLabels={clusterLabels}
+            articles={articlesWithCluster}
+          />
+        )}
       </div>
     </div>
   );

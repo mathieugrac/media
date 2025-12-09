@@ -1,6 +1,6 @@
 /**
  * Topics 2 - LLM-based topic analysis using Groq Llama 3.3 70B
- * Fresh implementation from scratch
+ * Analyzes the latest 50 articles to identify trending topics
  */
 
 import * as fs from "fs";
@@ -8,6 +8,9 @@ import * as path from "path";
 
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
+
+// Maximum articles to analyze (limited by Groq free tier: 12K tokens/min)
+const MAX_ARTICLES = 50;
 
 // =============================================================================
 // Types
@@ -71,50 +74,6 @@ export function loadArticlesFromFile(): ArticleInput[] {
   return data.articles;
 }
 
-/**
- * Filter articles by date (YYYY-MM-DD format)
- * Returns articles from the specified date, or yesterday if no articles found for today
- */
-export function filterArticlesByDate(
-  articles: ArticleInput[],
-  targetDate?: string
-): { articles: ArticleInput[]; date: string; dateLabel: string } {
-  const today = new Date();
-  const todayStr = today.toISOString().split("T")[0];
-
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
-  const yesterdayStr = yesterday.toISOString().split("T")[0];
-
-  // Try target date first, then today, then yesterday
-  const datesToTry = targetDate ? [targetDate] : [todayStr, yesterdayStr];
-
-  for (const dateStr of datesToTry) {
-    const filtered = articles.filter((article) => {
-      const articleDate = new Date(article.date).toISOString().split("T")[0];
-      return articleDate === dateStr;
-    });
-
-    if (filtered.length > 0) {
-      const date = new Date(dateStr);
-      const dateLabel = date.toLocaleDateString("fr-FR", {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      });
-
-      return { articles: filtered, date: dateStr, dateLabel };
-    }
-  }
-
-  return {
-    articles: [],
-    date: todayStr,
-    dateLabel: "Aucun article disponible",
-  };
-}
-
 // =============================================================================
 // LLM Prompt & Analysis
 // =============================================================================
@@ -131,7 +90,7 @@ URL: ${a.url}`
     )
     .join("\n\n");
 
-  return `Tu es un analyste média expert. Analyse ces ${articles.length} articles de presse française publiés aujourd'hui.
+  return `Tu es un analyste média expert. Analyse ces ${articles.length} articles de presse française récents.
 
 ARTICLES À ANALYSER:
 ${articlesText}
@@ -247,26 +206,23 @@ async function callGroqAPI(prompt: string): Promise<LLMResponse> {
 // Main Analysis Function
 // =============================================================================
 
-export async function analyzeTopics(
-  targetDate?: string
-): Promise<AnalysisResult> {
+export async function analyzeTopics(): Promise<AnalysisResult> {
   console.log("📊 Topics 2: Starting analysis...");
 
   // Load articles
   const allArticles = loadArticlesFromFile();
   console.log(`📄 Loaded ${allArticles.length} total articles`);
 
-  // Filter by date
-  const { articles, date, dateLabel } = filterArticlesByDate(
-    allArticles,
-    targetDate
-  );
-  console.log(`📅 Found ${articles.length} articles for ${dateLabel}`);
+  // Take the most recent articles (already sorted by date in articles.json)
+  const articles = allArticles.slice(0, MAX_ARTICLES);
+  const date = new Date().toISOString().split("T")[0];
+  const dateLabel = `${articles.length} articles les plus récents`;
+  console.log(`📰 Analyzing ${articles.length} most recent articles`);
 
   if (articles.length === 0) {
     return {
       date,
-      dateLabel,
+      dateLabel: "Aucun article disponible",
       topics: [],
       otherTopics: null,
       analyzedAt: new Date().toISOString(),

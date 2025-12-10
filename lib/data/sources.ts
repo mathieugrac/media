@@ -25,6 +25,7 @@ export const MEDIA_SOURCES: MediaSource[] = [
     priority: 100,
     maxArticles: 100,
     description: "Média d'investigation participatif",
+    logo: "/logos/blast.png",
   },
   {
     id: "elucid",
@@ -37,6 +38,7 @@ export const MEDIA_SOURCES: MediaSource[] = [
     priority: 95,
     maxArticles: 20,
     description: "Média indépendant d'information",
+    logo: "/logos/elucid.png",
   },
   {
     id: "les-jours",
@@ -49,6 +51,7 @@ export const MEDIA_SOURCES: MediaSource[] = [
     priority: 90,
     maxArticles: 10,
     description: "Journal en ligne par obsessions",
+    logo: "/logos/les-jours.png",
   },
   {
     id: "off-investigation",
@@ -61,6 +64,7 @@ export const MEDIA_SOURCES: MediaSource[] = [
     priority: 85,
     maxArticles: 20,
     description: "Journalisme d'investigation",
+    logo: "/logos/off-investigation.png",
   },
   {
     id: "mediapart",
@@ -73,6 +77,7 @@ export const MEDIA_SOURCES: MediaSource[] = [
     priority: 95,
     maxArticles: 10,
     description: "Média indépendant en ligne",
+    logo: "/logos/mediapart.png",
   },
   {
     id: "60m-consommateurs",
@@ -85,6 +90,7 @@ export const MEDIA_SOURCES: MediaSource[] = [
     priority: 70,
     maxArticles: 49,
     description: "Magazine de consommation",
+    logo: "/logos/60m-consommateurs.png",
   },
   {
     id: "reporterre",
@@ -97,6 +103,7 @@ export const MEDIA_SOURCES: MediaSource[] = [
     priority: 90,
     maxArticles: 60,
     description: "Journal de l'écologie",
+    logo: "/logos/reporterre.png",
   },
   {
     id: "les-surligneurs",
@@ -109,6 +116,7 @@ export const MEDIA_SOURCES: MediaSource[] = [
     priority: 75,
     maxArticles: 10,
     description: "Fact-checking juridique et politique",
+    logo: "/logos/les-surligneurs.png",
   },
   {
     id: "frustration-magazine",
@@ -121,6 +129,7 @@ export const MEDIA_SOURCES: MediaSource[] = [
     priority: 80,
     maxArticles: 25,
     description: "Magazine de critique sociale",
+    logo: "/logos/frustration-magazine.png",
   },
   {
     id: "disclose",
@@ -133,6 +142,7 @@ export const MEDIA_SOURCES: MediaSource[] = [
     priority: 95,
     maxArticles: 22,
     description: "ONG de journalisme d'investigation",
+    logo: "/logos/disclose.png",
   },
   {
     id: "alternatives-economiques",
@@ -145,6 +155,7 @@ export const MEDIA_SOURCES: MediaSource[] = [
     priority: 85,
     maxArticles: 10,
     description: "Magazine d'économie sociale et écologique",
+    logo: "/logos/alternatives-economiques.png",
   },
   {
     id: "le-grand-continent",
@@ -157,6 +168,7 @@ export const MEDIA_SOURCES: MediaSource[] = [
     priority: 80,
     maxArticles: 10,
     description: "Revue européenne de géopolitique",
+    logo: "/logos/le-grand-continent.png",
   },
   {
     id: "le-monde-diplomatique",
@@ -169,6 +181,7 @@ export const MEDIA_SOURCES: MediaSource[] = [
     priority: 90,
     maxArticles: 20,
     description: "Journal mensuel d'information et d'analyse",
+    logo: "/logos/le-monde-diplomatique.png",
   },
   {
     id: "sciences-critiques",
@@ -181,6 +194,7 @@ export const MEDIA_SOURCES: MediaSource[] = [
     priority: 75,
     maxArticles: 10,
     description: "Média de critique des sciences",
+    logo: "/logos/sciences-critiques.jpg",
   },
   {
     id: "reflets",
@@ -193,6 +207,7 @@ export const MEDIA_SOURCES: MediaSource[] = [
     priority: 80,
     maxArticles: 10,
     description: "Journal d'investigation en ligne sur le numérique",
+    logo: "/logos/reflets.png",
   },
   {
     id: "politis",
@@ -205,6 +220,7 @@ export const MEDIA_SOURCES: MediaSource[] = [
     priority: 95,
     maxArticles: 100,
     description: "Journal d'informations politiques et sociales",
+    logo: "/logos/politis.png",
   },
   {
     id: "synth-media",
@@ -217,6 +233,7 @@ export const MEDIA_SOURCES: MediaSource[] = [
     priority: 70,
     maxArticles: 10,
     description: "Média critique sur la tech",
+    logo: "/logos/synth-media.png",
   },
 ];
 
@@ -259,6 +276,13 @@ export function getSourcesByCategory(category: string): MediaSource[] {
  */
 export function getSourceById(id: string): MediaSource | undefined {
   return MEDIA_SOURCES.find((source) => source.id === id);
+}
+
+/**
+ * Get source by name
+ */
+export function getSourceByName(name: string): MediaSource | undefined {
+  return MEDIA_SOURCES.find((source) => source.name === name);
 }
 
 /**

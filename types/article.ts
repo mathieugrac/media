@@ -40,6 +40,8 @@ export interface MediaSource {
   lastFetched?: Date;
   /** Error count (for reliability tracking) */
   errorCount?: number;
+  /** Logo path (relative to /public) */
+  logo?: string;
 }
 
 /**

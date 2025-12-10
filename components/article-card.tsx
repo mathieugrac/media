@@ -9,12 +9,16 @@ import { fr } from "date-fns/locale/fr";
 
 export interface ArticleCardProps {
   article: Article;
+  showDescription?: boolean;
 }
 
 /**
  * Composant réutilisable pour afficher une carte d'article
  */
-export function ArticleCard({ article }: ArticleCardProps) {
+export function ArticleCard({
+  article,
+  showDescription = true,
+}: ArticleCardProps) {
   const publicationDate =
     article.publicationDate instanceof Date
       ? article.publicationDate
@@ -36,7 +40,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        {article.excerpt && (
+        {showDescription && article.excerpt && (
           <p className="text-sm line-clamp-3 mb-3">{article.excerpt}</p>
         )}
         <time

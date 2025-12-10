@@ -3,6 +3,7 @@
 import { useMemo, useState, useCallback } from "react";
 import { Article } from "@/types/article";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
 import { ArticleCard } from "@/components/article-card";
 
 interface SourceInfo {
@@ -25,6 +26,7 @@ export function SourceFilterClient({
   const [selectedSources, setSelectedSources] = useState<Set<string> | null>(
     null
   );
+  const [showDescription, setShowDescription] = useState(true);
 
   const selectSource = useCallback(
     (sourceName: string) => {
@@ -84,7 +86,7 @@ export function SourceFilterClient({
     <div className="flex flex-col gap-8 md:flex-row">
       {/* Sidebar with source filters */}
       <aside className="md:w-80 md:max-w-xs w-full md:shrink-0">
-        <Card className="border bg-card gap-2">
+        <Card className="border bg-card gap-2 md:sticky md:top-16">
           <CardHeader className="">
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg">Sources</CardTitle>
@@ -134,10 +136,33 @@ export function SourceFilterClient({
 
       {/* Article list */}
       <section className="flex-1 md:max-w-[680px]">
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-xs text-muted-foreground">
+            {filteredArticles.length} article
+            {filteredArticles.length > 1 ? "s" : ""}
+          </span>
+          <div className="flex items-center gap-2">
+            <label
+              htmlFor="show-description"
+              className="text-xs text-muted-foreground"
+            >
+              Descriptions
+            </label>
+            <Switch
+              id="show-description"
+              checked={showDescription}
+              onCheckedChange={setShowDescription}
+            />
+          </div>
+        </div>
         <div className="space-y-4">
           {filteredArticles.length > 0 ? (
             filteredArticles.map((article) => (
-              <ArticleCard key={article.id} article={article} />
+              <ArticleCard
+                key={article.id}
+                article={article}
+                showDescription={showDescription}
+              />
             ))
           ) : (
             <p className="text-sm text-muted-foreground">

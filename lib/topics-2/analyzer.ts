@@ -79,65 +79,103 @@ export function loadArticlesFromFile(): ArticleInput[] {
 // =============================================================================
 
 function buildPrompt(articles: ArticleInput[]): string {
-  // Format articles for the prompt
+  // Format articles for the prompt - include source prominently
   const articlesText = articles
     .map(
       (a, i) =>
-        `[${i + 1}] SOURCE: ${a.source}
-TITRE: ${a.title}
-EXTRAIT: ${a.excerpt || "(pas d'extrait)"}
-URL: ${a.url}`
+        `[${i + 1}] ${a.source.toUpperCase()}
+"${a.title}"
+${a.excerpt ? `→ ${a.excerpt.slice(0, 150)}...` : ""}`
     )
     .join("\n\n");
 
-  return `Tu es un analyste média expert. Analyse ces ${articles.length} articles de presse française récents.
+  return `Tu es un analyste média. Identifie les ÉVÉNEMENTS D'ACTUALITÉ couverts par PLUSIEURS SOURCES dans ces articles.
 
-ARTICLES À ANALYSER:
+ARTICLES:
 ${articlesText}
 
-INSTRUCTIONS:
-1. Identifie les SUJETS D'ACTUALITÉ couverts par AU MOINS 2 SOURCES DIFFÉRENTES
-2. Pour chaque sujet, crée un titre SPÉCIFIQUE et DESCRIPTIF (pas de catégories génériques comme "Politique" ou "International")
-3. Regroupe les articles isolés (couverts par une seule source) dans "autres_sujets"
+---
 
-EXEMPLES DE BONS TITRES:
-- "Syrie : un an après la chute d'Assad"
-- "Extrême droite / RN — Enquêtes sur les liens néofascistes"
-- "A69 : nouveaux procès et pressions sur le concessionnaire"
-- "PFAS : les polluants éternels dans l'eau et les céréales"
+ÉTAPE 1 - IDENTIFIER LES ÉVÉNEMENTS (pas des catégories)
 
-EXEMPLES DE MAUVAIS TITRES (trop génériques):
-- "Politique"
-- "International"
-- "Société"
-- "Environnement"
+Un ÉVÉNEMENT = quelque chose de précis qui s'est passé, avec des NOMS, LIEUX, DATES
 
-FORMAT DE RÉPONSE (JSON strict):
+BONS titres (spécifiques):
+- ✅ "Un an après la chute d'Assad : reconstruction et retour des Syriens"
+- ✅ "Sommet Macron-Zelensky-Starmer à Londres"
+- ✅ "Vote du budget de la Sécu : Faure et le compromis PS"
+- ✅ "Espagne : le gouvernement mise sur la finance éthique"
+- ✅ "2025 : deuxième année la plus chaude, records de température"
+
+MAUVAIS titres (trop génériques, INTERDITS):
+- ❌ "Politique française"
+- ❌ "Relations internationales"
+- ❌ "Économie et finance"
+- ❌ "Environnement et protection de la nature"
+- ❌ "Géopolitique mondiale"
+- ❌ "Actualités internationales"
+
+ÉTAPE 2 - VÉRIFIER LA COHÉRENCE (CRITIQUE)
+
+⚠️ RÈGLE ABSOLUE: Les articles d'un même événement doivent parler DU MÊME SUJET.
+NE JAMAIS regrouper des articles non liés juste pour avoir 2 sources.
+
+EXEMPLES DE MAUVAIS GROUPEMENTS (INTERDITS):
+- ❌ Grouper "Température record 2025" avec "Diplomatie US en Amérique latine" → AUCUN LIEN
+- ❌ Grouper "Tchernobyl" avec "Narcotrafic" → AUCUN LIEN
+- ❌ Grouper des articles sur des sujets différents juste car ils viennent de sources différentes
+
+Si un sujet n'est couvert que par UNE source → il va dans autres_sujets, c'est normal.
+Il vaut mieux avoir MOINS de topics mais des topics COHÉRENTS.
+
+ÉTAPE 3 - VÉRIFIER LES SOURCES
+
+Un événement n'est valide QUE si:
+1. Les articles parlent VRAIMENT du même événement (pas juste vaguement liés)
+2. Au moins 2 SOURCES DIFFÉRENTES le couvrent
+
+ÉTAPE 4 - NOMMER L'ÉVÉNEMENT
+
+Le titre doit être SPÉCIFIQUE à l'actualité, pas une catégorie.
+Mauvais: "Politique internationale" 
+Bon: "Sommet européen à Londres sur l'Ukraine"
+
+La description doit résumer LES ANGLES SPÉCIFIQUES couverts par les articles.
+Mauvais: "Les développements récents en politique"
+Bon: "Macron, Merz et Starmer rencontrent Zelensky pour discuter du soutien militaire et des négociations"
+
+IMPORTANT: Préfère avoir 1-2 bons topics cohérents plutôt que 5 topics avec des articles non liés.
+
+---
+
+FORMAT JSON (strict):
 {
   "topics": [
     {
-      "title": "Titre spécifique du sujet",
-      "description": "Description en une phrase résumant les angles couverts",
+      "title": "Titre de l'ÉVÉNEMENT (spécifique, pas une catégorie)",
+      "description": "Résumé des angles couverts par les différents articles",
+      "sources": ["Source1", "Source2"],
       "article_indices": [1, 3, 7]
     }
   ],
   "autres_sujets": {
-    "summary": "Les autres sujets du jour (budget, laïcité, journaliste emprisonné) ne sont couverts que par une seule source chacun.",
+    "summary": "Liste des sujets couverts par une seule source: X (Source), Y (Source)...",
     "article_indices": [2, 4, 5, 6]
   }
 }
 
-RÈGLES:
-- Chaque article doit apparaître dans UN SEUL groupe
-- Un topic doit avoir des articles d'au moins 2 sources différentes
-- Les articles d'une seule source vont dans "autres_sujets"
-- Réponds UNIQUEMENT avec le JSON, sans texte autour`;
+RÈGLES FINALES:
+1. Chaque article dans UN SEUL groupe
+2. MINIMUM 2 sources différentes par topic (sinon → autres_sujets)
+3. INTERDIT: titres génériques comme "Politique", "International", "Société", "Économie", "Environnement", "Finance"
+4. RÉPONDS UNIQUEMENT AVEC LE JSON. Pas de texte avant, pas de texte après. Pas d'explication.`;
 }
 
 interface LLMResponse {
   topics: Array<{
     title: string;
     description: string;
+    sources?: string[]; // Optional: LLM may include this
     article_indices: number[];
   }>;
   autres_sujets: {
@@ -166,7 +204,7 @@ async function callGroqAPI(prompt: string): Promise<LLMResponse> {
         },
       ],
       max_tokens: 4096,
-      temperature: 0.1, // Low temperature for consistent structured output
+      temperature: 0, // Zero temperature for maximum consistency
     }),
   });
 
@@ -182,20 +220,23 @@ async function callGroqAPI(prompt: string): Promise<LLMResponse> {
     throw new Error("Empty response from Groq API");
   }
 
-  // Parse JSON from response (handle potential markdown code blocks)
+  // Parse JSON from response (handle text before/after JSON and markdown code blocks)
   let jsonStr = content.trim();
-  if (jsonStr.startsWith("```json")) {
-    jsonStr = jsonStr.slice(7);
-  }
-  if (jsonStr.startsWith("```")) {
-    jsonStr = jsonStr.slice(3);
-  }
-  if (jsonStr.endsWith("```")) {
-    jsonStr = jsonStr.slice(0, -3);
+
+  // Try to extract JSON from markdown code block first
+  const codeBlockMatch = jsonStr.match(/```(?:json)?\s*([\s\S]*?)```/);
+  if (codeBlockMatch) {
+    jsonStr = codeBlockMatch[1].trim();
+  } else {
+    // Try to find raw JSON object
+    const jsonMatch = jsonStr.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      jsonStr = jsonMatch[0];
+    }
   }
 
   try {
-    return JSON.parse(jsonStr.trim());
+    return JSON.parse(jsonStr);
   } catch {
     console.error("Failed to parse LLM response:", content);
     throw new Error("Invalid JSON response from LLM");
@@ -234,41 +275,74 @@ export async function analyzeTopics(): Promise<AnalysisResult> {
   const prompt = buildPrompt(articles);
   const llmResponse = await callGroqAPI(prompt);
 
-  // Build topics from LLM response
-  const topics: Topic[] = llmResponse.topics.map((t, index) => {
+  // Build topics from LLM response with validation
+  const validTopics: Topic[] = [];
+  const invalidTopicArticles: ArticleInput[] = [];
+  const invalidTopicNames: string[] = [];
+
+  for (const [index, t] of llmResponse.topics.entries()) {
     const topicArticles = t.article_indices
       .map((i) => articles[i - 1]) // Convert 1-indexed to 0-indexed
       .filter(Boolean);
 
     const sources = [...new Set(topicArticles.map((a) => a.source))];
 
-    return {
-      id: `topic-${index + 1}`,
+    // VALIDATION: Enforce 2+ sources rule
+    if (sources.length < 2) {
+      console.warn(
+        `⚠️ Topic "${t.title}" has only ${
+          sources.length
+        } source(s): [${sources.join(", ")}] → moving to autres_sujets`
+      );
+      invalidTopicArticles.push(...topicArticles);
+      invalidTopicNames.push(t.title);
+      continue;
+    }
+
+    validTopics.push({
+      id: `topic-${validTopics.length + 1}`,
       title: t.title,
       description: t.description,
       articleCount: topicArticles.length,
       articles: topicArticles,
       sources,
-    };
-  });
+    });
+  }
 
-  // Build other topics
+  // Build other topics (including invalidated ones)
   let otherTopics: OtherTopics | null = null;
-  if (
-    llmResponse.autres_sujets &&
-    llmResponse.autres_sujets.article_indices.length > 0
-  ) {
-    const otherArticles = llmResponse.autres_sujets.article_indices
+  const otherArticlesFromLLM =
+    llmResponse.autres_sujets?.article_indices
       .map((i) => articles[i - 1])
-      .filter(Boolean);
+      .filter(Boolean) || [];
+
+  const allOtherArticles = [...otherArticlesFromLLM, ...invalidTopicArticles];
+
+  if (allOtherArticles.length > 0) {
+    let summary =
+      llmResponse.autres_sujets?.summary ||
+      "Sujets couverts par une seule source";
+
+    // Add note about moved topics if any
+    if (invalidTopicNames.length > 0) {
+      summary += ` (+ ${
+        invalidTopicNames.length
+      } sujet(s) avec source unique: ${invalidTopicNames.join(", ")})`;
+    }
 
     otherTopics = {
-      summary: llmResponse.autres_sujets.summary,
-      articles: otherArticles,
+      summary,
+      articles: allOtherArticles,
     };
   }
 
-  console.log(`✅ Analysis complete: ${topics.length} topics found`);
+  const topics = validTopics;
+
+  console.log(
+    `✅ Analysis complete: ${topics.length} valid topics (${
+      llmResponse.topics.length - topics.length
+    } moved to autres_sujets for single-source)`
+  );
 
   return {
     date,

@@ -196,8 +196,8 @@ export function ArticleFiltersClient({
   return (
     <div className="flex flex-col gap-8 md:flex-row">
       {/* Sidebar with filters */}
-      <aside className="md:w-80 md:max-w-xs w-full md:shrink-0 md:sticky md:top-16 md:self-start">
-        <Card className="border bg-card">
+      <aside className="md:w-80 md:max-w-xs w-full md:shrink-0 md:sticky md:top-16 md:self-start gap-2">
+        <Card className="border bg-card gap-2">
           {/* Sources section */}
           <CardHeader className="">
             <div className="flex items-center justify-between">

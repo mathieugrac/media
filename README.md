@@ -13,106 +13,35 @@ Plateforme d'agrégation de nouvelles des médias indépendants français.
 
 ## Fonctionnalités
 
-- ✅ Agrégation automatique des articles depuis 16 flux RSS
+- ✅ Agrégation automatique des articles depuis 17 flux RSS
+- ✅ **Catégorisation automatique** via LLM (Groq/Llama 3.3)
+- ✅ **Stockage persistant** avec Vercel Blob (production)
 - ✅ Affichage des articles triés par date de publication
 - ✅ Filtrage par source (sidebar avec activation/désactivation)
-- ✅ Filtrage temporel (articles des 5 derniers jours uniquement)
-- ✅ Tags/catégories visibles pour chaque article
-- ✅ Revalidation automatique toutes les heures (ISR)
+- ✅ Filtrage temporel (articles du jour)
+- ✅ **Cron jobs** (4x/jour) pour mise à jour automatique
 - ✅ Interface moderne avec Shadcn/UI
 - ✅ Design responsive
 
 ## Médias Sources
 
-**17 sources actives** fournissant environ 600 articles :
-
 1. **Blast** - Média d'investigation participatif
-
-   - RSS Feed : `https://api.blast-info.fr/rss_articles.xml`
-   - ~100 articles
-
 2. **Elucid** - Média indépendant d'information
-
-   - RSS Feed : `https://elucid.media/feed`
-   - ~20 articles
-
 3. **Les Jours** - Journal en ligne
-
-   - RSS Feed : `https://lesjours.fr/rss.xml`
-   - ~10 articles
-
 4. **Off Investigation** - Journalisme d'investigation
-
-   - RSS Feed : `https://www.off-investigation.fr/feed/`
-   - ~20 articles
-
 5. **Mediapart** - Média indépendant en ligne
-
-   - RSS Feed : `https://www.mediapart.fr/articles/feed`
-   - ~10 articles
-
 6. **60 Millions de Consommateurs** - Magazine de consommation
-
-   - RSS Feed : `https://www.60millions-mag.com/rss.xml`
-   - ~49 articles
-
 7. **Reporterre** - Journal de l'écologie
-
-   - RSS Feed : `https://reporterre.net/spip.php?page=backend-simple`
-   - ~60 articles
-
 8. **Les Surligneurs** - Fact-checking juridique
-
-   - RSS Feed : `https://lessurligneurs.eu/feed/`
-   - ~10 articles
-
 9. **Frustration Magazine** - Magazine de critique sociale
-
-   - RSS Feed : `https://frustrationmagazine.fr/feed.xml`
-   - ~25 articles
-
 10. **Disclose** - ONG de journalisme d'investigation
-
-    - RSS Feed : `https://disclose.ngo/feed/`
-    - ~22 articles
-
 11. **Alternatives Économiques** - Magazine d'économie sociale
-
-    - RSS Feed : `https://www.alternatives-economiques.fr/rss.xml`
-    - ~10 articles
-
 12. **Le Grand Continent** - Revue européenne de géopolitique
-
-    - RSS Feed : `https://legrandcontinent.eu/fr/feed/`
-    - ~10 articles
-
 13. **Le Monde Diplomatique** - Journal mensuel d'information
-
-    - RSS Feed : `https://www.monde-diplomatique.fr/rss/`
-    - ~20 articles
-
 14. **Sciences Critiques** - Média de critique des sciences
-
-    - RSS Feed : `https://sciences-critiques.fr/feed/`
-    - ~10 articles
-
 15. **Reflets** - Journal d'investigation en ligne
-
-    - RSS Feed : `https://reflets.info/feeds/public`
-    - ~10 articles
-
 16. **Politis** - Journal d'informations politiques et sociales
-
-    - RSS Feed : `https://www.politis.fr/flux-rss-apps/`
-    - ~200 articles
-
 17. **Synth Media** - Média critique sur la tech
-    - RSS Feed : `https://synthmedia.fr/feed/`
-    - ~10 articles
-
-### Sources désactivées (problèmes techniques)
-
-- **The Conversation** - Flux RSS retourne erreur 404
 
 ## Configuration RSS
 
@@ -141,6 +70,37 @@ npm run build
 # Démarrer en production
 npm start
 ```
+
+## Synchronisation des Données
+
+Les données sont stockées différemment selon l'environnement :
+
+| Environnement  | Stockage    | Fichier              |
+| -------------- | ----------- | -------------------- |
+| **Local**      | Filesystem  | `data/articles.json` |
+| **Production** | Vercel Blob | Cloud storage        |
+
+### Syncer les données de production en local
+
+Pour récupérer les articles catégorisés depuis la production :
+
+```bash
+npx tsx scripts/sync-from-prod.ts
+```
+
+**Ce que fait cette commande :**
+
+1. Se connecte à Vercel Blob (cloud storage)
+2. Télécharge `articles.json` depuis la production
+3. Écrase le fichier local `data/articles.json`
+
+**Prérequis :** Ajouter `BLOB_READ_WRITE_TOKEN` dans `.env.local` (disponible dans Vercel Dashboard → Storage → media-articles)
+
+**Quand l'utiliser :**
+
+- Pour tester l'UI avec des articles catégorisés
+- Pour expérimenter avec les données réelles (LLM, clustering, etc.)
+- Pour débugger un problème de production
 
 ## Déploiement
 

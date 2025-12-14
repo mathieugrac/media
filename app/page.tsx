@@ -39,13 +39,11 @@ export default async function Home() {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
-      articles = stored.articles
-        .map(toArticle)
-        .filter((article) => {
-          const articleDate = new Date(article.publicationDate);
-          articleDate.setHours(0, 0, 0, 0);
-          return articleDate.getTime() === today.getTime();
-        });
+      articles = stored.articles.map(toArticle).filter((article) => {
+        const articleDate = new Date(article.publicationDate);
+        articleDate.setHours(0, 0, 0, 0);
+        return articleDate.getTime() === today.getTime();
+      });
 
       // Sort articles by date (newest first)
       articles.sort(

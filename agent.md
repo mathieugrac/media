@@ -493,12 +493,13 @@ lib/
 ### Flux de Données
 
 ```
-Cron (4x/jour)
+Cron (4x/jour) via cron-job.org
     │
     ▼
 POST /api/refresh
     │
     ├─► 1. Fetch RSS (lib/rss-fetcher.ts)
+    │       └─► 17 sources indépendantes
     │
     ├─► 2. Merge + Dedupe (lib/storage/article-store.ts)
     │       └─► Déduplication par URL
@@ -506,15 +507,21 @@ POST /api/refresh
     ├─► 3. Categorize new only (lib/categories/categorizer.ts)
     │       └─► Groq API (batch de 50 articles)
     │
-    └─► 4. Save to articles.json
+    └─► 4. Save to Vercel Blob
+            └─► articles.json (~250 KB)
 ```
 
 ### Stockage et Archivage
 
-**Stratégie : 1 fichier JSON par mois**
+**Stratégie : Vercel Blob + archivage mensuel**
+
+| Environnement | Stockage | Description |
+|---------------|----------|-------------|
+| **Production** | Vercel Blob | `articles.json` + `archive/YYYY-MM.json` |
+| **Développement** | Local filesystem | `data/articles.json` + `data/archive/` |
 
 ```
-data/
+Vercel Blob (media-articles)
 ├── articles.json           # Mois courant (actif)
 └── archive/
     ├── 2025-11.json        # Novembre 2025
@@ -523,8 +530,8 @@ data/
 ```
 
 - **Déduplication** : Par URL (un article ne peut pas apparaître deux fois)
-- **Archivage automatique** : Au changement de mois, les articles du mois précédent sont déplacés dans `archive/`
-- **Migration future** : Architecture conçue pour migration facile vers SQLite si nécessaire
+- **Archivage automatique** : Au changement de mois, les articles du mois précédent sont archivés
+- **Dual storage** : Vercel Blob en production, filesystem local en développement
 
 ### Configuration du Cron
 
@@ -542,8 +549,12 @@ data/
 ### Variables d'Environnement
 
 ```bash
-# Requis pour la catégorisation
+# Requis pour la catégorisation (Groq)
 GROQ_API_KEY=gsk_xxx
+
+# Requis pour le stockage (Vercel Blob)
+# Automatiquement ajouté par Vercel lors de la connexion du Blob Store
+BLOB_READ_WRITE_TOKEN=vercel_blob_xxx
 
 # Optionnel : sécuriser l'endpoint /api/refresh
 REFRESH_SECRET=your-secret-key
@@ -551,14 +562,15 @@ REFRESH_SECRET=your-secret-key
 
 ### Décisions Techniques
 
-| Décision                | Choix                 | Raison                               |
-| ----------------------- | --------------------- | ------------------------------------ |
-| LLM pour catégorisation | Groq (Llama 3.3 70B)  | Gratuit, rapide, qualité suffisante  |
-| Taille des batches      | 50 articles           | Équilibre fiabilité/performance      |
-| Stockage                | JSON (1 fichier/mois) | Simple, MVP, migration SQLite facile |
-| Déclenchement           | Cron externe          | Contrôle précis des horaires         |
-| Déduplication           | Par URL               | Identifiant unique fiable            |
-| Catégorie par article   | 1 seule (primaire)    | Simplicité, clarté                   |
+| Décision                | Choix                  | Raison                                    |
+| ----------------------- | ---------------------- | ----------------------------------------- |
+| LLM pour catégorisation | Groq (Llama 3.3 70B)   | Gratuit, rapide, qualité suffisante       |
+| Taille des batches      | 50 articles            | Équilibre fiabilité/performance           |
+| Stockage production     | Vercel Blob            | Serverless compatible, simple, 1GB gratuit |
+| Stockage développement  | Filesystem local       | Rapide, pas de config nécessaire          |
+| Déclenchement           | cron-job.org           | Gratuit, contrôle précis des horaires     |
+| Déduplication           | Par URL                | Identifiant unique fiable                 |
+| Catégorie par article   | 1 seule (primaire)     | Simplicité, clarté                        |
 
 ---
 
@@ -568,13 +580,14 @@ REFRESH_SECRET=your-secret-key
 
 - [x] ~~Connecter le dépôt GitHub à Vercel pour le déploiement automatique~~
 - [x] ~~Ajouter système de catégorisation automatique~~
-- [ ] Configurer cron-job.org pour les 4 appels quotidiens
-- [ ] Tester le flux complet en production
+- [x] ~~Configurer cron-job.org pour les 4 appels quotidiens~~
+- [x] ~~Tester le flux complet en production~~
 - [ ] Ajouter filtrage par catégorie dans l'UI
+- [ ] Afficher les badges de catégorie sur les cartes d'articles
 
 ### Moyen Terme
 
-- [ ] Migrer vers SQLite pour meilleures performances
+- [ ] Migrer vers SQLite/Turso pour meilleures performances (si nécessaire)
 - [ ] Ajouter une fonctionnalité de recherche
 - [ ] Dashboard de statistiques (articles par catégorie, par source)
 - [ ] Ajouter plus de médias sources depuis l'atlas RSS

@@ -1,7 +1,5 @@
 import { readArticles, type StoredArticle } from "@/lib/storage";
 import { Article } from "@/types/article";
-import { format } from "date-fns";
-import { fr } from "date-fns/locale/fr";
 import { ArticleFiltersClient } from "./article-filters-client";
 import { PageHeader } from "@/components/page-header";
 import { MEDIA_SOURCES } from "@/lib/data/sources";
@@ -36,32 +34,24 @@ export default async function Home() {
     const stored = await readArticles();
 
     if (stored) {
-      // Filter articles from today only
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      articles = stored.articles.map(toArticle).filter((article) => {
-        const articleDate = new Date(article.publicationDate);
-        articleDate.setHours(0, 0, 0, 0);
-        return articleDate.getTime() === today.getTime();
-      });
-
-      // Sort articles by date (newest first)
-      articles.sort(
-        (a, b) =>
-          new Date(b.publicationDate).getTime() -
-          new Date(a.publicationDate).getTime()
-      );
+      // Convert all articles and sort by date (newest first)
+      articles = stored.articles
+        .map(toArticle)
+        .sort(
+          (a, b) =>
+            new Date(b.publicationDate).getTime() -
+            new Date(a.publicationDate).getTime()
+        );
     }
   } catch (e) {
     error = e instanceof Error ? e.message : "Une erreur est survenue";
     console.error("Error fetching articles:", e);
   }
 
-  // Get unique sources from today's articles
+  // Get unique sources from articles
   const sourcesInArticles = new Set(articles.map((a) => a.source));
 
-  // Get source info for sources that have articles today
+  // Get source info for sources that have articles
   const availableSources = MEDIA_SOURCES.filter(
     (source) => source.enabled && sourcesInArticles.has(source.name)
   ).map((source) => ({
@@ -89,14 +79,11 @@ export default async function Home() {
     articleCount: uncategorizedCount,
   });
 
-  // Format today's date for the title
-  const todayFormatted = format(new Date(), "EEEE d MMMM yyyy", { locale: fr });
-
   return (
     <div className="min-h-screen bg-background">
       <PageHeader
         title="Derniers articles"
-        description={`Articles du ${todayFormatted}`}
+        description="Tous les articles de vos sources"
       />
 
       <div className="container mx-auto px-4 py-8">
@@ -108,7 +95,7 @@ export default async function Home() {
 
         {articles.length === 0 && !error && (
           <div className="text-center py-12 text-muted-foreground">
-            <p>Aucun article disponible pour aujourd&apos;hui.</p>
+            <p>Aucun article disponible.</p>
           </div>
         )}
 

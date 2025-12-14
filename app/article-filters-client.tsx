@@ -4,7 +4,10 @@ import { useMemo, useState, useCallback } from "react";
 import { Article } from "@/types/article";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
 import { ArticleCard } from "@/components/article-card";
+
+const ARTICLES_PER_PAGE = 20;
 
 interface SourceInfo {
   id: string;
@@ -37,6 +40,7 @@ export function ArticleFiltersClient({
   const [selectedCategories, setSelectedCategories] =
     useState<Set<string> | null>(null);
   const [showDescription, setShowDescription] = useState(true);
+  const [displayCount, setDisplayCount] = useState(ARTICLES_PER_PAGE);
 
   const selectSource = useCallback(
     (sourceName: string) => {
@@ -96,9 +100,14 @@ export function ArticleFiltersClient({
     setSelectedCategories(null);
   }, []);
 
-  // Filter articles based on selected sources AND categories
-  const filteredArticles = useMemo(() => {
-    let result = articles;
+  // First: paginate all articles (load N articles)
+  const paginatedArticles = useMemo(() => {
+    return articles.slice(0, displayCount);
+  }, [articles, displayCount]);
+
+  // Then: filter within the paginated articles
+  const displayedArticles = useMemo(() => {
+    let result = paginatedArticles;
 
     // Filter by sources
     if (selectedSources !== null) {
@@ -114,7 +123,7 @@ export function ArticleFiltersClient({
     }
 
     return result;
-  }, [articles, selectedSources, selectedCategories]);
+  }, [paginatedArticles, selectedSources, selectedCategories]);
 
   // Check if a source is selected (for visual feedback)
   const isSourceSelected = useCallback(
@@ -138,46 +147,44 @@ export function ArticleFiltersClient({
     [selectedCategories]
   );
 
-  // Compute source counts based on category filter
+  const hasMoreArticles = displayCount < articles.length;
+
+  const loadMoreArticles = useCallback(() => {
+    setDisplayCount((prev) => prev + ARTICLES_PER_PAGE);
+  }, []);
+
+  // Compute source counts based on paginated articles (filtered by category if active)
   const sourcesWithDynamicCounts = useMemo(() => {
-    // Filter articles by category first
-    let categoryFilteredArticles = articles;
+    let articlesToCount = paginatedArticles;
     if (selectedCategories !== null) {
-      categoryFilteredArticles = articles.filter((article) => {
+      articlesToCount = paginatedArticles.filter((article) => {
         const articleCategory = article.category ?? "non-classe";
         return selectedCategories.has(articleCategory);
       });
     }
-
-    // Compute counts for each source based on category-filtered articles
     return sources.map((source) => ({
       ...source,
-      articleCount: categoryFilteredArticles.filter(
-        (a) => a.source === source.name
-      ).length,
+      articleCount: articlesToCount.filter((a) => a.source === source.name)
+        .length,
     }));
-  }, [sources, articles, selectedCategories]);
+  }, [sources, paginatedArticles, selectedCategories]);
 
-  // Compute category counts based on source filter
+  // Compute category counts based on paginated articles (filtered by source if active)
   const categoriesWithDynamicCounts = useMemo(() => {
-    // Filter articles by source first
-    let sourceFilteredArticles = articles;
+    let articlesToCount = paginatedArticles;
     if (selectedSources !== null) {
-      sourceFilteredArticles = articles.filter((article) =>
+      articlesToCount = paginatedArticles.filter((article) =>
         selectedSources.has(article.source)
       );
     }
-
-    // Compute counts for each category based on source-filtered articles
     return categories.map((category) => ({
       ...category,
       articleCount:
         category.id === "non-classe"
-          ? sourceFilteredArticles.filter((a) => !a.category).length
-          : sourceFilteredArticles.filter((a) => a.category === category.id)
-              .length,
+          ? articlesToCount.filter((a) => !a.category).length
+          : articlesToCount.filter((a) => a.category === category.id).length,
     }));
-  }, [categories, articles, selectedSources]);
+  }, [categories, paginatedArticles, selectedSources]);
 
   // Sort sources by article count (most articles first)
   const sortedSources = useMemo(() => {
@@ -196,7 +203,7 @@ export function ArticleFiltersClient({
   return (
     <div className="flex flex-col gap-8 md:flex-row">
       {/* Sidebar with filters */}
-      <aside className="md:w-80 md:max-w-xs w-full md:shrink-0 md:sticky md:top-16 md:self-start gap-2">
+      <aside className="md:w-[420px] w-full md:shrink-0 md:sticky md:top-16 md:self-start gap-2">
         <Card className="border bg-card gap-2">
           {/* Sources section */}
           <CardHeader className="">
@@ -311,8 +318,8 @@ export function ArticleFiltersClient({
       <section className="flex-1 md:max-w-[680px]">
         <div className="flex items-center justify-between mb-4">
           <span className="text-xs text-muted-foreground">
-            {filteredArticles.length} article
-            {filteredArticles.length > 1 ? "s" : ""}
+            {displayedArticles.length} article
+            {displayedArticles.length > 1 ? "s" : ""}
           </span>
           <div className="flex items-center gap-2">
             <label
@@ -329,8 +336,8 @@ export function ArticleFiltersClient({
           </div>
         </div>
         <div className="space-y-4">
-          {filteredArticles.length > 0 ? (
-            filteredArticles.map((article) => (
+          {displayedArticles.length > 0 ? (
+            displayedArticles.map((article) => (
               <ArticleCard
                 key={article.id}
                 article={article}
@@ -343,6 +350,15 @@ export function ArticleFiltersClient({
             </p>
           )}
         </div>
+
+        {/* Load more button */}
+        {hasMoreArticles && (
+          <div className="mt-8 flex justify-center">
+            <Button variant="outline" onClick={loadMoreArticles}>
+              Plus d&apos;articles
+            </Button>
+          </div>
+        )}
       </section>
     </div>
   );

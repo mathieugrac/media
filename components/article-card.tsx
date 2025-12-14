@@ -7,45 +7,35 @@ import { DistinctivenessBadge } from "@/components/distinctiveness-badge";
 import type { DistinctivenessBadge as BadgeType } from "@/lib/distinctiveness";
 import { getCategoryLabel } from "@/lib/categories/taxonomy";
 import Link from "next/link";
-import {
-  format,
-  isToday,
-  isYesterday,
-  differenceInMinutes,
-  differenceInHours,
-} from "date-fns";
+import { format, isToday, isYesterday, differenceInHours } from "date-fns";
 import { fr } from "date-fns/locale/fr";
 
 /**
  * Format date based on how recent the article is:
- * - Today: "X min" or "Xh"
- * - Yesterday: "Hier à 12h36"
- * - This year: "12 déc, 8h30"
- * - Previous year: "12 déc. 2024, 17h01"
+ * - Today: "2h" or "12h"
+ * - Yesterday: "Hier à 18:06"
+ * - This year: "12 déc. à 8:30"
+ * - Previous year: "12 déc. 2024 à 17:01"
  */
 function formatRelativeDate(date: Date): string {
   const now = new Date();
 
   if (isToday(date)) {
-    const minutesAgo = differenceInMinutes(now, date);
-    if (minutesAgo < 60) {
-      return `${minutesAgo} min`;
-    }
     const hoursAgo = differenceInHours(now, date);
     return `${hoursAgo}h`;
   }
 
   if (isYesterday(date)) {
-    return `Hier à ${format(date, "HH'h'mm", { locale: fr })}`;
+    return `Hier à ${format(date, "HH:mm", { locale: fr })}`;
   }
 
   const isThisYear = date.getFullYear() === now.getFullYear();
 
   if (isThisYear) {
-    return format(date, "d MMM, H'h'mm", { locale: fr });
+    return format(date, "d MMM 'à' HH:mm", { locale: fr });
   }
 
-  return format(date, "d MMM yyyy, H'h'mm", { locale: fr });
+  return format(date, "d MMM yyyy 'à' HH:mm", { locale: fr });
 }
 
 export interface ArticleCardProps {

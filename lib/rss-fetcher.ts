@@ -349,8 +349,11 @@ export async function fetchArticlesFromRSS(
     rssCache.set(globalCacheKey, sorted, 60); // Cache for 1 hour
   }
 
-  // Export to file for LLM usage (always export on fresh fetch)
-  exportArticlesToFile(sorted);
+  // Export to file only if explicitly requested (legacy behavior)
+  // New architecture uses lib/storage/article-store.ts instead
+  if (config?.exportToFile !== false) {
+    exportArticlesToFile(sorted);
+  }
 
   return sorted;
 }

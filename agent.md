@@ -145,6 +145,29 @@ types/
 
 **Pourquoi :** L'utilisateur avait déjà utilisé cette stack sur un projet précédent. Réutiliser ces technologies permet de gagner du temps, d'être plus à l'aise avec l'outillage, et de maintenir une cohérence entre les projets.
 
+### Stratégie LLM (Décembre 2025)
+
+**Architecture à deux niveaux selon la complexité des tâches :**
+
+| Niveau     | Service   | Modèle          | Coût    | Usage                                                         |
+| ---------- | --------- | --------------- | ------- | ------------------------------------------------------------- |
+| **Tier 1** | Groq      | Llama 3.3 70B   | Gratuit | Tâches simples (catégorisation, labeling, extraction)         |
+| **Tier 2** | Anthropic | Claude Sonnet 4 | Payant  | Tâches complexes (analyse approfondie, clustering sémantique) |
+
+**Groq** (déjà intégré) :
+
+- Infrastructure d'inférence ultra-rapide (LPU)
+- Héberge des modèles open-source (Llama, Mixtral)
+- Free tier généreux (~6000 req/jour)
+- API compatible OpenAI
+
+**Claude Sonnet** (à intégrer si besoin) :
+
+- Meilleur raisonnement pour tâches complexes
+- Utilisé uniquement quand Groq/Llama n'est pas suffisant
+
+**Pourquoi cette approche :** Optimisation coût/performance. La majorité des tâches (catégorisation, extraction) ne nécessitent pas un modèle frontier. Groq + Llama 3.3 70B est gratuit et largement suffisant pour ces cas.
+
 ### Architecture Simplifiée (MVP)
 
 **Décision : Approche minimaliste sans base de données ni cron jobs**
@@ -392,48 +415,168 @@ Fetching parallèle avec contrôle de concurrence pour optimiser les performance
 
 ```
 ├── app/
-│   ├── page.tsx                    # Page principale avec ISR, filtre temporel et préparation des données
-│   ├── source-filter-client.tsx   # Composant client gérant le filtrage par source et le layout
+│   ├── api/
+│   │   └── refresh/
+│   │       └── route.ts            # 🔄 Endpoint pour cron (fetch + categorize)
+│   ├── page.tsx                    # Page principale avec ISR
+│   ├── source-filter-client.tsx   # Composant client pour filtrage
 │   └── layout.tsx                  # Layout avec metadata
 ├── components/
 │   └── ui/                         # Composants Shadcn/UI (Card, Badge)
+├── data/
+│   ├── articles.json               # 📄 Articles du mois courant
+│   └── archive/                    # 📦 Archives mensuelles
 ├── lib/
-│   ├── data/                       # 📦 DONNÉES (isolées de la logique)
-│   │   └── sources.ts              # Configuration des sources RSS avec métadonnées
-│   ├── rss-fetcher.ts              # 🔧 Logique de récupération et parsing RSS (modulaire)
+│   ├── categories/                 # 📋 CATÉGORISATION
+│   │   ├── index.ts                # Module public API
+│   │   ├── taxonomy.ts             # Définition des 12 catégories
+│   │   └── categorizer.ts          # Logique LLM (Groq)
+│   ├── storage/                    # 💾 PERSISTANCE
+│   │   ├── index.ts                # Module public API
+│   │   └── article-store.ts        # Merge, dedupe, archive
+│   ├── data/                       # 📦 DONNÉES (sources)
+│   │   └── sources.ts              # Configuration des sources RSS
+│   ├── rss-fetcher.ts              # 🔧 Logique de récupération RSS
 │   ├── rss-cache.ts                # 🚀 Système de cache en mémoire
-│   ├── stop-words-french.ts        # Liste des stop words français
-│   ├── title-stop-words.ts         # Stop words spécifiques aux titres
-│   └── utils.ts                    # Utilitaires (cn pour className)
-├── scripts/
-│   └── check-feed-counts.ts        # Script de vérification des flux RSS
+│   └── utils.ts                    # Utilitaires
 ├── types/
-│   └── article.ts                  # Types TypeScript enrichis (Article, MediaSource, FetchConfig)
-├── README.md                       # Documentation du projet
-└── agent.md                        # Ce fichier - Résumé technique et décisions
+│   └── article.ts                  # Types TypeScript (Article, MediaSource)
+└── agent.md                        # Ce fichier - Résumé technique
 ```
 
 **Architecture Modulaire** :
 
-- **Données isolées** : `lib/data/sources.ts` contient toutes les sources avec métadonnées
-- **Logique séparée** : `lib/rss-fetcher.ts` ne contient que la logique de fetching
-- **Cache optimisé** : `lib/rss-cache.ts` gère le cache en mémoire
-- **Types enrichis** : `types/article.ts` avec catégories, priorités, etc.
+- **Catégorisation** : `lib/categories/` gère la taxonomie et l'appel LLM
+- **Persistance** : `lib/storage/` gère le stockage JSON avec archivage
+- **Données isolées** : `lib/data/sources.ts` contient les sources avec métadonnées
+- **Logique séparée** : `lib/rss-fetcher.ts` ne contient que le fetching RSS
+- **Types enrichis** : `types/article.ts` avec `category` optionnel
+
+## Système de Catégorisation Automatique (Décembre 2025)
+
+### Vue d'Ensemble
+
+Système de classification automatique des articles par catégorie thématique, utilisant un LLM (Groq/Llama 3.3 70B) pour l'analyse sémantique.
+
+### Taxonomie des Catégories
+
+12 catégories primaires, basées sur l'analyse des taxonomies des grands médias français (Le Monde, Le Figaro, Libération, La Croix, Le Parisien) :
+
+| Catégorie       | Label            | Scope                                                   |
+| --------------- | ---------------- | ------------------------------------------------------- |
+| `politique`     | Politique        | French politics, government, elections, parties         |
+| `international` | International    | Foreign affairs, geopolitics, conflicts, diplomacy      |
+| `economie`      | Économie         | Economy, employment, companies, finance, consumption    |
+| `societe`       | Société          | Justice, education, immigration, housing, social issues |
+| `environnement` | Environnement    | Climate, biodiversity, energy, pollution, agriculture   |
+| `sante`         | Santé            | Public health, medicine, diseases, healthcare           |
+| `sciences`      | Sciences         | Research, space, biology, archaeology, innovation       |
+| `tech`          | Tech & Numérique | Digital, AI, social media, cybersecurity, video games   |
+| `culture`       | Culture          | Cinema, music, books, arts, series, theater             |
+| `medias`        | Médias           | Press, TV, journalism, media criticism                  |
+| `travail`       | Travail          | Work conditions, labor rights, accidents, unions        |
+| `factcheck`     | Vérification     | Fact-checking, debunking, fake news, misinformation     |
+
+### Architecture Technique
+
+```
+lib/
+├── categories/
+│   ├── index.ts           # Module public API
+│   ├── taxonomy.ts        # Définition des 12 catégories
+│   └── categorizer.ts     # Logique de catégorisation via Groq
+├── storage/
+│   ├── index.ts           # Module public API
+│   └── article-store.ts   # Persistance JSON avec archivage mensuel
+```
+
+### Flux de Données
+
+```
+Cron (4x/jour)
+    │
+    ▼
+POST /api/refresh
+    │
+    ├─► 1. Fetch RSS (lib/rss-fetcher.ts)
+    │
+    ├─► 2. Merge + Dedupe (lib/storage/article-store.ts)
+    │       └─► Déduplication par URL
+    │
+    ├─► 3. Categorize new only (lib/categories/categorizer.ts)
+    │       └─► Groq API (batch de 50 articles)
+    │
+    └─► 4. Save to articles.json
+```
+
+### Stockage et Archivage
+
+**Stratégie : 1 fichier JSON par mois**
+
+```
+data/
+├── articles.json           # Mois courant (actif)
+└── archive/
+    ├── 2025-11.json        # Novembre 2025
+    ├── 2025-10.json        # Octobre 2025
+    └── ...
+```
+
+- **Déduplication** : Par URL (un article ne peut pas apparaître deux fois)
+- **Archivage automatique** : Au changement de mois, les articles du mois précédent sont déplacés dans `archive/`
+- **Migration future** : Architecture conçue pour migration facile vers SQLite si nécessaire
+
+### Configuration du Cron
+
+**Service** : cron-job.org (gratuit)
+**Timezone** : Europe/Paris
+**Endpoint** : `POST /api/refresh`
+
+| Heure   | Cron Expression |
+| ------- | --------------- |
+| 7:00 AM | `0 7 * * *`     |
+| 1:00 PM | `0 13 * * *`    |
+| 7:00 PM | `0 19 * * *`    |
+| 1:00 AM | `0 1 * * *`     |
+
+### Variables d'Environnement
+
+```bash
+# Requis pour la catégorisation
+GROQ_API_KEY=gsk_xxx
+
+# Optionnel : sécuriser l'endpoint /api/refresh
+REFRESH_SECRET=your-secret-key
+```
+
+### Décisions Techniques
+
+| Décision                | Choix                 | Raison                               |
+| ----------------------- | --------------------- | ------------------------------------ |
+| LLM pour catégorisation | Groq (Llama 3.3 70B)  | Gratuit, rapide, qualité suffisante  |
+| Taille des batches      | 50 articles           | Équilibre fiabilité/performance      |
+| Stockage                | JSON (1 fichier/mois) | Simple, MVP, migration SQLite facile |
+| Déclenchement           | Cron externe          | Contrôle précis des horaires         |
+| Déduplication           | Par URL               | Identifiant unique fiable            |
+| Catégorie par article   | 1 seule (primaire)    | Simplicité, clarté                   |
+
+---
 
 ## Prochaines Étapes Possibles
 
 ### Court Terme
 
-- [ ] Connecter le dépôt GitHub à Vercel pour le déploiement automatique
-- [ ] Tester avec plus de sources médias
-- [ ] Ajuster le design selon les retours utilisateurs
-- [ ] Optimiser les performances si nécessaire
+- [x] ~~Connecter le dépôt GitHub à Vercel pour le déploiement automatique~~
+- [x] ~~Ajouter système de catégorisation automatique~~
+- [ ] Configurer cron-job.org pour les 4 appels quotidiens
+- [ ] Tester le flux complet en production
+- [ ] Ajouter filtrage par catégorie dans l'UI
 
 ### Moyen Terme
 
-- [ ] Ajouter Supabase pour persistance et déduplication
-- [ ] Ajouter des filtres par tag (en plus du filtre par source)
+- [ ] Migrer vers SQLite pour meilleures performances
 - [ ] Ajouter une fonctionnalité de recherche
+- [ ] Dashboard de statistiques (articles par catégorie, par source)
 - [ ] Ajouter plus de médias sources depuis l'atlas RSS
 
 ### Long Terme

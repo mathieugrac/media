@@ -2,13 +2,14 @@
  * Article Store - Persistence Layer
  *
  * Handles reading, writing, merging, and archiving of articles.
- * Uses JSON files with monthly archiving strategy.
+ * Uses Vercel Blob in production, local filesystem in development.
  *
  * Structure:
- *   data/articles.json       - Current month (active)
- *   data/archive/YYYY-MM.json - Previous months
+ *   articles.json       - Current month (active)
+ *   archive/YYYY-MM.json - Previous months
  */
 
+import { put, list, del } from "@vercel/blob";
 import * as fs from "fs";
 import * as path from "path";
 import type { ArticleCategoryId } from "@/lib/categories/taxonomy";
@@ -41,12 +42,20 @@ export interface ArticlesFile {
 }
 
 // =============================================================================
-// PATHS
+// ENVIRONMENT DETECTION
 // =============================================================================
 
+const IS_VERCEL = process.env.VERCEL === "1";
+const BLOB_TOKEN = process.env.BLOB_READ_WRITE_TOKEN;
+
+// Local paths (for development)
 const DATA_DIR = path.join(process.cwd(), "data");
 const ARTICLES_FILE = path.join(DATA_DIR, "articles.json");
 const ARCHIVE_DIR = path.join(DATA_DIR, "archive");
+
+// Blob paths (for production)
+const BLOB_ARTICLES_PATH = "articles.json";
+const BLOB_ARCHIVE_PREFIX = "archive/";
 
 // =============================================================================
 // HELPERS
@@ -72,9 +81,9 @@ function getMonthFromDate(dateStr: string): string {
 }
 
 /**
- * Ensure directories exist
+ * Ensure local directories exist (dev only)
  */
-function ensureDirectories(): void {
+function ensureLocalDirectories(): void {
   if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
   }
@@ -84,13 +93,75 @@ function ensureDirectories(): void {
 }
 
 // =============================================================================
-// READ OPERATIONS
+// BLOB OPERATIONS (Production - Vercel)
 // =============================================================================
 
-/**
- * Read articles from the active file
- */
-export function readArticles(): ArticlesFile | null {
+async function readBlobArticles(): Promise<ArticlesFile | null> {
+  try {
+    const { blobs } = await list({ prefix: BLOB_ARTICLES_PATH });
+    const articleBlob = blobs.find((b) => b.pathname === BLOB_ARTICLES_PATH);
+
+    if (!articleBlob) {
+      console.log("📦 No articles.json found in Blob storage");
+      return null;
+    }
+
+    const response = await fetch(articleBlob.url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch blob: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data as ArticlesFile;
+  } catch (error) {
+    console.error("Error reading from Blob:", error);
+    return null;
+  }
+}
+
+async function writeBlobArticles(data: ArticlesFile): Promise<void> {
+  try {
+    const jsonContent = JSON.stringify(data, null, 2);
+
+    await put(BLOB_ARTICLES_PATH, jsonContent, {
+      access: "public",
+      contentType: "application/json",
+      addRandomSuffix: false,
+    });
+
+    console.log(`📦 Saved ${data.totalArticles} articles to Vercel Blob`);
+  } catch (error) {
+    console.error("Error writing to Blob:", error);
+    throw error;
+  }
+}
+
+async function archiveBlobArticles(
+  month: string,
+  data: ArticlesFile
+): Promise<void> {
+  try {
+    const archivePath = `${BLOB_ARCHIVE_PREFIX}${month}.json`;
+    const jsonContent = JSON.stringify(data, null, 2);
+
+    await put(archivePath, jsonContent, {
+      access: "public",
+      contentType: "application/json",
+      addRandomSuffix: false,
+    });
+
+    console.log(`📦 Archived ${data.totalArticles} articles to ${archivePath}`);
+  } catch (error) {
+    console.error("Error archiving to Blob:", error);
+    throw error;
+  }
+}
+
+// =============================================================================
+// LOCAL FILE OPERATIONS (Development)
+// =============================================================================
+
+function readLocalArticles(): ArticlesFile | null {
   try {
     if (!fs.existsSync(ARTICLES_FILE)) {
       return null;
@@ -98,69 +169,61 @@ export function readArticles(): ArticlesFile | null {
     const content = fs.readFileSync(ARTICLES_FILE, "utf-8");
     return JSON.parse(content);
   } catch (error) {
-    console.error("Error reading articles file:", error);
+    console.error("Error reading local articles file:", error);
     return null;
   }
 }
 
-/**
- * Read articles from an archive file
- */
-export function readArchivedArticles(month: string): ArticlesFile | null {
-  try {
-    const archivePath = path.join(ARCHIVE_DIR, `${month}.json`);
-    if (!fs.existsSync(archivePath)) {
-      return null;
-    }
-    const content = fs.readFileSync(archivePath, "utf-8");
-    return JSON.parse(content);
-  } catch (error) {
-    console.error(`Error reading archive for ${month}:`, error);
-    return null;
-  }
-}
-
-/**
- * Get list of available archive months
- */
-export function getArchiveMonths(): string[] {
-  try {
-    if (!fs.existsSync(ARCHIVE_DIR)) {
-      return [];
-    }
-    return fs
-      .readdirSync(ARCHIVE_DIR)
-      .filter((f) => f.endsWith(".json"))
-      .map((f) => f.replace(".json", ""))
-      .sort()
-      .reverse(); // Most recent first
-  } catch (error) {
-    console.error("Error listing archives:", error);
-    return [];
-  }
-}
-
-// =============================================================================
-// WRITE OPERATIONS
-// =============================================================================
-
-/**
- * Write articles to the active file
- */
-function writeArticles(data: ArticlesFile): void {
-  ensureDirectories();
+function writeLocalArticles(data: ArticlesFile): void {
+  ensureLocalDirectories();
   fs.writeFileSync(ARTICLES_FILE, JSON.stringify(data, null, 2), "utf-8");
   console.log(`📄 Saved ${data.totalArticles} articles to ${ARTICLES_FILE}`);
 }
 
-/**
- * Archive articles to a monthly file
- */
-function archiveArticles(month: string, data: ArticlesFile): void {
-  ensureDirectories();
+function archiveLocalArticles(month: string, data: ArticlesFile): void {
+  ensureLocalDirectories();
   const archivePath = path.join(ARCHIVE_DIR, `${month}.json`);
   fs.writeFileSync(archivePath, JSON.stringify(data, null, 2), "utf-8");
   console.log(`📦 Archived ${data.totalArticles} articles to ${archivePath}`);
+}
+
+// =============================================================================
+// UNIFIED READ/WRITE OPERATIONS
+// =============================================================================
+
+/**
+ * Read articles from storage (Blob in production, local in dev)
+ */
+export async function readArticles(): Promise<ArticlesFile | null> {
+  if (IS_VERCEL && BLOB_TOKEN) {
+    return readBlobArticles();
+  }
+  return readLocalArticles();
+}
+
+/**
+ * Write articles to storage
+ */
+async function writeArticles(data: ArticlesFile): Promise<void> {
+  if (IS_VERCEL && BLOB_TOKEN) {
+    await writeBlobArticles(data);
+  } else {
+    writeLocalArticles(data);
+  }
+}
+
+/**
+ * Archive articles to monthly file
+ */
+async function archiveArticles(
+  month: string,
+  data: ArticlesFile
+): Promise<void> {
+  if (IS_VERCEL && BLOB_TOKEN) {
+    await archiveBlobArticles(month, data);
+  } else {
+    archiveLocalArticles(month, data);
+  }
 }
 
 // =============================================================================
@@ -210,9 +273,11 @@ export function mergeArticles(
  *
  * @returns Number of new articles added
  */
-export function saveArticles(newArticles: StoredArticle[]): number {
+export async function saveArticles(
+  newArticles: StoredArticle[]
+): Promise<number> {
   const currentMonth = getCurrentMonth();
-  const existing = readArticles();
+  const existing = await readArticles();
 
   // Handle archiving if month changed
   if (existing && existing.month && existing.month !== currentMonth) {
@@ -221,7 +286,7 @@ export function saveArticles(newArticles: StoredArticle[]): number {
     );
 
     // Archive the previous month's articles
-    archiveArticles(existing.month, existing);
+    await archiveArticles(existing.month, existing);
 
     // Start fresh for new month (but keep any articles from current month)
     const currentMonthArticles = existing.articles.filter(
@@ -234,7 +299,7 @@ export function saveArticles(newArticles: StoredArticle[]): number {
     );
     const uniqueSources = [...new Set(merged.map((a) => a.source))];
 
-    writeArticles({
+    await writeArticles({
       exportedAt: new Date().toISOString(),
       month: currentMonth,
       totalArticles: merged.length,
@@ -250,7 +315,7 @@ export function saveArticles(newArticles: StoredArticle[]): number {
   const { merged, newCount } = mergeArticles(existingArticles, newArticles);
   const uniqueSources = [...new Set(merged.map((a) => a.source))];
 
-  writeArticles({
+  await writeArticles({
     exportedAt: new Date().toISOString(),
     month: currentMonth,
     totalArticles: merged.length,
@@ -264,8 +329,10 @@ export function saveArticles(newArticles: StoredArticle[]): number {
 /**
  * Update categories for articles (by URL)
  */
-export function updateCategories(categorizedArticles: StoredArticle[]): void {
-  const existing = readArticles();
+export async function updateCategories(
+  categorizedArticles: StoredArticle[]
+): Promise<void> {
+  const existing = await readArticles();
   if (!existing) {
     console.warn("No existing articles file to update categories");
     return;
@@ -293,7 +360,7 @@ export function updateCategories(categorizedArticles: StoredArticle[]): void {
   });
 
   if (updatedCount > 0) {
-    writeArticles({
+    await writeArticles({
       ...existing,
       exportedAt: new Date().toISOString(),
       articles: updatedArticles,
@@ -305,8 +372,8 @@ export function updateCategories(categorizedArticles: StoredArticle[]): void {
 /**
  * Get articles that need categorization
  */
-export function getUncategorizedArticles(): StoredArticle[] {
-  const existing = readArticles();
+export async function getUncategorizedArticles(): Promise<StoredArticle[]> {
+  const existing = await readArticles();
   if (!existing) {
     return [];
   }
@@ -316,8 +383,10 @@ export function getUncategorizedArticles(): StoredArticle[] {
 /**
  * Get recent articles (for display)
  */
-export function getRecentArticles(days: number = 5): StoredArticle[] {
-  const existing = readArticles();
+export async function getRecentArticles(
+  days: number = 5
+): Promise<StoredArticle[]> {
+  const existing = await readArticles();
   if (!existing) {
     return [];
   }
@@ -331,7 +400,82 @@ export function getRecentArticles(days: number = 5): StoredArticle[] {
 /**
  * Get all articles from current month
  */
-export function getCurrentMonthArticles(): StoredArticle[] {
-  const existing = readArticles();
+export async function getCurrentMonthArticles(): Promise<StoredArticle[]> {
+  const existing = await readArticles();
   return existing?.articles || [];
+}
+
+// =============================================================================
+// ARCHIVE OPERATIONS (for future use)
+// =============================================================================
+
+/**
+ * Read articles from an archive file
+ */
+export async function readArchivedArticles(
+  month: string
+): Promise<ArticlesFile | null> {
+  if (IS_VERCEL && BLOB_TOKEN) {
+    try {
+      const archivePath = `${BLOB_ARCHIVE_PREFIX}${month}.json`;
+      const { blobs } = await list({ prefix: archivePath });
+      const archiveBlob = blobs.find((b) => b.pathname === archivePath);
+
+      if (!archiveBlob) {
+        return null;
+      }
+
+      const response = await fetch(archiveBlob.url);
+      return response.json();
+    } catch (error) {
+      console.error(`Error reading archive for ${month}:`, error);
+      return null;
+    }
+  } else {
+    try {
+      const archivePath = path.join(ARCHIVE_DIR, `${month}.json`);
+      if (!fs.existsSync(archivePath)) {
+        return null;
+      }
+      const content = fs.readFileSync(archivePath, "utf-8");
+      return JSON.parse(content);
+    } catch (error) {
+      console.error(`Error reading archive for ${month}:`, error);
+      return null;
+    }
+  }
+}
+
+/**
+ * Get list of available archive months
+ */
+export async function getArchiveMonths(): Promise<string[]> {
+  if (IS_VERCEL && BLOB_TOKEN) {
+    try {
+      const { blobs } = await list({ prefix: BLOB_ARCHIVE_PREFIX });
+      return blobs
+        .map((b) => b.pathname.replace(BLOB_ARCHIVE_PREFIX, "").replace(".json", ""))
+        .filter((m) => m.length > 0)
+        .sort()
+        .reverse();
+    } catch (error) {
+      console.error("Error listing archives:", error);
+      return [];
+    }
+  } else {
+    try {
+      if (!fs.existsSync(ARCHIVE_DIR)) {
+        return [];
+      }
+      return fs
+        .readdirSync(ARCHIVE_DIR)
+        .filter((f) => f.endsWith(".json"))
+        .map((f) => f.replace(".json", ""))
+        .sort()
+        .reverse();
+    } catch (error) {
+      console.error("Error listing archives:", error);
+      return [];
+    }
+  }
 }

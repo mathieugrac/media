@@ -1,5 +1,7 @@
 /**
  * Storage module - public API
+ *
+ * All read/write operations are async (support both local and Vercel Blob)
  */
 
 export {

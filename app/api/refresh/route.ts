@@ -85,12 +85,12 @@ export async function POST(request: Request) {
     // Step 2: Convert to stored format and save (merge + dedupe)
     console.log("💾 Step 2: Merging with existing articles...");
     const storedArticles = freshArticles.map(toStoredArticle);
-    const newCount = saveArticles(storedArticles);
+    const newCount = await saveArticles(storedArticles);
     console.log(`💾 Added ${newCount} new articles`);
 
     // Step 3: Get uncategorized articles and categorize them
     console.log("📋 Step 3: Categorizing new articles...");
-    const uncategorized = getUncategorizedArticles();
+    const uncategorized = await getUncategorizedArticles();
 
     let categorizedCount = 0;
     if (uncategorized.length > 0) {
@@ -104,7 +104,7 @@ export async function POST(request: Request) {
 
       // Convert back and update storage
       const categorizedStored = categorizedArticles.map(toStoredArticle);
-      updateCategories(categorizedStored);
+      await updateCategories(categorizedStored);
 
       categorizedCount = categorizedStored.filter((a) => a.category).length;
     }

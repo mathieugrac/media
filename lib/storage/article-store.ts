@@ -136,6 +136,7 @@ async function writeBlobArticles(data: ArticlesFile): Promise<void> {
       access: "public",
       contentType: "application/json",
       addRandomSuffix: false,
+      allowOverwrite: true,
     });
 
     console.log(`📦 Saved ${data.totalArticles} articles to Vercel Blob`);
@@ -157,6 +158,7 @@ async function archiveBlobArticles(
       access: "public",
       contentType: "application/json",
       addRandomSuffix: false,
+      allowOverwrite: true,
     });
 
     console.log(`📦 Archived ${data.totalArticles} articles to ${archivePath}`);

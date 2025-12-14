@@ -48,6 +48,15 @@ export interface ArticlesFile {
 const IS_VERCEL = process.env.VERCEL === "1";
 const BLOB_TOKEN = process.env.BLOB_READ_WRITE_TOKEN;
 
+// Validate configuration on Vercel
+if (IS_VERCEL && !BLOB_TOKEN) {
+  console.warn(
+    "⚠️ Running on Vercel without BLOB_READ_WRITE_TOKEN. " +
+      "Please set up Vercel Blob storage: " +
+      "Vercel Dashboard → Storage → Create Blob Store → Connect to Project"
+  );
+}
+
 // Local paths (for development)
 const DATA_DIR = path.join(process.cwd(), "data");
 const ARTICLES_FILE = path.join(DATA_DIR, "articles.json");
@@ -195,7 +204,13 @@ function archiveLocalArticles(month: string, data: ArticlesFile): void {
  * Read articles from storage (Blob in production, local in dev)
  */
 export async function readArticles(): Promise<ArticlesFile | null> {
-  if (IS_VERCEL && BLOB_TOKEN) {
+  if (IS_VERCEL) {
+    if (!BLOB_TOKEN) {
+      throw new Error(
+        "Vercel Blob not configured. Please add BLOB_READ_WRITE_TOKEN. " +
+          "Go to Vercel Dashboard → Storage → Create Blob Store → Connect to Project"
+      );
+    }
     return readBlobArticles();
   }
   return readLocalArticles();
@@ -205,7 +220,12 @@ export async function readArticles(): Promise<ArticlesFile | null> {
  * Write articles to storage
  */
 async function writeArticles(data: ArticlesFile): Promise<void> {
-  if (IS_VERCEL && BLOB_TOKEN) {
+  if (IS_VERCEL) {
+    if (!BLOB_TOKEN) {
+      throw new Error(
+        "Vercel Blob not configured. Please add BLOB_READ_WRITE_TOKEN."
+      );
+    }
     await writeBlobArticles(data);
   } else {
     writeLocalArticles(data);
@@ -219,7 +239,12 @@ async function archiveArticles(
   month: string,
   data: ArticlesFile
 ): Promise<void> {
-  if (IS_VERCEL && BLOB_TOKEN) {
+  if (IS_VERCEL) {
+    if (!BLOB_TOKEN) {
+      throw new Error(
+        "Vercel Blob not configured. Please add BLOB_READ_WRITE_TOKEN."
+      );
+    }
     await archiveBlobArticles(month, data);
   } else {
     archiveLocalArticles(month, data);
@@ -454,7 +479,9 @@ export async function getArchiveMonths(): Promise<string[]> {
     try {
       const { blobs } = await list({ prefix: BLOB_ARCHIVE_PREFIX });
       return blobs
-        .map((b) => b.pathname.replace(BLOB_ARCHIVE_PREFIX, "").replace(".json", ""))
+        .map((b) =>
+          b.pathname.replace(BLOB_ARCHIVE_PREFIX, "").replace(".json", "")
+        )
         .filter((m) => m.length > 0)
         .sort()
         .reverse();

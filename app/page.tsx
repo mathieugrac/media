@@ -1,4 +1,4 @@
-import { fetchArticlesFromRSS } from "@/lib/rss-fetcher";
+import { readArticles, type StoredArticle } from "@/lib/storage";
 import { Article } from "@/types/article";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale/fr";
@@ -6,32 +6,54 @@ import { SourceFilterClient } from "./source-filter-client";
 import { PageHeader } from "@/components/page-header";
 import { MEDIA_SOURCES } from "@/lib/data/sources";
 
-// Revalidate every hour (3600 seconds)
-export const revalidate = 3600;
+// Revalidate every 6 hours (21600 seconds) - matches cron schedule
+export const revalidate = 21600;
+
+/**
+ * Convert StoredArticle to Article format for components
+ */
+function toArticle(stored: StoredArticle): Article {
+  return {
+    id: `stored-${stored.url}`,
+    title: stored.title,
+    excerpt: stored.excerpt,
+    author: "",
+    publicationDate: new Date(stored.date),
+    source: stored.source,
+    sourceUrl: "",
+    url: stored.url,
+    category: stored.category,
+  };
+}
 
 export default async function Home() {
   let articles: Article[] = [];
   let error: string | null = null;
 
   try {
-    const allArticles = await fetchArticlesFromRSS();
+    // Read from stored articles (Vercel Blob in production, local in dev)
+    const stored = await readArticles();
 
-    // Filter articles from today only
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    if (stored) {
+      // Filter articles from today only
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
 
-    articles = allArticles.filter((article) => {
-      const articleDate = new Date(article.publicationDate);
-      articleDate.setHours(0, 0, 0, 0);
-      return articleDate.getTime() === today.getTime();
-    });
+      articles = stored.articles
+        .map(toArticle)
+        .filter((article) => {
+          const articleDate = new Date(article.publicationDate);
+          articleDate.setHours(0, 0, 0, 0);
+          return articleDate.getTime() === today.getTime();
+        });
 
-    // Sort articles by date (newest first)
-    articles.sort(
-      (a, b) =>
-        new Date(b.publicationDate).getTime() -
-        new Date(a.publicationDate).getTime()
-    );
+      // Sort articles by date (newest first)
+      articles.sort(
+        (a, b) =>
+          new Date(b.publicationDate).getTime() -
+          new Date(a.publicationDate).getTime()
+      );
+    }
   } catch (e) {
     error = e instanceof Error ? e.message : "Une erreur est survenue";
     console.error("Error fetching articles:", e);

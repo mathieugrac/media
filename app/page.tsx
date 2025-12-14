@@ -2,9 +2,10 @@ import { readArticles, type StoredArticle } from "@/lib/storage";
 import { Article } from "@/types/article";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale/fr";
-import { SourceFilterClient } from "./source-filter-client";
+import { ArticleFiltersClient } from "./article-filters-client";
 import { PageHeader } from "@/components/page-header";
 import { MEDIA_SOURCES } from "@/lib/data/sources";
+import { ARTICLE_CATEGORIES } from "@/lib/categories/taxonomy";
 
 // Revalidate every 6 hours (21600 seconds) - matches cron schedule
 export const revalidate = 21600;
@@ -69,6 +70,25 @@ export default async function Home() {
     articleCount: articles.filter((a) => a.source === source.name).length,
   }));
 
+  // Build categories list with article counts (all 12 categories + "non classé")
+  const availableCategories: {
+    id: string;
+    label: string;
+    articleCount: number;
+  }[] = Object.values(ARTICLE_CATEGORIES).map((cat) => ({
+    id: cat.id,
+    label: cat.label,
+    articleCount: articles.filter((a) => a.category === cat.id).length,
+  }));
+
+  // Add "Non classé" category for articles without category
+  const uncategorizedCount = articles.filter((a) => !a.category).length;
+  availableCategories.push({
+    id: "non-classe",
+    label: "Non classé",
+    articleCount: uncategorizedCount,
+  });
+
   // Format today's date for the title
   const todayFormatted = format(new Date(), "EEEE d MMMM yyyy", { locale: fr });
 
@@ -93,7 +113,11 @@ export default async function Home() {
         )}
 
         {articles.length > 0 && (
-          <SourceFilterClient sources={availableSources} articles={articles} />
+          <ArticleFiltersClient
+            sources={availableSources}
+            categories={availableCategories}
+            articles={articles}
+          />
         )}
       </div>
     </div>

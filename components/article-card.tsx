@@ -7,7 +7,13 @@ import { DistinctivenessBadge } from "@/components/distinctiveness-badge";
 import type { DistinctivenessBadge as BadgeType } from "@/lib/distinctiveness";
 import { getCategoryLabel } from "@/lib/categories/taxonomy";
 import Link from "next/link";
-import { format, isToday, isYesterday, differenceInHours } from "date-fns";
+import {
+  format,
+  isToday,
+  isYesterday,
+  differenceInHours,
+  differenceInMinutes,
+} from "date-fns";
 import { fr } from "date-fns/locale/fr";
 
 /**
@@ -22,6 +28,13 @@ function formatRelativeDate(date: Date): string {
 
   if (isToday(date)) {
     const hoursAgo = differenceInHours(now, date);
+    if (hoursAgo < 1) {
+      const minutesAgo = differenceInMinutes(now, date);
+      if (minutesAgo < 1) {
+        return "À l'instant";
+      }
+      return `${minutesAgo} min`;
+    }
     return `${hoursAgo}h`;
   }
 

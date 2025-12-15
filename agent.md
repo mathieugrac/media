@@ -515,10 +515,10 @@ POST /api/refresh
 
 **Stratégie : Vercel Blob + archivage mensuel**
 
-| Environnement | Stockage | Description |
-|---------------|----------|-------------|
-| **Production** | Vercel Blob | `articles.json` + `archive/YYYY-MM.json` |
-| **Développement** | Local filesystem | `data/articles.json` + `data/archive/` |
+| Environnement     | Stockage         | Description                              |
+| ----------------- | ---------------- | ---------------------------------------- |
+| **Production**    | Vercel Blob      | `articles.json` + `archive/YYYY-MM.json` |
+| **Développement** | Local filesystem | `data/articles.json` + `data/archive/`   |
 
 ```
 Vercel Blob (media-articles)
@@ -562,15 +562,15 @@ REFRESH_SECRET=your-secret-key
 
 ### Décisions Techniques
 
-| Décision                | Choix                  | Raison                                    |
-| ----------------------- | ---------------------- | ----------------------------------------- |
-| LLM pour catégorisation | Groq (Llama 3.3 70B)   | Gratuit, rapide, qualité suffisante       |
-| Taille des batches      | 50 articles            | Équilibre fiabilité/performance           |
-| Stockage production     | Vercel Blob            | Serverless compatible, simple, 1GB gratuit |
-| Stockage développement  | Filesystem local       | Rapide, pas de config nécessaire          |
-| Déclenchement           | cron-job.org           | Gratuit, contrôle précis des horaires     |
-| Déduplication           | Par URL                | Identifiant unique fiable                 |
-| Catégorie par article   | 1 seule (primaire)     | Simplicité, clarté                        |
+| Décision                | Choix                | Raison                                     |
+| ----------------------- | -------------------- | ------------------------------------------ |
+| LLM pour catégorisation | Groq (Llama 3.3 70B) | Gratuit, rapide, qualité suffisante        |
+| Taille des batches      | 50 articles          | Équilibre fiabilité/performance            |
+| Stockage production     | Vercel Blob          | Serverless compatible, simple, 1GB gratuit |
+| Stockage développement  | Filesystem local     | Rapide, pas de config nécessaire           |
+| Déclenchement           | cron-job.org         | Gratuit, contrôle précis des horaires      |
+| Déduplication           | Par URL              | Identifiant unique fiable                  |
+| Catégorie par article   | 1 seule (primaire)   | Simplicité, clarté                         |
 
 ---
 

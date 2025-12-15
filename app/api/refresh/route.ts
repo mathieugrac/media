@@ -11,6 +11,7 @@
  */
 
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { fetchArticlesFromRSS } from "@/lib/rss-fetcher";
 import { categorizeArticles } from "@/lib/categories/categorizer";
 import {
@@ -112,6 +113,11 @@ export async function POST(request: Request) {
     }
     console.log(`📋 Categorized ${categorizedCount} articles`);
 
+    // Step 4: Revalidate the home page cache so users see fresh content
+    console.log("🔄 Step 4: Revalidating page cache...");
+    revalidatePath("/");
+    console.log("🔄 Page cache revalidated");
+
     const duration = Date.now() - startTime;
 
     const result = {
@@ -200,6 +206,11 @@ export async function GET(request: Request) {
       categorizedCount = categorizedStored.filter((a) => a.category).length;
     }
     console.log(`📋 Categorized ${categorizedCount} articles`);
+
+    // Step 4: Revalidate the home page cache so users see fresh content
+    console.log("🔄 Step 4: Revalidating page cache...");
+    revalidatePath("/");
+    console.log("🔄 Page cache revalidated");
 
     const duration = Date.now() - startTime;
 

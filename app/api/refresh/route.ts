@@ -91,6 +91,11 @@ export async function POST(request: Request) {
     const newCount = await saveArticles(storedArticles);
     console.log(`💾 Added ${newCount} new articles`);
 
+    // Small delay to ensure Vercel Blob consistency before reading back
+    if (newCount > 0) {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+
     // Step 3: Get uncategorized articles and categorize them
     console.log("📋 Step 3: Categorizing new articles...");
     const uncategorized = await getUncategorizedArticles();
@@ -190,6 +195,11 @@ export async function GET(request: Request) {
     const storedArticles = freshArticles.map(toStoredArticle);
     const newCount = await saveArticles(storedArticles);
     console.log(`💾 Added ${newCount} new articles`);
+
+    // Small delay to ensure Vercel Blob consistency before reading back
+    if (newCount > 0) {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
 
     // Step 3: Get uncategorized articles and categorize them
     console.log("📋 Step 3: Categorizing new articles...");

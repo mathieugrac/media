@@ -16,7 +16,6 @@ import { fetchArticlesFromRSS } from "@/lib/rss-fetcher";
 import { categorizeArticles } from "@/lib/categories/categorizer";
 import {
   saveArticles,
-  getUncategorizedArticles,
   updateCategories,
   type StoredArticle,
 } from "@/lib/storage";
@@ -86,22 +85,17 @@ export async function POST(request: Request) {
     console.log(`📡 Fetched ${freshArticles.length} articles from RSS`);
 
     // Step 2: Convert to stored format and save (merge + dedupe)
+    // This also returns uncategorized articles to avoid race condition with Vercel Blob
     console.log("💾 Step 2: Merging with existing articles...");
     const storedArticles = freshArticles.map(toStoredArticle);
-    const newCount = await saveArticles(storedArticles);
+    const { newCount, uncategorized } = await saveArticles(storedArticles);
     console.log(`💾 Added ${newCount} new articles`);
+    console.log(`📋 Found ${uncategorized.length} uncategorized articles`);
 
-    // Small delay to ensure Vercel Blob consistency before reading back
-    if (newCount > 0) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
-
-    // Step 3: Get uncategorized articles and categorize them
-    console.log("📋 Step 3: Categorizing new articles...");
-    const uncategorized = await getUncategorizedArticles();
-
+    // Step 3: Categorize uncategorized articles
     let categorizedCount = 0;
     if (uncategorized.length > 0) {
+      console.log("📋 Step 3: Categorizing articles...");
       // Convert to Article format for categorizer
       const articlesToCategorize = uncategorized.map(toArticle);
 
@@ -115,8 +109,10 @@ export async function POST(request: Request) {
       await updateCategories(categorizedStored);
 
       categorizedCount = categorizedStored.filter((a) => a.category).length;
+      console.log(`📋 Categorized ${categorizedCount} articles`);
+    } else {
+      console.log("📋 No articles to categorize");
     }
-    console.log(`📋 Categorized ${categorizedCount} articles`);
 
     // Step 4: Revalidate the home page cache so users see fresh content
     console.log("🔄 Step 4: Revalidating page cache...");
@@ -132,8 +128,8 @@ export async function POST(request: Request) {
       stats: {
         fetchedFromRSS: freshArticles.length,
         newArticles: newCount,
+        uncategorizedFound: uncategorized.length,
         categorized: categorizedCount,
-        uncategorizedRemaining: uncategorized.length - categorizedCount,
       },
     };
 
@@ -191,22 +187,17 @@ export async function GET(request: Request) {
     console.log(`📡 Fetched ${freshArticles.length} articles from RSS`);
 
     // Step 2: Convert to stored format and save (merge + dedupe)
+    // This also returns uncategorized articles to avoid race condition with Vercel Blob
     console.log("💾 Step 2: Merging with existing articles...");
     const storedArticles = freshArticles.map(toStoredArticle);
-    const newCount = await saveArticles(storedArticles);
+    const { newCount, uncategorized } = await saveArticles(storedArticles);
     console.log(`💾 Added ${newCount} new articles`);
+    console.log(`📋 Found ${uncategorized.length} uncategorized articles`);
 
-    // Small delay to ensure Vercel Blob consistency before reading back
-    if (newCount > 0) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
-
-    // Step 3: Get uncategorized articles and categorize them
-    console.log("📋 Step 3: Categorizing new articles...");
-    const uncategorized = await getUncategorizedArticles();
-
+    // Step 3: Categorize uncategorized articles
     let categorizedCount = 0;
     if (uncategorized.length > 0) {
+      console.log("📋 Step 3: Categorizing articles...");
       const articlesToCategorize = uncategorized.map(toArticle);
       const categorizedArticles = await categorizeArticles(
         articlesToCategorize
@@ -214,8 +205,10 @@ export async function GET(request: Request) {
       const categorizedStored = categorizedArticles.map(toStoredArticle);
       await updateCategories(categorizedStored);
       categorizedCount = categorizedStored.filter((a) => a.category).length;
+      console.log(`📋 Categorized ${categorizedCount} articles`);
+    } else {
+      console.log("📋 No articles to categorize");
     }
-    console.log(`📋 Categorized ${categorizedCount} articles`);
 
     // Step 4: Revalidate the home page cache so users see fresh content
     console.log("🔄 Step 4: Revalidating page cache...");
@@ -231,8 +224,8 @@ export async function GET(request: Request) {
       stats: {
         fetchedFromRSS: freshArticles.length,
         newArticles: newCount,
+        uncategorizedFound: uncategorized.length,
         categorized: categorizedCount,
-        uncategorizedRemaining: uncategorized.length - categorizedCount,
       },
     };
 

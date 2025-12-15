@@ -16,4 +16,5 @@ export {
   mergeArticles,
   type StoredArticle,
   type ArticlesFile,
+  type SaveArticlesResult,
 } from "./article-store";

@@ -290,6 +290,14 @@ export function mergeArticles(
 // =============================================================================
 
 /**
+ * Result of saving articles
+ */
+export interface SaveArticlesResult {
+  newCount: number;
+  uncategorized: StoredArticle[];
+}
+
+/**
  * Save articles with automatic archiving
  *
  * This function:
@@ -298,11 +306,11 @@ export function mergeArticles(
  * 3. Merges new articles (deduplicates by URL)
  * 4. Writes back to active file
  *
- * @returns Number of new articles added
+ * @returns Number of new articles added AND list of uncategorized articles
  */
 export async function saveArticles(
   newArticles: StoredArticle[]
-): Promise<number> {
+): Promise<SaveArticlesResult> {
   const currentMonth = getCurrentMonth();
   const existing = await readArticles();
 
@@ -334,7 +342,9 @@ export async function saveArticles(
       articles: merged,
     });
 
-    return newCount;
+    // Return uncategorized articles from the merged list (avoids re-reading from Blob)
+    const uncategorized = merged.filter((a) => !a.category);
+    return { newCount, uncategorized };
   }
 
   // Normal merge (same month)
@@ -350,7 +360,9 @@ export async function saveArticles(
     articles: merged,
   });
 
-  return newCount;
+  // Return uncategorized articles from the merged list (avoids re-reading from Blob)
+  const uncategorized = merged.filter((a) => !a.category);
+  return { newCount, uncategorized };
 }
 
 /**

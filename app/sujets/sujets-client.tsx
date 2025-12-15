@@ -85,7 +85,7 @@ function ArticleRow({ article }: { article: Article }) {
   return (
     <div className="flex items-start gap-3 py-3 border-b border-border/50 last:border-0 group">
       <div className="shrink-0 pt-0.5">
-        <MediaSourceLink name={article.source} size="small" showName={false} />
+        <MediaSourceLink name={article.source} size="small" />
       </div>
       <div className="flex-1 min-w-0">
         <Link

@@ -12,6 +12,8 @@ export interface Article {
   tags?: string[];
   /** Primary category assigned by LLM categorizer */
   category?: ArticleCategoryId;
+  /** Subject ID for grouping related articles (e.g., "guerre-ukraine-russie") */
+  subjectId?: string;
 }
 
 /**

@@ -28,6 +28,8 @@ export interface StoredArticle {
   date: string; // ISO string
   url: string;
   category?: ArticleCategoryId;
+  /** Subject ID for grouping related articles */
+  subjectId?: string;
 }
 
 /**

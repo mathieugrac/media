@@ -8,7 +8,7 @@ import Parser from "rss-parser";
 import { Article, MediaSource, FetchConfig } from "@/types/article";
 import * as fs from "fs";
 import * as path from "path";
-import { getEnabledSources } from "@/data/sources";
+import { getEnabledSources } from "@/lib/sources";
 
 const parser = new Parser();
 
@@ -286,6 +286,6 @@ export async function fetchArticlesFromRSS(
 // =============================================================================
 
 /**
- * @deprecated Use getEnabledSources() from @/data/sources instead
+ * @deprecated Use getEnabledSources() from @/lib/sources instead
  */
 export const mediaSources = getEnabledSources();

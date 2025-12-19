@@ -96,27 +96,3 @@ export const CATEGORY_IDS = Object.keys(
   ARTICLE_CATEGORIES
 ) as ArticleCategoryId[];
 
-/**
- * Get category label by ID
- */
-export function getCategoryLabel(categoryId: ArticleCategoryId): string {
-  return ARTICLE_CATEGORIES[categoryId]?.label ?? categoryId;
-}
-
-/**
- * Check if a string is a valid category ID
- */
-export function isValidCategory(value: string): value is ArticleCategoryId {
-  return value in ARTICLE_CATEGORIES;
-}
-
-/**
- * Generate prompt context for LLM categorization
- * Returns a formatted string describing all categories for the LLM
- */
-export function getCategoriesForPrompt(): string {
-  return Object.values(ARTICLE_CATEGORIES)
-    .map((cat) => `- ${cat.id}: ${cat.label} — ${cat.scope}`)
-    .join("\n");
-}
-

@@ -6,11 +6,21 @@
  * - Save articles with deduplication (by URL)
  */
 
+import { createHash } from "crypto";
 import { put, list } from "@vercel/blob";
 
 const BLOB_FILENAME = "articles.json";
 
+/**
+ * Generate a deterministic article ID from URL
+ * Uses SHA-256 hash, truncated to 12 hex characters
+ */
+export function generateArticleId(url: string): string {
+  return createHash("sha256").update(url).digest("hex").slice(0, 12);
+}
+
 export interface StoredArticle {
+  id: string;
   title: string;
   excerpt: string;
   source: string;
@@ -61,14 +71,20 @@ export async function saveArticles(
   // Load existing articles
   const existingArticles = await loadArticles();
 
+  // Ensure all existing articles have IDs (backfill migration)
+  const existingWithIds = existingArticles.map((a) => ({
+    ...a,
+    id: a.id || generateArticleId(a.url),
+  }));
+
   // Create a Set of existing URLs for fast lookup
-  const existingUrls = new Set(existingArticles.map((a) => a.url));
+  const existingUrls = new Set(existingWithIds.map((a) => a.url));
 
   // Filter out duplicates
   const uniqueNewArticles = newArticles.filter((a) => !existingUrls.has(a.url));
 
   // Merge: new articles first (they're newer), then existing
-  const mergedArticles = [...uniqueNewArticles, ...existingArticles];
+  const mergedArticles = [...uniqueNewArticles, ...existingWithIds];
 
   // Sort by date (newest first)
   mergedArticles.sort(

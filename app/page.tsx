@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
  */
 function toArticle(stored: StoredArticle): Article {
   return {
-    id: `stored-${stored.url}`,
+    id: stored.id,
     title: stored.title,
     excerpt: stored.excerpt,
     author: "",

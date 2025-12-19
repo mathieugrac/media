@@ -12,7 +12,7 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { fetchArticlesFromRSS } from "@/lib/rss-fetcher";
-import { saveArticles, type StoredArticle } from "@/lib/storage";
+import { saveArticles, generateArticleId, type StoredArticle } from "@/lib/storage";
 import type { Article } from "@/types/article";
 
 export const dynamic = "force-dynamic";
@@ -28,6 +28,7 @@ const CRON_SECRET = process.env.CRON_SECRET;
  */
 function toStoredArticle(article: Article): StoredArticle {
   return {
+    id: generateArticleId(article.url),
     title: article.title,
     excerpt: article.excerpt || "",
     source: article.source,

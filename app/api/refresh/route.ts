@@ -45,10 +45,7 @@ async function handleRefresh(): Promise<NextResponse> {
 
     // Step 1: Fetch new articles from RSS
     console.log("📡 Step 1: Fetching RSS feeds...");
-    const freshArticles = await fetchArticlesFromRSS({
-      useCache: false,
-      exportToFile: false,
-    });
+    const freshArticles = await fetchArticlesFromRSS();
     console.log(`📡 Fetched ${freshArticles.length} articles from RSS`);
 
     // Step 2: Convert to stored format and save (merge + dedupe)

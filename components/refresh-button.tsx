@@ -15,7 +15,11 @@ interface RefreshResult {
   message?: string;
 }
 
-export function RefreshButton() {
+interface RefreshButtonProps {
+  variant?: "outline" | "default";
+}
+
+export function RefreshButton({ variant = "outline" }: RefreshButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<RefreshResult | null>(null);
 
@@ -64,7 +68,7 @@ export function RefreshButton() {
       <Button
         onClick={handleRefresh}
         disabled={isLoading}
-        variant="outline"
+        variant={variant}
         size="sm"
       >
         <RefreshCw

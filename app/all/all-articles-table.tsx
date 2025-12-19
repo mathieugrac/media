@@ -3,30 +3,36 @@
 import { Article } from "@/types/article";
 import { useState, useMemo } from "react";
 import { format } from "date-fns";
-import { fr } from "date-fns/locale";
 import { Badge } from "@/components/ui/badge";
-import { ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  ChevronUp,
+  ChevronDown,
+  ChevronsUpDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+} from "lucide-react";
+import { RefreshButton } from "@/components/refresh-button";
 
-type SortField =
-  | "source"
-  | "title"
-  | "excerpt"
-  | "tags"
-  | "datetime"
-  | "author";
+type SortField = "id" | "datetime" | "source" | "title" | "excerpt" | "category";
 type SortDirection = "asc" | "desc" | null;
+
+const ARTICLES_PER_PAGE = 100;
 
 interface AllArticlesTableProps {
   articles: Article[];
+  totalInDatabase: number;
 }
 
-export function AllArticlesTable({ articles }: AllArticlesTableProps) {
+export function AllArticlesTable({ articles, totalInDatabase }: AllArticlesTableProps) {
   const [sortField, setSortField] = useState<SortField | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
-      // Cycle through: asc -> desc -> null
       if (sortDirection === "asc") {
         setSortDirection("desc");
       } else if (sortDirection === "desc") {
@@ -37,6 +43,7 @@ export function AllArticlesTable({ articles }: AllArticlesTableProps) {
       setSortField(field);
       setSortDirection("asc");
     }
+    setCurrentPage(1);
   };
 
   const sortedArticles = useMemo(() => {
@@ -45,10 +52,18 @@ export function AllArticlesTable({ articles }: AllArticlesTableProps) {
     }
 
     const sorted = [...articles].sort((a, b) => {
-      let aValue: any;
-      let bValue: any;
+      let aValue: string | number;
+      let bValue: string | number;
 
       switch (sortField) {
+        case "id":
+          aValue = a.id.toLowerCase();
+          bValue = b.id.toLowerCase();
+          break;
+        case "datetime":
+          aValue = a.publicationDate.getTime();
+          bValue = b.publicationDate.getTime();
+          break;
         case "source":
           aValue = a.source.toLowerCase();
           bValue = b.source.toLowerCase();
@@ -61,17 +76,9 @@ export function AllArticlesTable({ articles }: AllArticlesTableProps) {
           aValue = a.excerpt.toLowerCase();
           bValue = b.excerpt.toLowerCase();
           break;
-        case "tags":
-          aValue = (a.tags || []).join(", ").toLowerCase();
-          bValue = (b.tags || []).join(", ").toLowerCase();
-          break;
-        case "datetime":
-          aValue = a.publicationDate.getTime();
-          bValue = b.publicationDate.getTime();
-          break;
-        case "author":
-          aValue = (a.author || "").toLowerCase();
-          bValue = (b.author || "").toLowerCase();
+        case "category":
+          aValue = (a.category || "").toLowerCase();
+          bValue = (b.category || "").toLowerCase();
           break;
         default:
           return 0;
@@ -85,6 +92,11 @@ export function AllArticlesTable({ articles }: AllArticlesTableProps) {
     return sorted;
   }, [articles, sortField, sortDirection]);
 
+  const totalPages = Math.ceil(sortedArticles.length / ARTICLES_PER_PAGE);
+  const startIndex = (currentPage - 1) * ARTICLES_PER_PAGE;
+  const endIndex = startIndex + ARTICLES_PER_PAGE;
+  const paginatedArticles = sortedArticles.slice(startIndex, endIndex);
+
   const getSortIcon = (field: SortField) => {
     if (sortField !== field) {
       return <ChevronsUpDown className="ml-2 h-4 w-4 inline" />;
@@ -95,117 +107,166 @@ export function AllArticlesTable({ articles }: AllArticlesTableProps) {
     return <ChevronDown className="ml-2 h-4 w-4 inline" />;
   };
 
+  const goToPage = (page: number) => {
+    setCurrentPage(Math.max(1, Math.min(page, totalPages)));
+  };
+
   return (
-    <div className="w-full overflow-x-auto">
-      <table className="w-full text-xs">
-        <thead className="bg-muted/50 border-b border-border">
-          <tr>
-            <th className="pl-4 pr-2 py-2 text-left font-semibold whitespace-nowrap">
-              #
-            </th>
-            <th
-              className="px-2 py-2 text-left font-semibold cursor-pointer hover:bg-muted transition-colors whitespace-nowrap"
-              onClick={() => handleSort("datetime")}
-            >
-              Date & Time
-              {getSortIcon("datetime")}
-            </th>
-            <th
-              className="px-2 py-2 text-left font-semibold cursor-pointer hover:bg-muted transition-colors whitespace-nowrap"
-              onClick={() => handleSort("source")}
-            >
-              Source
-              {getSortIcon("source")}
-            </th>
-            <th
-              className="px-2 py-2 text-left font-semibold cursor-pointer hover:bg-muted transition-colors"
-              onClick={() => handleSort("title")}
-              style={{ minWidth: "200px" }}
-            >
-              Title
-              {getSortIcon("title")}
-            </th>
-            <th
-              className="px-2 py-2 text-left font-semibold cursor-pointer hover:bg-muted transition-colors"
-              onClick={() => handleSort("excerpt")}
-              style={{ minWidth: "400px", maxWidth: "600px" }}
-            >
-              Excerpt
-              {getSortIcon("excerpt")}
-            </th>
-            <th
-              className="px-2 py-2 text-left font-semibold cursor-pointer hover:bg-muted transition-colors"
-              onClick={() => handleSort("tags")}
-            >
-              Tags
-              {getSortIcon("tags")}
-            </th>
-            <th
-              className="pl-2 pr-4 py-2 text-left font-semibold cursor-pointer hover:bg-muted transition-colors"
-              onClick={() => handleSort("author")}
-            >
-              Author
-              {getSortIcon("author")}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {sortedArticles.map((article, index) => (
-            <tr
-              key={article.id}
-              className="border-t hover:bg-muted/30 transition-colors"
-            >
-              <td className="pl-4 pr-2 py-1.5 text-muted-foreground font-mono text-[10px]">
-                {index + 1}
-              </td>
-              <td className="px-2 py-1.5 whitespace-nowrap">
-                {format(article.publicationDate, "dd/MM/yy HH:mm")}
-              </td>
-              <td className="px-2 py-1.5 font-medium whitespace-nowrap">
-                {article.source}
-              </td>
-              <td className="px-2 py-1.5">
-                <a
-                  href={article.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary hover:underline line-clamp-2"
-                >
-                  {article.title}
-                </a>
-              </td>
-              <td
-                className="px-2 py-1.5 text-muted-foreground"
-                style={{ minWidth: "400px", maxWidth: "600px" }}
+    <div className="min-h-screen bg-background">
+      {/* Header with pagination and refresh */}
+      <header className="border-b border-border py-6">
+        <div className="container mx-auto px-4 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold mb-1">All Articles</h1>
+            <p className="text-muted-foreground">
+              {totalInDatabase.toLocaleString()} articles in database
+            </p>
+          </div>
+          <div className="flex items-center gap-4">
+            {/* Pagination Controls */}
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => goToPage(1)}
+                disabled={currentPage === 1}
+                className="h-8 w-8 p-0"
               >
-                <div className="line-clamp-2">{article.excerpt}</div>
-              </td>
-              <td className="px-2 py-1.5">
-                <div className="flex flex-wrap gap-0.5">
-                  {article.tags && article.tags.length > 0 ? (
-                    article.tags.slice(0, 3).map((tag, index) => (
-                      <Badge
-                        key={index}
-                        variant="secondary"
-                        className="text-[10px] px-1 py-0"
-                      >
-                        {tag}
-                      </Badge>
-                    ))
+                <ChevronsLeft className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => goToPage(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="h-8 w-8 p-0"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <span className="text-sm px-2">
+                Page {currentPage} of {totalPages}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => goToPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="h-8 w-8 p-0"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => goToPage(totalPages)}
+                disabled={currentPage === totalPages}
+                className="h-8 w-8 p-0"
+              >
+                <ChevronsRight className="h-4 w-4" />
+              </Button>
+            </div>
+            {/* Refresh Button */}
+            <RefreshButton variant="default" />
+          </div>
+        </div>
+      </header>
+
+      {/* Table */}
+      <div className="overflow-x-auto">
+        <table className="w-full text-xs">
+          <thead className="bg-muted/50 border-b border-border">
+            <tr>
+              <th
+                className="pl-4 pr-2 py-2 text-left font-semibold cursor-pointer hover:bg-muted transition-colors whitespace-nowrap"
+                onClick={() => handleSort("id")}
+              >
+                ID
+                {getSortIcon("id")}
+              </th>
+              <th
+                className="px-2 py-2 text-left font-semibold cursor-pointer hover:bg-muted transition-colors whitespace-nowrap"
+                onClick={() => handleSort("datetime")}
+              >
+                Date
+                {getSortIcon("datetime")}
+              </th>
+              <th
+                className="px-2 py-2 text-left font-semibold cursor-pointer hover:bg-muted transition-colors whitespace-nowrap"
+                onClick={() => handleSort("source")}
+              >
+                Source
+                {getSortIcon("source")}
+              </th>
+              <th
+                className="px-2 py-2 text-left font-semibold cursor-pointer hover:bg-muted transition-colors"
+                onClick={() => handleSort("title")}
+                style={{ minWidth: "250px" }}
+              >
+                Title
+                {getSortIcon("title")}
+              </th>
+              <th
+                className="px-2 py-2 text-left font-semibold cursor-pointer hover:bg-muted transition-colors"
+                onClick={() => handleSort("excerpt")}
+                style={{ minWidth: "400px" }}
+              >
+                Excerpt
+                {getSortIcon("excerpt")}
+              </th>
+              <th
+                className="pl-2 pr-4 py-2 text-left font-semibold cursor-pointer hover:bg-muted transition-colors whitespace-nowrap"
+                onClick={() => handleSort("category")}
+              >
+                Category
+                {getSortIcon("category")}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {paginatedArticles.map((article) => (
+              <tr
+                key={article.id}
+                className="border-t hover:bg-muted/30 transition-colors"
+              >
+                <td className="pl-4 pr-2 py-1.5 text-muted-foreground font-mono text-[10px] whitespace-nowrap">
+                  {article.id}
+                </td>
+                <td className="px-2 py-1.5 whitespace-nowrap">
+                  {format(article.publicationDate, "dd/MM/yy HH:mm")}
+                </td>
+                <td className="px-2 py-1.5 font-medium whitespace-nowrap">
+                  {article.source}
+                </td>
+                <td className="px-2 py-1.5" style={{ minWidth: "250px" }}>
+                  <a
+                    href={article.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    {article.title}
+                  </a>
+                </td>
+                <td
+                  className="px-2 py-1.5 text-muted-foreground"
+                  style={{ minWidth: "400px" }}
+                >
+                  {article.excerpt}
+                </td>
+                <td className="pl-2 pr-4 py-1.5">
+                  {article.category ? (
+                    <Badge variant="secondary" className="text-[10px] px-1.5 py-0.5">
+                      {article.category}
+                    </Badge>
                   ) : (
                     <span className="text-muted-foreground">-</span>
                   )}
-                </div>
-              </td>
-              <td className="pl-2 pr-4 py-1.5">
-                {article.author || (
-                  <span className="text-muted-foreground">-</span>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

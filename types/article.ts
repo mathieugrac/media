@@ -8,6 +8,7 @@ export interface Article {
   sourceUrl: string;
   url: string;
   tags?: string[];
+  category?: string;
 }
 
 /**

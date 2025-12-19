@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "tsx scripts/sync-from-prod.ts",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "sync": "tsx scripts/sync-from-prod.ts --force"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.4",

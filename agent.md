@@ -71,7 +71,7 @@ export interface MediaSource {
 
 ```
 data/
-├── articles.json      # Current month articles (dynamic)
+├── articles.json      # Local articles cache (gitignored, dev only)
 ├── sources.ts         # RSS sources data (static)
 └── categories.ts      # Category taxonomy data (static)
 
@@ -79,6 +79,7 @@ lib/
 ├── sources.ts         # Source helper functions
 ├── categories.ts      # Category helper functions
 ├── rss-fetcher.ts     # RSS fetching logic
+├── storage.ts         # Vercel Blob storage (load/save articles)
 └── utils.ts           # Utilities
 
 types/
@@ -97,12 +98,14 @@ types/
 - **rss-parser**
 - **Vercel** (deployment)
 
-### LLM Strategy
+### LLM Strategy (Temporarily Disabled)
 
 | Tier | Service   | Model           | Cost | Use Case                      |
 | ---- | --------- | --------------- | ---- | ----------------------------- |
 | 1    | Groq      | Llama 3.3 70B   | Free | Simple tasks (categorization) |
 | 2    | Anthropic | Claude Sonnet 4 | Paid | Complex analysis              |
+
+> ⏸️ **Note:** LLM categorization is temporarily disabled. Will be re-implemented later.
 
 ### MVP Architecture
 
@@ -150,9 +153,11 @@ POST /api/refresh
     │
     ├─► 1. Fetch RSS (17 sources)
     ├─► 2. Merge + Dedupe (by URL)
-    ├─► 3. Categorize (Groq LLM)
-    └─► 4. Save to Vercel Blob
+    ├─► 3. Save to Vercel Blob
+    └─► 4. Revalidate page cache
 ```
+
+**Note:** LLM categorization is temporarily disabled (to be re-implemented later).
 
 ### Cron Schedule (Europe/Paris)
 
@@ -181,9 +186,13 @@ REFRESH_SECRET=your-secret-key  # optional
 
 - RSS aggregation from 17 sources
 - Source filtering (sidebar)
-- LLM categorization
+- Vercel Blob storage (production)
 - ISR revalidation
 - Responsive UI with Shadcn/UI
+
+⏸️ **Temporarily Disabled:**
+
+- LLM categorization (to be re-implemented)
 
 **GitHub:** https://github.com/mathieugrac/media
 

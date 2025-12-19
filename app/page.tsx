@@ -4,29 +4,20 @@ import { Article } from "@/types/article";
 import { ArticleFiltersClient } from "./article-filters-client";
 import { PageHeader } from "@/components/page-header";
 import { MEDIA_SOURCES } from "@/data/sources";
+import { loadArticles, type StoredArticle } from "@/lib/storage";
 
 // Revalidate every 6 hours (21600 seconds) - matches cron schedule
 export const revalidate = 21600;
 
-interface StoredArticle {
-  title: string;
-  excerpt: string;
-  source: string;
-  date: string;
-  url: string;
-}
-
-interface ArticlesData {
-  exportedAt: string;
+interface LocalArticlesData {
   totalArticles: number;
-  sources: string[];
   articles: StoredArticle[];
 }
 
 /**
- * Read articles from the local JSON file
+ * Read articles from the local JSON file (fallback for development)
  */
-function readArticlesFromFile(): ArticlesData | null {
+function readArticlesFromFile(): LocalArticlesData | null {
   try {
     const filePath = path.join(process.cwd(), "data", "articles.json");
     if (!fs.existsSync(filePath)) {
@@ -56,17 +47,43 @@ function toArticle(stored: StoredArticle): Article {
   };
 }
 
+/**
+ * Load articles from Vercel Blob (production) or local file (development)
+ */
+async function getArticles(): Promise<StoredArticle[]> {
+  // In production (Vercel), use Blob storage
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    try {
+      const articles = await loadArticles();
+      if (articles.length > 0) {
+        console.log(`📦 Loaded ${articles.length} articles from Vercel Blob`);
+        return articles;
+      }
+    } catch (error) {
+      console.error("Error loading from Blob, falling back to local:", error);
+    }
+  }
+
+  // Fallback: read from local file (development)
+  const localData = readArticlesFromFile();
+  if (localData) {
+    console.log(`📁 Loaded ${localData.articles.length} articles from local file`);
+    return localData.articles;
+  }
+
+  return [];
+}
+
 export default async function Home() {
   let articles: Article[] = [];
   let error: string | null = null;
 
   try {
-    // Read from local articles.json
-    const data = readArticlesFromFile();
+    const storedArticles = await getArticles();
 
-    if (data) {
+    if (storedArticles.length > 0) {
       // Convert all articles and sort by date (newest first)
-      articles = data.articles
+      articles = storedArticles
         .map(toArticle)
         .sort(
           (a, b) =>

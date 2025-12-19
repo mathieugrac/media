@@ -6,7 +6,7 @@
  */
 
 import Parser from "rss-parser";
-import { getEnabledSources, getSourceStats } from "../lib/data/sources";
+import { getEnabledSources, getSourceStats } from "../lib/sources";
 
 const parser = new Parser();
 

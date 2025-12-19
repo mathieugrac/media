@@ -1,35 +1,11 @@
-import * as fs from "fs";
-import * as path from "path";
 import { Article } from "@/types/article";
 import { ArticleFiltersClient } from "./article-filters-client";
 import { PageHeader } from "@/components/page-header";
 import { MEDIA_SOURCES } from "@/data/sources";
 import { loadArticles, type StoredArticle } from "@/lib/storage";
 
-// Revalidate every 6 hours (21600 seconds) - matches cron schedule
-export const revalidate = 21600;
-
-interface LocalArticlesData {
-  totalArticles: number;
-  articles: StoredArticle[];
-}
-
-/**
- * Read articles from the local JSON file (fallback for development)
- */
-function readArticlesFromFile(): LocalArticlesData | null {
-  try {
-    const filePath = path.join(process.cwd(), "data", "articles.json");
-    if (!fs.existsSync(filePath)) {
-      return null;
-    }
-    const content = fs.readFileSync(filePath, "utf-8");
-    return JSON.parse(content);
-  } catch (error) {
-    console.error("Error reading articles.json:", error);
-    return null;
-  }
-}
+// Always fetch fresh from Blob storage
+export const dynamic = "force-dynamic";
 
 /**
  * Convert StoredArticle to Article format for components
@@ -47,39 +23,12 @@ function toArticle(stored: StoredArticle): Article {
   };
 }
 
-/**
- * Load articles from Vercel Blob (production) or local file (development)
- */
-async function getArticles(): Promise<StoredArticle[]> {
-  // In production (Vercel), use Blob storage
-  if (process.env.BLOB_READ_WRITE_TOKEN) {
-    try {
-      const articles = await loadArticles();
-      if (articles.length > 0) {
-        console.log(`📦 Loaded ${articles.length} articles from Vercel Blob`);
-        return articles;
-      }
-    } catch (error) {
-      console.error("Error loading from Blob, falling back to local:", error);
-    }
-  }
-
-  // Fallback: read from local file (development)
-  const localData = readArticlesFromFile();
-  if (localData) {
-    console.log(`📁 Loaded ${localData.articles.length} articles from local file`);
-    return localData.articles;
-  }
-
-  return [];
-}
-
 export default async function Home() {
   let articles: Article[] = [];
   let error: string | null = null;
 
   try {
-    const storedArticles = await getArticles();
+    const storedArticles = await loadArticles();
 
     if (storedArticles.length > 0) {
       // Convert all articles and sort by date (newest first)

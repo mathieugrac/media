@@ -71,7 +71,6 @@ export interface MediaSource {
 
 ```
 data/
-├── articles.json      # Local articles cache (gitignored, dev only)
 ├── sources.ts         # RSS sources data (static)
 └── categories.ts      # Category taxonomy data (static)
 
@@ -111,14 +110,14 @@ types/
 
 **Used:**
 
-- ✅ ISR with `revalidate: 21600` (6 hours)
-- ✅ JSON file storage
+- ✅ Vercel Blob as database (single source of truth)
+- ✅ Dynamic rendering (reads fresh from Blob on each request)
 - ✅ External cron (cron-job.org)
 
 **Avoided (for now):**
 
-- ❌ Database (Supabase)
-- ❌ Complex error handling
+- ❌ Traditional database (Supabase, Postgres)
+- ❌ Local file fallbacks
 
 ---
 

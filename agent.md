@@ -265,7 +265,7 @@ tagValue = catObj._ || catObj.value || catObj.name || ...
   - Si la source est désactivée → elle redevient active et ses articles réapparaissent.
 - Sur desktop :
   - La sidebar occupe environ **320px** de large.
-  - La colonne principale d’articles est limitée à **680px de largeur maximale**, pour conserver une bonne lisibilité.
+  - La colonne principale d'articles est limitée à **680px de largeur maximale**, pour conserver une bonne lisibilité.
 
 **Pourquoi :** Permet de filtrer rapidement les résultats par média tout en gardant une interface cohérente (usage systématique des Cards Shadcn/UI) et une bonne lisibilité du contenu principal.
 
@@ -632,3 +632,4 @@ Actuellement basique : si une source RSS échoue, elle est loggée mais les autr
 ## Conclusion
 
 Le projet a été développé avec une approche pragmatique : réutilisation de la stack existante, MVP simplifié sans base de données, et focus sur les fonctionnalités essentielles. Cette approche permet un déploiement rapide et une validation du concept avant d'ajouter de la complexité. Le code est maintenant versionné sur GitHub et prêt pour le déploiement sur Vercel.
+

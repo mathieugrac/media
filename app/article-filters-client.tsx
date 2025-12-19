@@ -15,21 +15,13 @@ interface SourceInfo {
   articleCount: number;
 }
 
-interface CategoryInfo {
-  id: string;
-  label: string;
-  articleCount: number;
-}
-
 interface ArticleFiltersClientProps {
   sources: SourceInfo[];
-  categories: CategoryInfo[];
   articles: Article[];
 }
 
 export function ArticleFiltersClient({
   sources,
-  categories,
   articles,
 }: ArticleFiltersClientProps) {
   // null means "all selected" (default mode)
@@ -37,8 +29,6 @@ export function ArticleFiltersClient({
   const [selectedSources, setSelectedSources] = useState<Set<string> | null>(
     null
   );
-  const [selectedCategories, setSelectedCategories] =
-    useState<Set<string> | null>(null);
   const [showDescription, setShowDescription] = useState(true);
   const [displayCount, setDisplayCount] = useState(ARTICLES_PER_PAGE);
 
@@ -67,37 +57,8 @@ export function ArticleFiltersClient({
     [selectedSources]
   );
 
-  const selectCategory = useCallback(
-    (categoryId: string) => {
-      if (selectedCategories === null) {
-        // First click: select only this category
-        setSelectedCategories(new Set([categoryId]));
-      } else if (selectedCategories.has(categoryId)) {
-        // Already selected: remove it
-        const newSet = new Set(selectedCategories);
-        newSet.delete(categoryId);
-        // If no categories left, go back to default mode (all selected)
-        if (newSet.size === 0) {
-          setSelectedCategories(null);
-        } else {
-          setSelectedCategories(newSet);
-        }
-      } else {
-        // Not selected: add it to the selection
-        const newSet = new Set(selectedCategories);
-        newSet.add(categoryId);
-        setSelectedCategories(newSet);
-      }
-    },
-    [selectedCategories]
-  );
-
   const resetSourceSelection = useCallback(() => {
     setSelectedSources(null);
-  }, []);
-
-  const resetCategorySelection = useCallback(() => {
-    setSelectedCategories(null);
   }, []);
 
   // First: paginate all articles (load N articles)
@@ -114,16 +75,8 @@ export function ArticleFiltersClient({
       result = result.filter((article) => selectedSources.has(article.source));
     }
 
-    // Filter by categories
-    if (selectedCategories !== null) {
-      result = result.filter((article) => {
-        const articleCategory = article.category ?? "non-classe";
-        return selectedCategories.has(articleCategory);
-      });
-    }
-
     return result;
-  }, [paginatedArticles, selectedSources, selectedCategories]);
+  }, [paginatedArticles, selectedSources]);
 
   // Check if a source is selected (for visual feedback)
   const isSourceSelected = useCallback(
@@ -136,55 +89,20 @@ export function ArticleFiltersClient({
     [selectedSources]
   );
 
-  // Check if a category is selected (for visual feedback)
-  const isCategorySelected = useCallback(
-    (categoryId: string) => {
-      if (selectedCategories === null) {
-        return true; // All selected in default mode
-      }
-      return selectedCategories.has(categoryId);
-    },
-    [selectedCategories]
-  );
-
   const hasMoreArticles = displayCount < articles.length;
 
   const loadMoreArticles = useCallback(() => {
     setDisplayCount((prev) => prev + ARTICLES_PER_PAGE);
   }, []);
 
-  // Compute source counts based on paginated articles (filtered by category if active)
+  // Compute source counts based on paginated articles
   const sourcesWithDynamicCounts = useMemo(() => {
-    let articlesToCount = paginatedArticles;
-    if (selectedCategories !== null) {
-      articlesToCount = paginatedArticles.filter((article) => {
-        const articleCategory = article.category ?? "non-classe";
-        return selectedCategories.has(articleCategory);
-      });
-    }
     return sources.map((source) => ({
       ...source,
-      articleCount: articlesToCount.filter((a) => a.source === source.name)
+      articleCount: paginatedArticles.filter((a) => a.source === source.name)
         .length,
     }));
-  }, [sources, paginatedArticles, selectedCategories]);
-
-  // Compute category counts based on paginated articles (filtered by source if active)
-  const categoriesWithDynamicCounts = useMemo(() => {
-    let articlesToCount = paginatedArticles;
-    if (selectedSources !== null) {
-      articlesToCount = paginatedArticles.filter((article) =>
-        selectedSources.has(article.source)
-      );
-    }
-    return categories.map((category) => ({
-      ...category,
-      articleCount:
-        category.id === "non-classe"
-          ? articlesToCount.filter((a) => !a.category).length
-          : articlesToCount.filter((a) => a.category === category.id).length,
-    }));
-  }, [categories, paginatedArticles, selectedSources]);
+  }, [sources, paginatedArticles]);
 
   // Sort sources by article count (most articles first)
   const sortedSources = useMemo(() => {
@@ -192,13 +110,6 @@ export function ArticleFiltersClient({
       (a, b) => b.articleCount - a.articleCount
     );
   }, [sourcesWithDynamicCounts]);
-
-  // Sort categories by article count (most articles first)
-  const sortedCategories = useMemo(() => {
-    return [...categoriesWithDynamicCounts].sort(
-      (a, b) => b.articleCount - a.articleCount
-    );
-  }, [categoriesWithDynamicCounts]);
 
   return (
     <div className="flex flex-col gap-8 md:flex-row">
@@ -250,61 +161,6 @@ export function ArticleFiltersClient({
                       }`}
                     >
                       ({source.articleCount})
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </CardContent>
-
-          {/* Divider */}
-          <div className="mx-6 border-t border-border/100" />
-
-          {/* Categories section */}
-          <CardHeader className="pt-2">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg">Catégories</CardTitle>
-              {selectedCategories !== null && (
-                <button
-                  type="button"
-                  onClick={resetCategorySelection}
-                  className="text-xs text-primary hover:underline"
-                >
-                  Tout activer
-                </button>
-              )}
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap gap-2">
-              {sortedCategories.map((category) => {
-                const isSelected = isCategorySelected(category.id);
-                const isDisabled = category.articleCount === 0;
-                return (
-                  <button
-                    key={category.id}
-                    type="button"
-                    onClick={() => !isDisabled && selectCategory(category.id)}
-                    disabled={isDisabled}
-                    className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
-                      isDisabled
-                        ? "border-border bg-muted/50 text-muted-foreground/50 cursor-not-allowed"
-                        : isSelected
-                        ? "border-transparent bg-primary text-primary-foreground hover:bg-primary/90"
-                        : "border-border bg-background text-muted-foreground hover:bg-muted"
-                    }`}
-                  >
-                    {category.label}
-                    <span
-                      className={`ml-1.5 ${
-                        isDisabled
-                          ? "text-muted-foreground/30"
-                          : isSelected
-                          ? "text-primary-foreground/70"
-                          : "text-muted-foreground/70"
-                      }`}
-                    >
-                      ({category.articleCount})
                     </span>
                   </button>
                 );

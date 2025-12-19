@@ -1,43 +1,23 @@
 /**
  * RSS Fetcher
  *
- * Modular RSS fetching with retry, caching, and parallel execution.
- * Philosophy: Separate concerns, make it testable, keep it maintainable.
+ * Modular RSS fetching with retry and parallel execution.
  */
 
 import Parser from "rss-parser";
 import { Article, MediaSource, FetchConfig } from "@/types/article";
 import * as fs from "fs";
 import * as path from "path";
-import { FRENCH_STOP_WORDS } from "@/lib/stop-words-french";
-import { TITLE_STOP_WORDS } from "@/lib/title-stop-words";
 import { getEnabledSources } from "@/lib/data/sources";
-import { rssCache } from "@/lib/rss-cache";
 
 const parser = new Parser();
 
-const ADDITIONAL_TITLE_STOP_WORDS = [
-  "incroyable",
-  "incroyables",
-  "mauvais",
-  "mauvaise",
-  "mauvaises",
-];
-
-const TITLE_STOP_WORDS_SET = new Set(
-  [
-    ...FRENCH_STOP_WORDS,
-    ...TITLE_STOP_WORDS,
-    ...ADDITIONAL_TITLE_STOP_WORDS,
-  ].map((word) => word.toLowerCase())
-);
+// =============================================================================
+// TAG GENERATION (simplified - no stop words)
+// =============================================================================
 
 const PROPER_NAME_REGEX =
   /([A-ZÀÂÄÇÉÈÊËÎÏÔÖÙÛÜŸ][\wÀ-ÖØ-öø-ÿ''-]+(?:\s+[A-ZÀÂÄÇÉÈÊËÎÏÔÖÙÛÜŸ][\wÀ-ÖØ-öø-ÿ''-]+)+)/g;
-
-// =============================================================================
-// TAG GENERATION (isolated for reusability)
-// =============================================================================
 
 function extractProperNameTags(title: string): string[] {
   const matches = title.match(PROPER_NAME_REGEX);
@@ -75,29 +55,6 @@ function generateTagsFromTitle(title?: string, maxTags: number = 3): string[] {
     if (tags.length >= maxTags) {
       return tags;
     }
-  }
-
-  // Normalize and split on non-letter characters
-  const words = title
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "") // remove accents
-    .split(/[^a-zàâäçéèêëîïôöùûüÿñ]+/i)
-    .filter((w) => w.length > 0);
-
-  const uniqueTags: string[] = tags.map((tag) => tag.toLowerCase());
-
-  for (const word of words) {
-    if (word.length <= 3) continue;
-    if (TITLE_STOP_WORDS_SET.has(word)) continue;
-    if (uniqueTags.includes(word)) continue;
-
-    // Simple human-friendly formatting: capitalize first letter
-    const formatted = word.charAt(0).toUpperCase() + word.slice(1);
-    uniqueTags.push(word);
-    tags.push(formatted);
-
-    if (tags.length >= maxTags) break;
   }
 
   return tags;
@@ -204,16 +161,6 @@ async function fetchArticlesFromSource(
   source: MediaSource,
   config?: FetchConfig
 ): Promise<Article[]> {
-  const cacheKey = `source:${source.id}`;
-
-  // Check cache first if enabled
-  if (config?.useCache !== false) {
-    const cached = rssCache.get(cacheKey);
-    if (cached) {
-      return cached;
-    }
-  }
-
   try {
     const feed = await fetchWithRetry(source.rssUrl, config?.retries);
 
@@ -224,11 +171,6 @@ async function fetchArticlesFromSource(
     const articles = feed.items
       .slice(0, source.maxArticles || 100)
       .map((item: any, index: number) => parseRSSItem(item, source, index));
-
-    // Cache the results
-    if (config?.useCache !== false) {
-      rssCache.set(cacheKey, articles, source.cacheMinutes || 60);
-    }
 
     return articles;
   } catch (error) {
@@ -308,26 +250,13 @@ export function exportArticlesToFile(articles: Article[]): void {
 
 /**
  * Fetch articles from all enabled RSS sources
- * Uses parallel execution and caching for optimal performance
+ * Uses parallel execution for optimal performance
  */
 export async function fetchArticlesFromRSS(
   config?: FetchConfig & { exportToFile?: boolean }
 ): Promise<Article[]> {
   const sources = getEnabledSources();
   const maxConcurrent = config?.maxConcurrent || 5;
-
-  // Check if we have a global cache
-  const globalCacheKey = "all-articles";
-  if (config?.useCache !== false) {
-    const cached = rssCache.get(globalCacheKey);
-    if (cached) {
-      // Still export to file even if cached (if requested)
-      if (config?.exportToFile) {
-        exportArticlesToFile(cached);
-      }
-      return cached;
-    }
-  }
 
   // Fetch in batches for controlled concurrency
   const allArticles: Article[] = [];
@@ -344,13 +273,7 @@ export async function fetchArticlesFromRSS(
     (a, b) => b.publicationDate.getTime() - a.publicationDate.getTime()
   );
 
-  // Cache globally
-  if (config?.useCache !== false) {
-    rssCache.set(globalCacheKey, sorted, 60); // Cache for 1 hour
-  }
-
-  // Export to file only if explicitly requested (legacy behavior)
-  // New architecture uses lib/storage/article-store.ts instead
+  // Export to file if requested
   if (config?.exportToFile !== false) {
     exportArticlesToFile(sorted);
   }

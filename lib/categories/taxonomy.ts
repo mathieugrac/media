@@ -119,3 +119,4 @@ export function getCategoriesForPrompt(): string {
     .map((cat) => `- ${cat.id}: ${cat.label} — ${cat.scope}`)
     .join("\n");
 }
+

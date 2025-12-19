@@ -1,12 +1,44 @@
-import { readArticles, type StoredArticle } from "@/lib/storage";
+import * as fs from "fs";
+import * as path from "path";
 import { Article } from "@/types/article";
 import { ArticleFiltersClient } from "./article-filters-client";
 import { PageHeader } from "@/components/page-header";
 import { MEDIA_SOURCES } from "@/lib/data/sources";
-import { ARTICLE_CATEGORIES } from "@/lib/categories/taxonomy";
 
 // Revalidate every 6 hours (21600 seconds) - matches cron schedule
 export const revalidate = 21600;
+
+interface StoredArticle {
+  title: string;
+  excerpt: string;
+  source: string;
+  date: string;
+  url: string;
+}
+
+interface ArticlesData {
+  exportedAt: string;
+  totalArticles: number;
+  sources: string[];
+  articles: StoredArticle[];
+}
+
+/**
+ * Read articles from the local JSON file
+ */
+function readArticlesFromFile(): ArticlesData | null {
+  try {
+    const filePath = path.join(process.cwd(), "data", "articles.json");
+    if (!fs.existsSync(filePath)) {
+      return null;
+    }
+    const content = fs.readFileSync(filePath, "utf-8");
+    return JSON.parse(content);
+  } catch (error) {
+    console.error("Error reading articles.json:", error);
+    return null;
+  }
+}
 
 /**
  * Convert StoredArticle to Article format for components
@@ -21,7 +53,6 @@ function toArticle(stored: StoredArticle): Article {
     source: stored.source,
     sourceUrl: "",
     url: stored.url,
-    category: stored.category,
   };
 }
 
@@ -30,12 +61,12 @@ export default async function Home() {
   let error: string | null = null;
 
   try {
-    // Read from stored articles (Vercel Blob in production, local in dev)
-    const stored = await readArticles();
+    // Read from local articles.json
+    const data = readArticlesFromFile();
 
-    if (stored) {
+    if (data) {
       // Convert all articles and sort by date (newest first)
-      articles = stored.articles
+      articles = data.articles
         .map(toArticle)
         .sort(
           (a, b) =>
@@ -60,25 +91,6 @@ export default async function Home() {
     articleCount: articles.filter((a) => a.source === source.name).length,
   }));
 
-  // Build categories list with article counts (all 12 categories + "non classé")
-  const availableCategories: {
-    id: string;
-    label: string;
-    articleCount: number;
-  }[] = Object.values(ARTICLE_CATEGORIES).map((cat) => ({
-    id: cat.id,
-    label: cat.label,
-    articleCount: articles.filter((a) => a.category === cat.id).length,
-  }));
-
-  // Add "Non classé" category for articles without category
-  const uncategorizedCount = articles.filter((a) => !a.category).length;
-  availableCategories.push({
-    id: "non-classe",
-    label: "Non classé",
-    articleCount: uncategorizedCount,
-  });
-
   return (
     <div className="min-h-screen bg-background">
       <PageHeader
@@ -102,7 +114,6 @@ export default async function Home() {
         {articles.length > 0 && (
           <ArticleFiltersClient
             sources={availableSources}
-            categories={availableCategories}
             articles={articles}
           />
         )}

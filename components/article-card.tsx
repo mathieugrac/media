@@ -3,9 +3,6 @@
 import { Article } from "@/types/article";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MediaSourceLink } from "@/components/media-source";
-import { DistinctivenessBadge } from "@/components/distinctiveness-badge";
-import type { DistinctivenessBadge as BadgeType } from "@/lib/distinctiveness";
-import { getCategoryLabel } from "@/lib/categories/taxonomy";
 import Link from "next/link";
 import {
   format,
@@ -54,13 +51,6 @@ function formatRelativeDate(date: Date): string {
 export interface ArticleCardProps {
   article: Article;
   showDescription?: boolean;
-  // Distinctiveness data (optional)
-  distinctiveness?: {
-    badge: BadgeType;
-    badgeLabel: string | null;
-    score: number;
-    uniqueElements: string[];
-  };
 }
 
 /**
@@ -69,7 +59,6 @@ export interface ArticleCardProps {
 export function ArticleCard({
   article,
   showDescription = true,
-  distinctiveness,
 }: ArticleCardProps) {
   const publicationDate =
     article.publicationDate instanceof Date
@@ -81,15 +70,6 @@ export function ArticleCard({
       <CardHeader>
         <div className="flex items-center justify-between gap-2">
           <MediaSourceLink name={article.source} size="small" />
-          {distinctiveness?.badge && (
-            <DistinctivenessBadge
-              badge={distinctiveness.badge}
-              label={distinctiveness.badgeLabel}
-              score={distinctiveness.score}
-              uniqueElements={distinctiveness.uniqueElements}
-              size="sm"
-            />
-          )}
         </div>
         <CardTitle className="leading-snug">
           <Link
@@ -107,12 +87,6 @@ export function ArticleCard({
           <p className="text-sm line-clamp-3 mb-3">{article.excerpt}</p>
         )}
         <span className="text-xs text-muted-foreground">
-          {article.category && (
-            <>
-              {getCategoryLabel(article.category)}
-              {" • "}
-            </>
-          )}
           {formatRelativeDate(publicationDate)}
         </span>
       </CardContent>

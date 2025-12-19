@@ -1,5 +1,3 @@
-import type { ArticleCategoryId } from "@/lib/categories/taxonomy";
-
 export interface Article {
   id: string;
   title: string;
@@ -10,10 +8,6 @@ export interface Article {
   sourceUrl: string;
   url: string;
   tags?: string[];
-  /** Primary category assigned by LLM categorizer */
-  category?: ArticleCategoryId;
-  /** Subject ID for grouping related articles (e.g., "guerre-ukraine-russie") */
-  subjectId?: string;
 }
 
 /**

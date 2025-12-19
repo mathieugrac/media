@@ -86,6 +86,7 @@ export async function saveArticles(
   await put(BLOB_FILENAME, JSON.stringify(data, null, 2), {
     access: "public",
     addRandomSuffix: false,
+    allowOverwrite: true,
   });
 
   console.log(

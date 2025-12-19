@@ -1,6 +1,7 @@
 import { Article } from "@/types/article";
 import { AllArticlesTable } from "./all-articles-table";
 import { PageHeader } from "@/components/page-header";
+import { RefreshButton } from "@/components/refresh-button";
 import { loadArticles, type StoredArticle } from "@/lib/storage";
 
 // Always fetch fresh from Blob storage
@@ -24,10 +25,12 @@ function toArticle(stored: StoredArticle): Article {
 
 export default async function AllArticlesPage() {
   let articles: Article[] = [];
+  let totalInDatabase = 0;
   let error: string | null = null;
 
   try {
     const storedArticles = await loadArticles();
+    totalInDatabase = storedArticles.length;
 
     // Convert to Article format
     const allArticles = storedArticles.map(toArticle);
@@ -49,8 +52,9 @@ export default async function AllArticlesPage() {
   return (
     <div className="min-h-screen bg-background">
       <PageHeader
-        title="Tous les articles"
-        description={`${articles.length} articles`}
+        title="All Articles"
+        description={`${totalInDatabase.toLocaleString()} articles in database`}
+        action={<RefreshButton />}
       />
 
       {error && (

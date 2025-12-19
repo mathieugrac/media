@@ -54,10 +54,11 @@ async function handleRefresh(): Promise<NextResponse> {
     const { newCount, total } = await saveArticles(storedArticles);
     console.log(`💾 Added ${newCount} new articles (total: ${total})`);
 
-    // Step 3: Revalidate the home page cache so users see fresh content
-    console.log("🔄 Step 3: Revalidating page cache...");
+    // Step 3: Revalidate page caches so users see fresh content
+    console.log("🔄 Step 3: Revalidating page caches...");
     revalidatePath("/");
-    console.log("🔄 Page cache revalidated");
+    revalidatePath("/all");
+    console.log("🔄 Page caches revalidated");
 
     const duration = Date.now() - startTime;
 

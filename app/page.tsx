@@ -3,7 +3,7 @@ import * as path from "path";
 import { Article } from "@/types/article";
 import { ArticleFiltersClient } from "./article-filters-client";
 import { PageHeader } from "@/components/page-header";
-import { MEDIA_SOURCES } from "@/lib/data/sources";
+import { MEDIA_SOURCES } from "@/data/sources";
 
 // Revalidate every 6 hours (21600 seconds) - matches cron schedule
 export const revalidate = 21600;

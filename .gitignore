@@ -40,5 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# generated data exports
-/data/
+# generated data exports (keep .ts config files)
+/data/articles.json
+/data/archive/

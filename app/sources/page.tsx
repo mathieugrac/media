@@ -1,4 +1,4 @@
-import { MEDIA_SOURCES } from "@/lib/data/sources";
+import { MEDIA_SOURCES } from "@/data/sources";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";

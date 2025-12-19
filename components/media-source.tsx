@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getSourceByName } from "@/lib/data/sources";
+import { getSourceByName } from "@/data/sources";
 
 export interface MediaSourceLinkProps {
   /** Display name of the source (used to lookup logo and URL from sources config) */

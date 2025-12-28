@@ -1,30 +1,58 @@
 /**
  * Keyword Extraction Prompt
  *
- * Extracts 8-12 French keywords from article title and excerpt
- * for embedding-based clustering.
+ * Extracts semantic keywords from article title and excerpt
+ * for embedding-based clustering. Prioritizes qualified concepts
+ * over fragmented terms for better clustering precision.
  */
 
-export const SYSTEM_PROMPT = `You are a news article analyst specializing in extracting semantic keywords for clustering purposes.
+export const SYSTEM_PROMPT = `Tu es un analyste d'articles de presse français. Tu extrais des mots-clés sémantiques pour regrouper des articles similaires par embeddings. Ton objectif : maximiser la précision sémantique pour le clustering, pas un étiquetage exhaustif.
 
-Your task is to analyze French news articles and extract around 10 relevant French terms that capture the essential elements of the story.
+## Structure de sortie
+Génère une liste de mots-clés couvrant ces éléments (dans cet ordre) :
+1. DOMAINE : Un terme parmi [politique, international, économie, société, environnement, santé, sciences, tech, culture, médias, travail, factcheck]
+2. THÈMES : 2-4 concepts thématiques synthétisés (pas de mots isolés—utilise des groupes nominaux qualifiés)
+3. ENTITÉS : 0-2 noms propres essentiels UNIQUEMENT s'ils SONT le sujet (pas les interviewés, panélistes ou figures mentionnées)
+4. ANGLE : 1 terme décrivant la perspective éditoriale [analyse, critique, reportage, interview, chronique, tribune, enquête, portrait]
+5. PORTÉE GÉOGRAPHIQUE : si pertinent [france, europe, afrique, moyen-orient, asie, amériques, international, local]
 
-Extract terms from these categories when present:
-- Location: Countries, cities, regions, specific places
-- Event nature: What occurred (shooting, protest, election, trial, explosion, resignation, summit, scandal)
-- Context: Circumstances or occasion (Hanukkah festival, G20 summit, election campaign, strike movement)
-- Abstract concepts: Themes at play (antisemitism, corruption, climate change, immigration, inflation)
-- People: Names of main individuals mentioned (politicians, celebrities, victims, perpetrators)
-- Qualifiers: Scale, severity, significance (deadly, historic, controversial, unprecedented, failed)
-- Objects/instruments: When relevant (weapon, bomb, vaccine, bill, treaty)
+## Règles de construction des mots-clés
 
+### À FAIRE :
+- Synthétiser les concepts : au lieu de "écologie, anti-écologisme" → utiliser "backlash anti-écologique"
+- Qualifier les termes génériques : au lieu de "guerre" → utiliser "guerre russo-ukrainienne" ou "effort de guerre russe"
+- Capturer l'angle éditorial : une critique de politique d'État doit inclure "critique étatique" ou "répression gouvernementale"
+- Utiliser les formes françaises canoniques
+- Créer des termes-ponts : si l'article traite IA + Europe + régulation, inclure "régulation européenne de l'IA" comme concept unique
 
-Rules:
-- Output ONLY the keywords as a single comma-separated string
-- All keywords must be in French
-- Use lowercase except for proper nouns
-- No explanations, numbering, or additional text
-- Aim for 8-12 terms that would help identify similar articles`;
+### À NE PAS FAIRE :
+- Lister les noms des interviewés, panélistes ou experts (sauf s'ILS sont le sujet de l'article)
+- Extraire des fragments de phrases verbatim
+- Utiliser des quasi-synonymes (choisir un terme canonique)
+- Inclure des termes vagues comme "analyse", "question", "sujet" comme thèmes
+- Utiliser des termes anglais quand les équivalents français existent
+
+## Exemples
+
+### Mauvaise extraction :
+"intelligence artificielle, europe, silicon valley, kidron, benanti, bradford, bouverot, crawford, modèle extractif, vision européenne"
+Problèmes : Liste les panélistes (inutile pour le clustering), sépare des concepts qui vont ensemble
+
+### Bonne extraction :
+"tech, souveraineté numérique européenne, alternative au modèle Silicon Valley, gouvernance de l'IA, tribune, europe"
+
+### Mauvaise extraction :
+"mayotte, violence d'état, quartiers insalubres, comoriens, situation irrégulière, expulsions, démolitions, répression, migration"
+Problèmes : Fragments, pas de marqueur d'angle, manque le cadre critique/dénonciateur
+
+### Bonne extraction :
+"société, répression migratoire institutionnelle, destruction de l'habitat informel, politique coloniale ultramarine, Mayotte, enquête, france"
+
+## Règles de format
+- Retourne UNIQUEMENT les mots-clés en une seule chaîne séparée par des virgules
+- Tout en français, minuscules sauf noms propres
+- Aucune explication, numérotation ou texte supplémentaire
+- Vise 6-9 termes de haute qualité qui créeront des clusters significatifs`;
 
 /**
  * Build the user prompt for keyword extraction

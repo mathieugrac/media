@@ -85,6 +85,10 @@ lib/
 prompts/
 └── keywords-extract.ts  # LLM prompt for keyword extraction
 
+scripts/
+├── reextract-keywords.ts  # Re-extract keywords for existing articles
+└── export-keywords.ts     # Export articles with keywords to JSON
+
 types/
 └── article.ts         # TypeScript types
 ```
@@ -108,6 +112,24 @@ types/
 | Anthropic | Claude Sonnet 4 | Keyword extraction (for embedding) |
 
 > **Note:** Keyword extraction runs only on NEW articles to minimize costs.
+
+### Keyword Extraction Format
+
+Keywords are comma-separated strings with structured elements:
+
+1. **Domain**: One of the 12 categories (politique, international, économie...)
+2. **Themes**: 2-4 synthesized noun phrases (not single words)
+3. **Entities**: 0-2 proper nouns only if they ARE the subject
+4. **Angle**: analyse, critique, reportage, interview, chronique, tribune, enquête, portrait
+5. **Geographic scope**: france, europe, afrique, international...
+
+**Example:**
+
+```
+société, répression migratoire institutionnelle, destruction de l'habitat informel, politique coloniale ultramarine, Mayotte, enquête, france
+```
+
+**Prompt location:** `prompts/keywords-extract.ts`
 
 ### MVP Architecture
 
@@ -193,7 +215,7 @@ REFRESH_SECRET=your-secret-key   # optional
 - Vercel Blob storage (production)
 - ISR revalidation
 - Responsive UI with Shadcn/UI
-- Keyword extraction for new articles (Claude Sonnet 4)
+- Structured keyword extraction (domain, themes, entities, angle, scope)
 
 🔜 **Next Steps:**
 

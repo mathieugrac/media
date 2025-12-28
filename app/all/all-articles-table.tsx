@@ -15,6 +15,7 @@ import {
   ChevronsRight,
 } from "lucide-react";
 import { RefreshButton } from "@/components/refresh-button";
+import { ExtractKeywordsButton } from "@/components/extract-keywords-button";
 
 type SortField = "id" | "datetime" | "source" | "title" | "excerpt" | "keywords" | "category";
 type SortDirection = "asc" | "desc" | null;
@@ -169,8 +170,9 @@ export function AllArticlesTable({ articles, totalInDatabase }: AllArticlesTable
                 <ChevronsRight className="h-4 w-4" />
               </Button>
             </div>
-            {/* Refresh Button */}
+            {/* Action Buttons */}
             <RefreshButton variant="default" />
+            <ExtractKeywordsButton />
           </div>
         </div>
       </header>

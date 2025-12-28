@@ -7,16 +7,17 @@
 
 export const SYSTEM_PROMPT = `You are a news article analyst specializing in extracting semantic keywords for clustering purposes.
 
-Your task is to analyze French news articles and extract 8-12 relevant French terms that capture the essential elements of the story.
+Your task is to analyze French news articles and extract around 10 relevant French terms that capture the essential elements of the story.
 
 Extract terms from these categories when present:
-- People: Names of individuals mentioned (politicians, celebrities, victims, perpetrators)
 - Location: Countries, cities, regions, specific places
 - Event nature: What occurred (shooting, protest, election, trial, explosion, resignation, summit, scandal)
 - Context: Circumstances or occasion (Hanukkah festival, G20 summit, election campaign, strike movement)
+- Abstract concepts: Themes at play (antisemitism, corruption, climate change, immigration, inflation)
+- People: Names of main individuals mentioned (politicians, celebrities, victims, perpetrators)
 - Qualifiers: Scale, severity, significance (deadly, historic, controversial, unprecedented, failed)
 - Objects/instruments: When relevant (weapon, bomb, vaccine, bill, treaty)
-- Abstract concepts: Themes at play (antisemitism, corruption, climate change, immigration, inflation)
+
 
 Rules:
 - Output ONLY the keywords as a single comma-separated string
@@ -33,4 +34,3 @@ export function buildUserPrompt(title: string, excerpt: string): string {
 
 Extrait: ${excerpt}`;
 }
-

@@ -2,41 +2,36 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { RefreshCw } from "lucide-react";
 
-interface RefreshResult {
+interface ExtractResult {
   success: boolean;
   stats?: {
-    fetchedFromRSS: number;
-    newArticles: number;
-    totalArticles: number;
+    processed: number;
+    extracted: number;
+    remaining: number;
   };
-  error?: string;
   message?: string;
+  error?: string;
 }
 
-interface RefreshButtonProps {
-  variant?: "outline" | "default";
-}
-
-export function RefreshButton({ variant = "outline" }: RefreshButtonProps) {
+export function ExtractKeywordsButton() {
   const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState<RefreshResult | null>(null);
+  const [result, setResult] = useState<ExtractResult | null>(null);
 
-  const handleRefresh = async () => {
+  const handleExtract = async () => {
     setIsLoading(true);
     setResult(null);
 
     try {
-      const response = await fetch("/api/refresh", {
+      const response = await fetch("/api/extract-keywords", {
         method: "POST",
       });
 
-      const data: RefreshResult = await response.json();
+      const data: ExtractResult = await response.json();
       setResult(data);
 
       if (data.success) {
-        // Hard reload after showing the result to ensure fresh data
+        // Reload after showing result
         setTimeout(() => {
           window.location.replace(window.location.pathname);
         }, 1500);
@@ -61,21 +56,21 @@ export function RefreshButton({ variant = "outline" }: RefreshButtonProps) {
           }`}
         >
           {result.success
-            ? `+${result.stats?.newArticles} new articles`
+            ? result.stats?.extracted === 0
+              ? "All done!"
+              : `+${result.stats?.extracted} keywords (${result.stats?.remaining} left)`
             : result.message || "Error"}
         </span>
       )}
       <Button
-        onClick={handleRefresh}
+        onClick={handleExtract}
         disabled={isLoading}
-        variant={variant}
+        variant="outline"
         size="sm"
       >
-        <RefreshCw
-          className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`}
-        />
-        {isLoading ? "Refreshing..." : "Refresh RSS"}
+        {isLoading ? "Extracting..." : "Extract Keywords"}
       </Button>
     </div>
   );
 }
+

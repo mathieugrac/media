@@ -17,7 +17,7 @@ import type {
  * Default clustering configuration
  */
 export const DEFAULT_CLUSTERING_CONFIG: ClusteringConfig = {
-  minClusterSize: 3,
+  minClusterSize: 2,
   minSamples: 2,
 };
 
@@ -120,8 +120,8 @@ export function clusterArticles(
 
   // DBSCAN with cosine distance
   // epsilon: max distance to consider points as neighbors
-  // For cosine distance: 0.35 means similarity > 0.65
-  const epsilon = 0.35; // Corresponds to ~0.65 cosine similarity threshold
+  // For cosine distance: 0.36 means similarity > 0.64
+  const epsilon = 0.36; // Corresponds to ~0.64 cosine similarity threshold
   const dbscan = new DBSCAN();
 
   // Custom distance function using cosine distance

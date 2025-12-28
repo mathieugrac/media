@@ -23,8 +23,10 @@ export async function loadClusters(): Promise<Cluster[]> {
       return [];
     }
 
-    const response = await fetch(clustersBlob.url, {
-      cache: "no-store", // Bypass CDN cache
+    // Add timestamp to bypass CDN cache
+    const urlWithCacheBust = `${clustersBlob.url}?t=${Date.now()}`;
+    const response = await fetch(urlWithCacheBust, {
+      cache: "no-store",
     });
     const data = (await response.json()) as ClustersFile;
     console.log(`📦 Loaded ${data.clusters.length} existing clusters from Blob`);
@@ -142,8 +144,10 @@ export async function getClusteringMetadata(): Promise<{
       return null;
     }
 
-    const response = await fetch(clustersBlob.url, {
-      cache: "no-store", // Bypass CDN cache
+    // Add timestamp to bypass CDN cache
+    const urlWithCacheBust = `${clustersBlob.url}?t=${Date.now()}`;
+    const response = await fetch(urlWithCacheBust, {
+      cache: "no-store",
     });
     const data = (await response.json()) as ClustersFile;
 

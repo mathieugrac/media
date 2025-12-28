@@ -52,8 +52,10 @@ export async function loadArticles(): Promise<StoredArticle[]> {
       return [];
     }
 
-    const response = await fetch(articleBlob.url, {
-      cache: "no-store", // Bypass CDN cache
+    // Add timestamp to bypass CDN cache
+    const urlWithCacheBust = `${articleBlob.url}?t=${Date.now()}`;
+    const response = await fetch(urlWithCacheBust, {
+      cache: "no-store",
     });
     const data = (await response.json()) as ArticlesFile;
     console.log(

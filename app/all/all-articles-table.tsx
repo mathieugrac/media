@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { RefreshButton } from "@/components/refresh-button";
 
-type SortField = "id" | "datetime" | "source" | "title" | "excerpt" | "category";
+type SortField = "id" | "datetime" | "source" | "title" | "excerpt" | "keywords" | "category";
 type SortDirection = "asc" | "desc" | null;
 
 const ARTICLES_PER_PAGE = 100;
@@ -75,6 +75,10 @@ export function AllArticlesTable({ articles, totalInDatabase }: AllArticlesTable
         case "excerpt":
           aValue = a.excerpt.toLowerCase();
           bValue = b.excerpt.toLowerCase();
+          break;
+        case "keywords":
+          aValue = (a.keywords || "").toLowerCase();
+          bValue = (b.keywords || "").toLowerCase();
           break;
         case "category":
           aValue = (a.category || "").toLowerCase();
@@ -208,10 +212,18 @@ export function AllArticlesTable({ articles, totalInDatabase }: AllArticlesTable
               <th
                 className="px-2 py-2 text-left font-semibold cursor-pointer hover:bg-muted transition-colors"
                 onClick={() => handleSort("excerpt")}
-                style={{ minWidth: "400px" }}
+                style={{ minWidth: "300px" }}
               >
                 Excerpt
                 {getSortIcon("excerpt")}
+              </th>
+              <th
+                className="px-2 py-2 text-left font-semibold cursor-pointer hover:bg-muted transition-colors"
+                onClick={() => handleSort("keywords")}
+                style={{ minWidth: "250px" }}
+              >
+                Keywords
+                {getSortIcon("keywords")}
               </th>
               <th
                 className="pl-2 pr-4 py-2 text-left font-semibold cursor-pointer hover:bg-muted transition-colors whitespace-nowrap"
@@ -249,9 +261,15 @@ export function AllArticlesTable({ articles, totalInDatabase }: AllArticlesTable
                 </td>
                 <td
                   className="px-2 py-1.5 text-muted-foreground"
-                  style={{ minWidth: "400px" }}
+                  style={{ minWidth: "300px" }}
                 >
                   {article.excerpt}
+                </td>
+                <td
+                  className="px-2 py-1.5 text-muted-foreground"
+                  style={{ minWidth: "250px" }}
+                >
+                  {article.keywords || <span className="text-muted-foreground/50">-</span>}
                 </td>
                 <td className="pl-2 pr-4 py-1.5">
                   {article.category ? (

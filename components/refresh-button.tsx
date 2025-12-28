@@ -38,8 +38,8 @@ export function RefreshButton({ variant = "outline" }: RefreshButtonProps) {
       if (data.success) {
         // Hard reload after showing the result to ensure fresh data
         setTimeout(() => {
-          window.location.reload();
-        }, 1000);
+          window.location.href = window.location.href;
+        }, 1500);
       }
     } catch (error) {
       setResult({

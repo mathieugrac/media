@@ -19,6 +19,7 @@ function toArticle(stored: StoredArticle): Article {
     sourceUrl: "",
     url: stored.url,
     category: stored.category,
+    keywords: stored.keywords,
   };
 }
 

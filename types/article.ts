@@ -9,6 +9,8 @@ export interface Article {
   url: string;
   tags?: string[];
   category?: string;
+  /** Comma-separated keywords for embedding-based clustering */
+  keywords?: string;
 }
 
 /**

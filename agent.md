@@ -78,8 +78,12 @@ lib/
 ├── sources.ts         # Source helper functions
 ├── categories.ts      # Category helper functions
 ├── rss-fetcher.ts     # RSS fetching logic
+├── keywords.ts        # Keyword extraction (Anthropic Claude)
 ├── storage.ts         # Vercel Blob storage (load/save articles)
 └── utils.ts           # Utilities
+
+prompts/
+└── keywords-extract.ts  # LLM prompt for keyword extraction
 
 types/
 └── article.ts         # TypeScript types
@@ -97,14 +101,13 @@ types/
 - **rss-parser**
 - **Vercel** (deployment)
 
-### LLM Strategy (Temporarily Disabled)
+### LLM Strategy
 
-| Tier | Service   | Model           | Cost | Use Case                      |
-| ---- | --------- | --------------- | ---- | ----------------------------- |
-| 1    | Groq      | Llama 3.3 70B   | Free | Simple tasks (categorization) |
-| 2    | Anthropic | Claude Sonnet 4 | Paid | Complex analysis              |
+| Service   | Model           | Use Case                           |
+| --------- | --------------- | ---------------------------------- |
+| Anthropic | Claude Sonnet 4 | Keyword extraction (for embedding) |
 
-> ⏸️ **Note:** LLM categorization is temporarily disabled. Will be re-implemented later.
+> **Note:** Keyword extraction runs only on NEW articles to minimize costs.
 
 ### MVP Architecture
 
@@ -150,13 +153,15 @@ Cron (4x/day) via cron-job.org
     ▼
 POST /api/refresh
     │
-    ├─► 1. Fetch RSS (17 sources)
-    ├─► 2. Merge + Dedupe (by URL)
-    ├─► 3. Save to Vercel Blob
-    └─► 4. Revalidate page cache
+    ├─► 1. Load existing articles (identify new ones)
+    ├─► 2. Fetch RSS (17 sources)
+    ├─► 3. Dedupe (by URL)
+    ├─► 4. Extract keywords for NEW articles (Claude Sonnet 4)
+    ├─► 5. Save to Vercel Blob
+    └─► 6. Revalidate page cache
 ```
 
-**Note:** LLM categorization is temporarily disabled (to be re-implemented later).
+**Future flow:** fetch → dedupe → keywords → embed → cluster → name
 
 ### Cron Schedule (Europe/Paris)
 
@@ -172,9 +177,9 @@ POST /api/refresh
 ## Environment Variables
 
 ```bash
-GROQ_API_KEY=gsk_xxx
+ANTHROPIC_API_KEY=sk-ant-xxx     # Required for keyword extraction
 BLOB_READ_WRITE_TOKEN=vercel_blob_xxx
-REFRESH_SECRET=your-secret-key  # optional
+REFRESH_SECRET=your-secret-key   # optional
 ```
 
 ---
@@ -188,30 +193,14 @@ REFRESH_SECRET=your-secret-key  # optional
 - Vercel Blob storage (production)
 - ISR revalidation
 - Responsive UI with Shadcn/UI
+- Keyword extraction for new articles (Claude Sonnet 4)
 
-⏸️ **Temporarily Disabled:**
+🔜 **Next Steps:**
 
-- LLM categorization (to be re-implemented)
+- Embedding generation from keywords
+- Article clustering
+- Cluster naming (LLM)
 
 **GitHub:** https://github.com/mathieugrac/media
 
 ---
-
-## Roadmap
-
-### Short Term
-
-- [ ] Category filtering in UI
-- [ ] Category badges on article cards
-
-### Medium Term
-
-- [ ] Search functionality
-- [ ] Stats dashboard
-- [ ] More sources
-
-### Long Term
-
-- [ ] User favorites
-- [ ] Notifications
-- [ ] Public API

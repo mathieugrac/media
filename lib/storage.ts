@@ -27,6 +27,8 @@ export interface StoredArticle {
   date: string;
   url: string;
   category?: string;
+  /** Comma-separated keywords for embedding-based clustering */
+  keywords?: string;
 }
 
 interface ArticlesFile {

@@ -12,7 +12,13 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { fetchArticlesFromRSS } from "@/lib/rss-fetcher";
-import { saveArticles, generateArticleId, type StoredArticle } from "@/lib/storage";
+import {
+  loadArticles,
+  saveArticles,
+  generateArticleId,
+  type StoredArticle,
+} from "@/lib/storage";
+import { extractKeywordsForArticles } from "@/lib/keywords";
 import type { Article } from "@/types/article";
 
 export const dynamic = "force-dynamic";
@@ -44,19 +50,50 @@ async function handleRefresh(): Promise<NextResponse> {
   try {
     console.log("🔄 Refresh API: Starting...");
 
-    // Step 1: Fetch new articles from RSS
-    console.log("📡 Step 1: Fetching RSS feeds...");
+    // Step 1: Load existing articles to identify truly new ones
+    console.log("📦 Step 1: Loading existing articles...");
+    const existingArticles = await loadArticles();
+    const existingUrls = new Set(existingArticles.map((a) => a.url));
+    console.log(`📦 Found ${existingArticles.length} existing articles`);
+
+    // Step 2: Fetch fresh articles from RSS
+    console.log("📡 Step 2: Fetching RSS feeds...");
     const freshArticles = await fetchArticlesFromRSS();
     console.log(`📡 Fetched ${freshArticles.length} articles from RSS`);
 
-    // Step 2: Convert to stored format and save (merge + dedupe)
-    console.log("💾 Step 2: Merging and saving to Blob...");
-    const storedArticles = freshArticles.map(toStoredArticle);
-    const { newCount, total } = await saveArticles(storedArticles);
+    // Step 3: Convert to stored format and identify new articles
+    console.log("🔍 Step 3: Identifying new articles...");
+    const allStoredArticles = freshArticles.map(toStoredArticle);
+    const newArticles = allStoredArticles.filter((a) => !existingUrls.has(a.url));
+    console.log(`🔍 Found ${newArticles.length} new articles`);
+
+    // Step 4: Extract keywords for new articles only
+    let articlesToSave = allStoredArticles;
+    if (newArticles.length > 0) {
+      console.log("🔑 Step 4: Extracting keywords for new articles...");
+      const newWithKeywords = await extractKeywordsForArticles(newArticles);
+
+      // Replace new articles in the full list with keyword-enriched versions
+      const newUrlsSet = new Set(newArticles.map((a) => a.url));
+      const keywordsByUrl = new Map(newWithKeywords.map((a) => [a.url, a.keywords]));
+
+      articlesToSave = allStoredArticles.map((article) => {
+        if (newUrlsSet.has(article.url)) {
+          return { ...article, keywords: keywordsByUrl.get(article.url) };
+        }
+        return article;
+      });
+    } else {
+      console.log("⏭️ Step 4: No new articles, skipping keyword extraction");
+    }
+
+    // Step 5: Save to Blob (merge + dedupe)
+    console.log("💾 Step 5: Saving to Blob...");
+    const { newCount, total } = await saveArticles(articlesToSave);
     console.log(`💾 Added ${newCount} new articles (total: ${total})`);
 
-    // Step 3: Revalidate page caches so users see fresh content
-    console.log("🔄 Step 3: Revalidating page caches...");
+    // Step 6: Revalidate page caches so users see fresh content
+    console.log("🔄 Step 6: Revalidating page caches...");
     revalidatePath("/");
     revalidatePath("/all");
     console.log("🔄 Page caches revalidated");
@@ -71,6 +108,7 @@ async function handleRefresh(): Promise<NextResponse> {
         fetchedFromRSS: freshArticles.length,
         newArticles: newCount,
         totalArticles: total,
+        keywordsExtracted: newArticles.length,
       },
     };
 

@@ -19,6 +19,7 @@ import {
   type StoredArticle,
 } from "@/lib/storage";
 import { extractKeywordsForArticles } from "@/lib/keywords";
+import { embedKeywordsBatch } from "@/lib/embeddings";
 import type { Article } from "@/types/article";
 
 export const dynamic = "force-dynamic";
@@ -64,18 +65,24 @@ async function handleRefresh(): Promise<NextResponse> {
     // Step 3: Convert to stored format and identify new articles
     console.log("🔍 Step 3: Identifying new articles...");
     const allStoredArticles = freshArticles.map(toStoredArticle);
-    const newArticles = allStoredArticles.filter((a) => !existingUrls.has(a.url));
+    const newArticles = allStoredArticles.filter(
+      (a) => !existingUrls.has(a.url)
+    );
     console.log(`🔍 Found ${newArticles.length} new articles`);
 
     // Step 4: Extract keywords for new articles only
     let articlesToSave = allStoredArticles;
+    let embeddingsGenerated = 0;
+
     if (newArticles.length > 0) {
       console.log("🔑 Step 4: Extracting keywords for new articles...");
       const newWithKeywords = await extractKeywordsForArticles(newArticles);
 
       // Replace new articles in the full list with keyword-enriched versions
       const newUrlsSet = new Set(newArticles.map((a) => a.url));
-      const keywordsByUrl = new Map(newWithKeywords.map((a) => [a.url, a.keywords]));
+      const keywordsByUrl = new Map(
+        newWithKeywords.map((a) => [a.url, a.keywords])
+      );
 
       articlesToSave = allStoredArticles.map((article) => {
         if (newUrlsSet.has(article.url)) {
@@ -83,6 +90,34 @@ async function handleRefresh(): Promise<NextResponse> {
         }
         return article;
       });
+
+      // Step 4b: Generate embeddings for articles with keywords
+      console.log("🔢 Step 4b: Generating embeddings for new articles...");
+      const articlesWithKeywords = articlesToSave.filter(
+        (a) => newUrlsSet.has(a.url) && a.keywords
+      );
+
+      if (articlesWithKeywords.length > 0) {
+        const keywordsToEmbed = articlesWithKeywords.map((a) => a.keywords!);
+        const embeddings = await embedKeywordsBatch(keywordsToEmbed);
+
+        // Create a map of URL -> embedding
+        const embeddingsByUrl = new Map(
+          articlesWithKeywords.map((a, i) => [a.url, embeddings[i]])
+        );
+
+        // Add embeddings to articles
+        articlesToSave = articlesToSave.map((article) => {
+          const embedding = embeddingsByUrl.get(article.url);
+          if (embedding) {
+            return { ...article, embedding };
+          }
+          return article;
+        });
+
+        embeddingsGenerated = embeddings.length;
+        console.log(`🔢 Generated ${embeddingsGenerated} embeddings`);
+      }
     } else {
       console.log("⏭️ Step 4: No new articles, skipping keyword extraction");
     }
@@ -109,6 +144,7 @@ async function handleRefresh(): Promise<NextResponse> {
         newArticles: newCount,
         totalArticles: total,
         keywordsExtracted: newArticles.length,
+        embeddingsGenerated,
       },
     };
 

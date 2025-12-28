@@ -29,6 +29,8 @@ export interface StoredArticle {
   category?: string;
   /** Comma-separated keywords for embedding-based clustering */
   keywords?: string;
+  /** 512-dimensional embedding vector from keywords (OpenAI text-embedding-3-small) */
+  embedding?: number[];
 }
 
 interface ArticlesFile {

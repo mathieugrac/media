@@ -5,10 +5,15 @@ import { loadArticles, type StoredArticle } from "@/lib/storage";
 // Always fetch fresh from Blob storage
 export const dynamic = "force-dynamic";
 
+/** Extended Article with embedding info for the table */
+export interface ArticleWithEmbedding extends Article {
+  hasEmbedding: boolean;
+}
+
 /**
  * Convert StoredArticle to Article format for components
  */
-function toArticle(stored: StoredArticle): Article {
+function toArticle(stored: StoredArticle): ArticleWithEmbedding {
   return {
     id: stored.id,
     title: stored.title,
@@ -20,11 +25,12 @@ function toArticle(stored: StoredArticle): Article {
     url: stored.url,
     category: stored.category,
     keywords: stored.keywords,
+    hasEmbedding: Array.isArray(stored.embedding) && stored.embedding.length > 0,
   };
 }
 
 export default async function AllArticlesPage() {
-  let articles: Article[] = [];
+  let articles: ArticleWithEmbedding[] = [];
   let totalInDatabase = 0;
   let error: string | null = null;
 

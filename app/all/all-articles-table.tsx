@@ -1,6 +1,6 @@
 "use client";
 
-import { Article } from "@/types/article";
+import type { ArticleWithEmbedding } from "./page";
 import { useState, useMemo } from "react";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
@@ -13,17 +13,19 @@ import {
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
+  Check,
+  X,
 } from "lucide-react";
 import { RefreshButton } from "@/components/refresh-button";
 import { ExtractKeywordsButton } from "@/components/extract-keywords-button";
 
-type SortField = "id" | "datetime" | "source" | "title" | "excerpt" | "keywords" | "category";
+type SortField = "id" | "datetime" | "source" | "title" | "excerpt" | "keywords" | "embedding" | "category";
 type SortDirection = "asc" | "desc" | null;
 
 const ARTICLES_PER_PAGE = 100;
 
 interface AllArticlesTableProps {
-  articles: Article[];
+  articles: ArticleWithEmbedding[];
   totalInDatabase: number;
 }
 
@@ -80,6 +82,10 @@ export function AllArticlesTable({ articles, totalInDatabase }: AllArticlesTable
         case "keywords":
           aValue = (a.keywords || "").toLowerCase();
           bValue = (b.keywords || "").toLowerCase();
+          break;
+        case "embedding":
+          aValue = a.hasEmbedding ? 1 : 0;
+          bValue = b.hasEmbedding ? 1 : 0;
           break;
         case "category":
           aValue = (a.category || "").toLowerCase();
@@ -228,6 +234,13 @@ export function AllArticlesTable({ articles, totalInDatabase }: AllArticlesTable
                 {getSortIcon("keywords")}
               </th>
               <th
+                className="px-2 py-2 text-center font-semibold cursor-pointer hover:bg-muted transition-colors whitespace-nowrap"
+                onClick={() => handleSort("embedding")}
+              >
+                Emb
+                {getSortIcon("embedding")}
+              </th>
+              <th
                 className="pl-2 pr-4 py-2 text-left font-semibold cursor-pointer hover:bg-muted transition-colors whitespace-nowrap"
                 onClick={() => handleSort("category")}
               >
@@ -272,6 +285,13 @@ export function AllArticlesTable({ articles, totalInDatabase }: AllArticlesTable
                   style={{ minWidth: "250px" }}
                 >
                   {article.keywords || <span className="text-muted-foreground/50">-</span>}
+                </td>
+                <td className="px-2 py-1.5 text-center">
+                  {article.hasEmbedding ? (
+                    <Check className="h-4 w-4 text-green-500 inline" />
+                  ) : (
+                    <X className="h-4 w-4 text-muted-foreground/50 inline" />
+                  )}
                 </td>
                 <td className="pl-2 pr-4 py-1.5">
                   {article.category ? (

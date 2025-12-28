@@ -120,8 +120,8 @@ export function clusterArticles(
 
   // DBSCAN with cosine distance
   // epsilon: max distance to consider points as neighbors
-  // For cosine distance: 0.25 means similarity > 0.75
-  const epsilon = 0.3; // Corresponds to ~0.70 cosine similarity threshold
+  // For cosine distance: 0.4 means similarity > 0.60
+  const epsilon = 0.4; // Corresponds to ~0.60 cosine similarity threshold
   const dbscan = new DBSCAN();
 
   // Custom distance function using cosine distance

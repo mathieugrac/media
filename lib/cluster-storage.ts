@@ -23,7 +23,9 @@ export async function loadClusters(): Promise<Cluster[]> {
       return [];
     }
 
-    const response = await fetch(clustersBlob.url);
+    const response = await fetch(clustersBlob.url, {
+      cache: "no-store", // Bypass CDN cache
+    });
     const data = (await response.json()) as ClustersFile;
     console.log(`📦 Loaded ${data.clusters.length} existing clusters from Blob`);
     return data.clusters;
@@ -140,7 +142,9 @@ export async function getClusteringMetadata(): Promise<{
       return null;
     }
 
-    const response = await fetch(clustersBlob.url);
+    const response = await fetch(clustersBlob.url, {
+      cache: "no-store", // Bypass CDN cache
+    });
     const data = (await response.json()) as ClustersFile;
 
     return {

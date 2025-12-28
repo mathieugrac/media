@@ -52,7 +52,9 @@ export async function loadArticles(): Promise<StoredArticle[]> {
       return [];
     }
 
-    const response = await fetch(articleBlob.url);
+    const response = await fetch(articleBlob.url, {
+      cache: "no-store", // Bypass CDN cache
+    });
     const data = (await response.json()) as ArticlesFile;
     console.log(
       `📦 Loaded ${data.articles.length} existing articles from Blob`

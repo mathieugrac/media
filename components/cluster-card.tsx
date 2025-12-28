@@ -2,18 +2,22 @@
 
 import { useState } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
+import { MediaSourceLink } from "@/components/media-source";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 
-interface ClusterArticle {
+interface ClusterArticleData {
   id: string;
   title: string;
   source: string;
   url: string;
+  date: string;
 }
 
 interface ClusterCardProps {
   name: string;
   articleCount: number;
-  articles: ClusterArticle[];
+  articles: ClusterArticleData[];
 }
 
 export function ClusterCard({ name, articleCount, articles }: ClusterCardProps) {
@@ -39,29 +43,35 @@ export function ClusterCard({ name, articleCount, articles }: ClusterCardProps) 
         </span>
       </button>
 
-      {/* Expanded content */}
+      {/* Expanded content - Table layout */}
       {isExpanded && (
         <div className="px-4 pb-3 border-t border-border">
-          <ul className="mt-3 space-y-2">
-            {articles.map((article) => (
-              <li key={article.id} className="text-sm">
-                <a
-                  href={article.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary hover:underline"
-                >
-                  {article.title}
-                </a>
-                <span className="text-muted-foreground ml-2">
-                  — {article.source}
-                </span>
-              </li>
-            ))}
-          </ul>
+          <table className="w-full mt-3">
+            <tbody>
+              {articles.map((article) => (
+                <tr key={article.id} className="align-middle">
+                  <td className="py-1.5 pr-3 whitespace-nowrap" style={{ width: "200px" }}>
+                    <MediaSourceLink name={article.source} size="small" />
+                  </td>
+                  <td className="py-1.5">
+                    <a
+                      href={article.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm font-medium text-foreground hover:underline"
+                    >
+                      {article.title}
+                    </a>
+                    <span className="text-sm text-muted-foreground ml-2">
+                      — {format(new Date(article.date), "d MMM yyyy", { locale: fr })}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>
   );
 }
-

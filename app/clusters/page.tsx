@@ -52,11 +52,13 @@ export default async function ClustersPage() {
       articles: cluster.articleIds
         .map((id) => articleMap.get(id))
         .filter((a): a is StoredArticle => a !== undefined)
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
         .map((a) => ({
           id: a.id,
           title: a.title,
           source: a.source,
           url: a.url,
+          date: a.date,
         })),
     }));
 

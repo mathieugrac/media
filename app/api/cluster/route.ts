@@ -14,10 +14,10 @@
 
 import { NextResponse } from "next/server";
 import { loadArticles, type StoredArticle } from "@/lib/storage";
-import { loadClusters, saveClusters } from "@/lib/cluster-storage";
+import { saveClusters } from "@/lib/cluster-storage";
 import { clusterArticles } from "@/lib/clustering";
 import { nameClusters } from "@/lib/cluster-naming";
-import type { ArticleForClustering, Cluster } from "@/types/cluster";
+import type { ArticleForClustering } from "@/types/cluster";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 120; // Allow up to 2 minutes (naming can be slow)
@@ -80,68 +80,27 @@ async function handleClustering(): Promise<NextResponse> {
       `🔗 Found ${clusteringResult.clusters.length} clusters, ${clusteringResult.noise.length} noise articles`
     );
 
-    // Step 3: Load existing clusters to preserve names
-    console.log("📦 Step 3: Loading existing clusters...");
-    const existingClusters = await loadClusters();
-    const existingClusterNames = new Map<string, string>();
+    // Step 3: Name all clusters (always fresh - no name preservation)
+    console.log("🏷️ Step 3: Naming clusters...");
 
-    // Build a map of article IDs to existing cluster names
-    // This helps preserve names when clusters have similar content
-    for (const cluster of existingClusters) {
-      if (cluster.name) {
-        // Key by sorted article IDs to match clusters with same articles
-        const key = [...cluster.articleIds].sort().join(",");
-        existingClusterNames.set(key, cluster.name);
-      }
-    }
-
-    // Try to match new clusters to existing names
-    const clustersToName: Cluster[] = [];
-    const clustersWithNames: Cluster[] = [];
-
-    for (const cluster of clusteringResult.clusters) {
-      const key = [...cluster.articleIds].sort().join(",");
-      const existingName = existingClusterNames.get(key);
-
-      if (existingName) {
-        // Reuse existing name for identical cluster
-        clustersWithNames.push({
-          ...cluster,
-          name: existingName,
-        });
-      } else {
-        clustersToName.push(cluster);
-      }
-    }
-
-    console.log(
-      `🏷️ ${clustersWithNames.length} clusters matched existing names, ${clustersToName.length} need naming`
+    // Create a lookup function for articles
+    const articleMap = new Map(
+      articlesWithEmbeddings.map((a) => [a.id, a])
     );
 
-    // Step 4: Name new clusters
-    let namedClusters: Cluster[] = [];
-    if (clustersToName.length > 0) {
-      console.log("🏷️ Step 4: Naming new clusters...");
+    const getArticlesForCluster = (articleIds: string[]) =>
+      articleIds
+        .map((id) => articleMap.get(id))
+        .filter((a): a is ArticleForClustering => a !== undefined)
+        .map((a) => ({ title: a.title, excerpt: a.excerpt }));
 
-      // Create a lookup function for articles
-      const articleMap = new Map(
-        articlesWithEmbeddings.map((a) => [a.id, a])
-      );
+    const allClusters = await nameClusters(
+      clusteringResult.clusters,
+      getArticlesForCluster
+    );
 
-      const getArticlesForCluster = (articleIds: string[]) =>
-        articleIds
-          .map((id) => articleMap.get(id))
-          .filter((a): a is ArticleForClustering => a !== undefined)
-          .map((a) => ({ title: a.title, excerpt: a.excerpt }));
-
-      namedClusters = await nameClusters(clustersToName, getArticlesForCluster);
-    }
-
-    // Combine all clusters
-    const allClusters = [...clustersWithNames, ...namedClusters];
-
-    // Step 5: Save clusters
-    console.log("💾 Step 5: Saving clusters to Blob...");
+    // Step 4: Save clusters
+    console.log("💾 Step 4: Saving clusters to Blob...");
     await saveClusters(allClusters);
 
     const duration = Date.now() - startTime;
@@ -154,8 +113,6 @@ async function handleClustering(): Promise<NextResponse> {
         totalArticles: allArticles.length,
         articlesWithEmbeddings: articlesWithEmbeddings.length,
         clustersFound: allClusters.length,
-        newClustersNamed: namedClusters.length,
-        existingClustersMatched: clustersWithNames.length,
         noiseArticles: clusteringResult.noise.length,
       },
       clusters: allClusters.map((c) => ({

@@ -15,19 +15,19 @@ import type {
 
 /**
  * Default clustering configuration
- * 
+ *
  * epsilon: max cosine distance for neighbors (lower = stricter)
  *   - 0.25 = similarity > 0.75 (too strict for our dataset)
  *   - 0.31 = similarity > 0.69 (best results for French news)
  *   - 0.36 = similarity > 0.64 (looser, larger clusters)
- * 
+ *
  * Best range: 0.31 - 0.36 based on testing
  */
 export const DEFAULT_CLUSTERING_CONFIG: ClusteringConfig = {
   minClusterSize: 2,
   minSamples: 2,
   epsilon: 0.32, // Best results for French independent media
-  maxClusterSize: 15, // Prevent mega-clusters
+  maxClusterSize: 10, // Prevent mega-clusters
 };
 
 /**
@@ -97,12 +97,12 @@ function generateClusterId(): string {
 
 /**
  * Cluster articles using DBSCAN algorithm
- * 
+ *
  * Note: We use DBSCAN instead of HDBSCAN because:
  * 1. density-clustering provides a stable DBSCAN implementation
  * 2. For our use case (news clustering), DBSCAN works well
  * 3. We tune epsilon based on cosine distance characteristics
- * 
+ *
  * @param articles Articles with embeddings to cluster
  * @param config Clustering configuration
  * @returns Clustering result with clusters and noise
@@ -134,7 +134,11 @@ export function clusterArticles(
   const maxClusterSize = config.maxClusterSize ?? 15;
   const dbscan = new DBSCAN();
 
-  console.log(`🔗 DBSCAN config: epsilon=${epsilon} (similarity>${(1-epsilon).toFixed(2)}), maxClusterSize=${maxClusterSize}`);
+  console.log(
+    `🔗 DBSCAN config: epsilon=${epsilon} (similarity>${(1 - epsilon).toFixed(
+      2
+    )}), maxClusterSize=${maxClusterSize}`
+  );
 
   // Custom distance function using cosine distance
   const clusterIndices = dbscan.run(
@@ -155,22 +159,24 @@ export function clusterArticles(
 
     // If cluster is too large, keep only the most similar articles to centroid
     if (clusterArticlesList.length > maxClusterSize) {
-      console.log(`⚠️ Cluster too large (${clusterArticlesList.length}), trimming to ${maxClusterSize}`);
-      
+      console.log(
+        `⚠️ Cluster too large (${clusterArticlesList.length}), trimming to ${maxClusterSize}`
+      );
+
       // Compute centroid first
       const centroid = computeCentroid(clusterEmbeddingsList);
-      
+
       // Score each article by similarity to centroid
       const scored = clusterArticlesList.map((article, idx) => ({
         article,
         embedding: clusterEmbeddingsList[idx],
         similarity: cosineSimilarity(clusterEmbeddingsList[idx], centroid),
       }));
-      
+
       // Keep top N most similar to centroid
       scored.sort((a, b) => b.similarity - a.similarity);
       const kept = scored.slice(0, maxClusterSize);
-      
+
       clusterArticlesList = kept.map((s) => s.article);
       clusterEmbeddingsList = kept.map((s) => s.embedding);
     }
@@ -212,7 +218,7 @@ export function clusterArticles(
 
 /**
  * Find the nearest cluster for a single article
- * 
+ *
  * @param embedding Article embedding
  * @param clusters Existing clusters
  * @returns Nearest cluster and similarity score, or null if no clusters
@@ -244,7 +250,7 @@ export function findNearestCluster(
 
 /**
  * Update a cluster's centroid after adding/removing articles
- * 
+ *
  * @param cluster The cluster to update
  * @param embeddings All embeddings for articles in the cluster
  * @returns Updated cluster
@@ -262,7 +268,7 @@ export function updateClusterCentroid(
 
 /**
  * Merge two clusters into one
- * 
+ *
  * @param cluster1 First cluster
  * @param cluster2 Second cluster
  * @param allEmbeddings Map of article ID to embedding
@@ -288,4 +294,3 @@ export function mergeClusters(
     updatedAt: new Date().toISOString(),
   };
 }
-

@@ -200,6 +200,7 @@ POST /api/refresh
 
 ```bash
 ANTHROPIC_API_KEY=sk-ant-xxx     # Required for keyword extraction
+OPENAI_API_KEY=sk-xxx            # Required for embeddings (clustering)
 BLOB_READ_WRITE_TOKEN=vercel_blob_xxx
 REFRESH_SECRET=your-secret-key   # optional
 ```

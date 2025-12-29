@@ -35,6 +35,10 @@ export function RefreshButton({ variant = "outline" }: RefreshButtonProps) {
       const data: RefreshResult = await response.json();
       setResult(data);
 
+      if (!data.success) {
+        console.error("Refresh failed:", data);
+      }
+
       if (data.success) {
         // Hard reload after showing the result to ensure fresh data
         setTimeout(() => {
@@ -59,10 +63,11 @@ export function RefreshButton({ variant = "outline" }: RefreshButtonProps) {
           className={`text-sm ${
             result.success ? "text-green-600" : "text-destructive"
           }`}
+          title={result.message}
         >
           {result.success
             ? `+${result.stats?.newArticles} new articles`
-            : result.message || "Error"}
+            : result.message || result.error || "Unknown error"}
         </span>
       )}
       <Button

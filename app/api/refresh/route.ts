@@ -164,8 +164,12 @@ async function handleRefresh(): Promise<NextResponse> {
 }
 
 export async function POST(request: Request) {
-  // Verify secret key for security
-  if (REFRESH_SECRET) {
+  // Allow POST requests from browser (same-origin, user-initiated)
+  // Only require auth for programmatic requests without referer
+  const referer = request.headers.get("referer");
+  const isBrowserRequest = referer && referer.includes(request.headers.get("host") || "");
+
+  if (!isBrowserRequest && REFRESH_SECRET) {
     const authHeader = request.headers.get("authorization");
     const providedSecret = authHeader?.replace("Bearer ", "");
 

@@ -15,10 +15,17 @@ import type {
 
 /**
  * Default clustering configuration
+ * 
+ * epsilon: max cosine distance for neighbors (lower = stricter)
+ *   - 0.36 = similarity > 0.64 (too loose for news)
+ *   - 0.25 = similarity > 0.75 (good for related news)
+ *   - 0.20 = similarity > 0.80 (very strict, same story)
  */
 export const DEFAULT_CLUSTERING_CONFIG: ClusteringConfig = {
   minClusterSize: 2,
   minSamples: 2,
+  epsilon: 0.25, // Require 75% similarity (tighter than before)
+  maxClusterSize: 15, // Prevent mega-clusters
 };
 
 /**
@@ -120,9 +127,12 @@ export function clusterArticles(
 
   // DBSCAN with cosine distance
   // epsilon: max distance to consider points as neighbors
-  // For cosine distance: 0.36 means similarity > 0.64
-  const epsilon = 0.36; // Corresponds to ~0.64 cosine similarity threshold
+  // Lower epsilon = stricter similarity requirement
+  const epsilon = config.epsilon ?? 0.25; // Default: 75% similarity required
+  const maxClusterSize = config.maxClusterSize ?? 15;
   const dbscan = new DBSCAN();
+
+  console.log(`🔗 DBSCAN config: epsilon=${epsilon} (similarity>${(1-epsilon).toFixed(2)}), maxClusterSize=${maxClusterSize}`);
 
   // Custom distance function using cosine distance
   const clusterIndices = dbscan.run(
@@ -138,9 +148,32 @@ export function clusterArticles(
   const clusteredArticleIds = new Set<string>();
 
   for (const indices of clusterIndices) {
-    const clusterArticles = indices.map((i) => articles[i]);
-    const clusterEmbeddings = indices.map((i) => embeddings[i]);
-    const articleIds = clusterArticles.map((a) => a.id);
+    let clusterArticlesList = indices.map((i) => articles[i]);
+    let clusterEmbeddingsList = indices.map((i) => embeddings[i]);
+
+    // If cluster is too large, keep only the most similar articles to centroid
+    if (clusterArticlesList.length > maxClusterSize) {
+      console.log(`⚠️ Cluster too large (${clusterArticlesList.length}), trimming to ${maxClusterSize}`);
+      
+      // Compute centroid first
+      const centroid = computeCentroid(clusterEmbeddingsList);
+      
+      // Score each article by similarity to centroid
+      const scored = clusterArticlesList.map((article, idx) => ({
+        article,
+        embedding: clusterEmbeddingsList[idx],
+        similarity: cosineSimilarity(clusterEmbeddingsList[idx], centroid),
+      }));
+      
+      // Keep top N most similar to centroid
+      scored.sort((a, b) => b.similarity - a.similarity);
+      const kept = scored.slice(0, maxClusterSize);
+      
+      clusterArticlesList = kept.map((s) => s.article);
+      clusterEmbeddingsList = kept.map((s) => s.embedding);
+    }
+
+    const articleIds = clusterArticlesList.map((a) => a.id);
 
     // Mark articles as clustered
     articleIds.forEach((id) => clusteredArticleIds.add(id));
@@ -148,7 +181,7 @@ export function clusterArticles(
     const cluster: Cluster = {
       id: generateClusterId(),
       name: null, // Will be named later by LLM
-      centroid: computeCentroid(clusterEmbeddings),
+      centroid: computeCentroid(clusterEmbeddingsList),
       articleIds,
       status: "active",
       createdAt: now,

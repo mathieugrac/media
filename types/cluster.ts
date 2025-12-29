@@ -42,13 +42,17 @@ export interface ClusteringResult {
 }
 
 /**
- * Configuration for HDBSCAN clustering
+ * Configuration for DBSCAN clustering
  */
 export interface ClusteringConfig {
   /** Minimum number of articles to form a cluster */
   minClusterSize: number;
   /** Minimum samples in neighborhood for core points */
   minSamples: number;
+  /** Max cosine distance for neighbors (lower = stricter, default 0.25) */
+  epsilon?: number;
+  /** Maximum articles per cluster to prevent mega-clusters */
+  maxClusterSize?: number;
 }
 
 /**

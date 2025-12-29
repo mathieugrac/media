@@ -45,10 +45,14 @@ function getArticlesWithEmbeddings(
     }));
 }
 
+interface ClusteringOptions {
+  epsilon?: number;
+}
+
 /**
  * Handle clustering request
  */
-async function handleClustering(): Promise<NextResponse> {
+async function handleClustering(options: ClusteringOptions = {}): Promise<NextResponse> {
   const startTime = Date.now();
 
   try {
@@ -73,9 +77,13 @@ async function handleClustering(): Promise<NextResponse> {
       );
     }
 
-    // Step 2: Run clustering
+    // Step 2: Run clustering with custom epsilon if provided
     console.log("🔗 Step 2: Running DBSCAN clustering...");
-    const clusteringResult = clusterArticles(articlesWithEmbeddings);
+    const clusteringResult = clusterArticles(articlesWithEmbeddings, {
+      minClusterSize: 2,
+      minSamples: 2,
+      epsilon: options.epsilon,
+    });
     console.log(
       `🔗 Found ${clusteringResult.clusters.length} clusters, ${clusteringResult.noise.length} noise articles`
     );
@@ -109,6 +117,9 @@ async function handleClustering(): Promise<NextResponse> {
       success: true,
       timestamp: new Date().toISOString(),
       duration: `${duration}ms`,
+      config: {
+        epsilon: options.epsilon ?? 0.25,
+      },
       stats: {
         totalArticles: allArticles.length,
         articlesWithEmbeddings: articlesWithEmbeddings.length,
@@ -141,8 +152,14 @@ async function handleClustering(): Promise<NextResponse> {
   }
 }
 
-export async function POST() {
-  return handleClustering();
+export async function POST(request: Request) {
+  try {
+    const body = await request.json().catch(() => ({}));
+    const epsilon = typeof body.epsilon === "number" ? body.epsilon : undefined;
+    return handleClustering({ epsilon });
+  } catch {
+    return handleClustering();
+  }
 }
 
 // Support GET for easier testing

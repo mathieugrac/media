@@ -123,7 +123,7 @@ Articles are clustered using DBSCAN with cosine distance on embeddings.
 | Epsilon | Similarity | Effect |
 |---------|------------|--------|
 | 0.25 | > 75% | Too strict - few/no clusters |
-| **0.31** | **> 69%** | **Default - best results** |
+| **0.32** | **> 68%** | **Default - best results** |
 | 0.36 | > 64% | Looser - larger clusters |
 
 > **Best range:** ε = 0.31 to 0.36 based on testing with French news articles.

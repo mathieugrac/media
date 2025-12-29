@@ -26,7 +26,7 @@ import type {
 export const DEFAULT_CLUSTERING_CONFIG: ClusteringConfig = {
   minClusterSize: 2,
   minSamples: 2,
-  epsilon: 0.31, // Best results for French independent media
+  epsilon: 0.32, // Best results for French independent media
   maxClusterSize: 15, // Prevent mega-clusters
 };
 
@@ -130,7 +130,7 @@ export function clusterArticles(
   // DBSCAN with cosine distance
   // epsilon: max distance to consider points as neighbors
   // Lower epsilon = stricter similarity requirement
-  const epsilon = config.epsilon ?? 0.31; // Default: 69% similarity (best for French news)
+  const epsilon = config.epsilon ?? 0.32; // Default: 68% similarity (best for French news)
   const maxClusterSize = config.maxClusterSize ?? 15;
   const dbscan = new DBSCAN();
 

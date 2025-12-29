@@ -55,9 +55,6 @@ export function ReclusterButton({ onComplete }: ReclusterButtonProps) {
     }
   };
 
-  // Convert epsilon to similarity percentage for display
-  const similarityPercent = Math.round((1 - epsilon) * 100);
-
   return (
     <div className="flex items-center gap-3">
       <div className="flex items-center gap-2">
@@ -74,11 +71,7 @@ export function ReclusterButton({ onComplete }: ReclusterButtonProps) {
           onChange={(e) => setEpsilon(parseFloat(e.target.value) || DEFAULT_EPSILON)}
           disabled={isLoading}
           className="w-16 px-2 py-1 text-sm border rounded bg-background"
-          title={`Similarity threshold: ${similarityPercent}%`}
         />
-        <span className="text-xs text-muted-foreground">
-          ({similarityPercent}%)
-        </span>
       </div>
       <Button
         onClick={handleRecluster}

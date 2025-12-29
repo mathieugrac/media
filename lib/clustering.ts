@@ -13,6 +13,9 @@ import type {
   ArticleForClustering,
 } from "@/types/cluster";
 
+// Re-export types for convenience
+export type { ArticleForClustering } from "@/types/cluster";
+
 /**
  * Default clustering configuration
  *

@@ -110,8 +110,27 @@ types/
 | Service   | Model           | Use Case                           |
 | --------- | --------------- | ---------------------------------- |
 | Anthropic | Claude Sonnet 4 | Keyword extraction (for embedding) |
+| OpenAI    | text-embedding-3-small | Embeddings for clustering    |
 
 > **Note:** Keyword extraction runs only on NEW articles to minimize costs.
+
+### Clustering (DBSCAN)
+
+Articles are clustered using DBSCAN with cosine distance on embeddings.
+
+**Key parameter:** `epsilon` (ε) = max cosine distance for neighbors
+
+| Epsilon | Similarity | Effect |
+|---------|------------|--------|
+| 0.25 | > 75% | Too strict - few/no clusters |
+| **0.31** | **> 69%** | **Default - best results** |
+| 0.36 | > 64% | Looser - larger clusters |
+
+> **Best range:** ε = 0.31 to 0.36 based on testing with French news articles.
+
+**Other settings:**
+- `minClusterSize`: 2 (minimum articles to form a cluster)
+- `maxClusterSize`: 15 (cap to prevent mega-clusters)
 
 ### Keyword Extraction Format
 

@@ -118,7 +118,7 @@ async function handleClustering(options: ClusteringOptions = {}): Promise<NextRe
       timestamp: new Date().toISOString(),
       duration: `${duration}ms`,
       config: {
-        epsilon: options.epsilon ?? 0.25,
+        epsilon: options.epsilon ?? 0.31,
       },
       stats: {
         totalArticles: allArticles.length,

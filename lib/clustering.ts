@@ -17,14 +17,16 @@ import type {
  * Default clustering configuration
  * 
  * epsilon: max cosine distance for neighbors (lower = stricter)
- *   - 0.36 = similarity > 0.64 (too loose for news)
- *   - 0.25 = similarity > 0.75 (good for related news)
- *   - 0.20 = similarity > 0.80 (very strict, same story)
+ *   - 0.25 = similarity > 0.75 (too strict for our dataset)
+ *   - 0.31 = similarity > 0.69 (best results for French news)
+ *   - 0.36 = similarity > 0.64 (looser, larger clusters)
+ * 
+ * Best range: 0.31 - 0.36 based on testing
  */
 export const DEFAULT_CLUSTERING_CONFIG: ClusteringConfig = {
   minClusterSize: 2,
   minSamples: 2,
-  epsilon: 0.25, // Require 75% similarity (tighter than before)
+  epsilon: 0.31, // Best results for French independent media
   maxClusterSize: 15, // Prevent mega-clusters
 };
 
@@ -128,7 +130,7 @@ export function clusterArticles(
   // DBSCAN with cosine distance
   // epsilon: max distance to consider points as neighbors
   // Lower epsilon = stricter similarity requirement
-  const epsilon = config.epsilon ?? 0.25; // Default: 75% similarity required
+  const epsilon = config.epsilon ?? 0.31; // Default: 69% similarity (best for French news)
   const maxClusterSize = config.maxClusterSize ?? 15;
   const dbscan = new DBSCAN();
 

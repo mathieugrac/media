@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
 
-const DEFAULT_EPSILON = 0.25;
+const DEFAULT_EPSILON = 0.31;
 
 interface ReclusterButtonProps {
   onComplete?: () => void;

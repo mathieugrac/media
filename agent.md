@@ -130,7 +130,27 @@ Articles are clustered using DBSCAN with cosine distance on embeddings.
 
 **Other settings:**
 - `minClusterSize`: 2 (minimum articles to form a cluster)
-- `maxClusterSize`: 15 (cap to prevent mega-clusters)
+- `maxClusterSize`: 10 (cap to prevent mega-clusters)
+
+### Incremental Assignment (Phase 7)
+
+New articles are automatically assigned to existing clusters during refresh, without full re-clustering.
+
+**Two-pass approach:**
+1. **Pass 1**: Assign new articles to existing clusters via centroid similarity
+2. **Pass 2**: Run mini-DBSCAN on noise articles to form new clusters
+
+**Strategy decisions:**
+
+| Setting | Value | Rationale |
+|---------|-------|-----------|
+| **Similarity threshold** | 0.72 | Stricter than DBSCAN (0.68) because centroid comparison is less robust than density-based clustering |
+| **Centroid update** | Immediate | Update after each assignment for accuracy in batch processing |
+| **Max cluster size** | Respect cap (10) | Full clusters are skipped; new articles stay as noise until re-clustering |
+| **Noise handling** | Two-pass | First assign to existing, then mini-cluster noise for new stories |
+| **Cluster naming** | Keep existing | Only name newly formed clusters from noise |
+
+**Threshold rationale:** DBSCAN uses ε=0.32 (accepts ~68% similarity) but relies on density (multiple neighbors). Incremental assignment compares single article → centroid (an average), which is less robust. Using 72% prevents topic drift.
 
 ### Keyword Extraction Format
 

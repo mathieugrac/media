@@ -294,3 +294,378 @@ export function mergeClusters(
     updatedAt: new Date().toISOString(),
   };
 }
+
+/**
+ * Configuration for incremental assignment
+ */
+export interface IncrementalAssignmentConfig {
+  /** Minimum similarity to assign to a cluster (default: 0.72) */
+  similarityThreshold: number;
+  /** Maximum articles per cluster (default: 10) */
+  maxClusterSize: number;
+  /** Whether to update centroids after each assignment */
+  updateCentroids: boolean;
+}
+
+export const DEFAULT_INCREMENTAL_CONFIG: IncrementalAssignmentConfig = {
+  similarityThreshold: 0.72,
+  maxClusterSize: 10,
+  updateCentroids: true,
+};
+
+/**
+ * Detailed info about an article assignment attempt
+ */
+export interface AssignmentAttempt {
+  articleId: string;
+  title: string;
+  nearestClusterId: string;
+  nearestClusterName: string | null;
+  similarity: number;
+}
+
+/**
+ * Result of incremental assignment operation
+ */
+export interface IncrementalAssignmentResult {
+  /** Updated clusters (with new articles assigned) */
+  updatedClusters: Cluster[];
+  /** New clusters formed from noise articles */
+  newClusters: Cluster[];
+  /** Article IDs that remain unclustered */
+  remainingNoise: string[];
+  /** Statistics */
+  stats: {
+    articlesAssigned: number;
+    clustersUpdated: number;
+    newClustersFormed: number;
+    articlesInNewClusters: number;
+    remainingNoiseCount: number;
+  };
+  /** Detailed assignment info for logging */
+  details: {
+    /** Articles successfully assigned */
+    assigned: Array<
+      AssignmentAttempt & { clusterId: string; clusterName: string | null }
+    >;
+    /** Articles rejected due to low similarity */
+    rejectedThreshold: Array<AssignmentAttempt & { threshold: number }>;
+    /** Articles rejected due to full cluster */
+    rejectedFull: Array<
+      AssignmentAttempt & { clusterSize: number; maxSize: number }
+    >;
+    /** New clusters formed with their articles */
+    newClustersDetails: Array<{
+      id: string;
+      name: string | null;
+      articleIds: string[];
+      articleTitles: string[];
+    }>;
+  };
+}
+
+/**
+ * Result of Pass 1 assignment with detailed tracking
+ */
+export interface Pass1Result {
+  updatedClusters: Cluster[];
+  unassigned: ArticleForClustering[];
+  assigned: Array<
+    AssignmentAttempt & { clusterId: string; clusterName: string | null }
+  >;
+  rejectedThreshold: Array<AssignmentAttempt & { threshold: number }>;
+  rejectedFull: Array<
+    AssignmentAttempt & { clusterSize: number; maxSize: number }
+  >;
+}
+
+/**
+ * Assign articles to existing clusters (Pass 1)
+ *
+ * For each article, find the nearest cluster by centroid similarity.
+ * If similarity >= threshold and cluster isn't full, assign the article.
+ * Updates centroids immediately after each assignment.
+ *
+ * @param articles Articles with embeddings to assign
+ * @param clusters Existing clusters
+ * @param allEmbeddings Map of all article IDs to their embeddings (for centroid updates)
+ * @param config Configuration options
+ * @returns Assignment result with updated clusters, unassigned articles, and detailed tracking
+ */
+export function assignArticlesToClusters(
+  articles: ArticleForClustering[],
+  clusters: Cluster[],
+  allEmbeddings: Map<string, number[]>,
+  config: IncrementalAssignmentConfig = DEFAULT_INCREMENTAL_CONFIG
+): Pass1Result {
+  const assigned: Pass1Result["assigned"] = [];
+  const rejectedThreshold: Pass1Result["rejectedThreshold"] = [];
+  const rejectedFull: Pass1Result["rejectedFull"] = [];
+
+  if (articles.length === 0 || clusters.length === 0) {
+    return {
+      updatedClusters: clusters,
+      unassigned: articles,
+      assigned,
+      rejectedThreshold,
+      rejectedFull,
+    };
+  }
+
+  // Clone clusters to avoid mutating originals
+  const workingClusters = clusters.map((c) => ({
+    ...c,
+    articleIds: [...c.articleIds],
+  }));
+
+  const unassigned: ArticleForClustering[] = [];
+
+  for (const article of articles) {
+    // Find nearest cluster
+    const nearest = findNearestCluster(article.embedding, workingClusters);
+
+    if (!nearest) {
+      unassigned.push(article);
+      continue;
+    }
+
+    const { cluster, similarity } = nearest;
+
+    // Check if similarity meets threshold
+    if (similarity < config.similarityThreshold) {
+      console.log(
+        `  ⏭️ "${article.title.slice(0, 40)}..." similarity ${(
+          similarity * 100
+        ).toFixed(1)}% < threshold ${(config.similarityThreshold * 100).toFixed(
+          1
+        )}%`
+      );
+      rejectedThreshold.push({
+        articleId: article.id,
+        title: article.title,
+        nearestClusterId: cluster.id,
+        nearestClusterName: cluster.name,
+        similarity,
+        threshold: config.similarityThreshold,
+      });
+      unassigned.push(article);
+      continue;
+    }
+
+    // Check if cluster is full
+    if (cluster.articleIds.length >= config.maxClusterSize) {
+      console.log(
+        `  ⏭️ "${article.title.slice(0, 40)}..." cluster "${
+          cluster.name || cluster.id
+        }" is full (${cluster.articleIds.length}/${config.maxClusterSize})`
+      );
+      rejectedFull.push({
+        articleId: article.id,
+        title: article.title,
+        nearestClusterId: cluster.id,
+        nearestClusterName: cluster.name,
+        similarity,
+        clusterSize: cluster.articleIds.length,
+        maxSize: config.maxClusterSize,
+      });
+      unassigned.push(article);
+      continue;
+    }
+
+    // Assign article to cluster
+    cluster.articleIds.push(article.id);
+    cluster.updatedAt = new Date().toISOString();
+
+    assigned.push({
+      articleId: article.id,
+      title: article.title,
+      nearestClusterId: cluster.id,
+      nearestClusterName: cluster.name,
+      similarity,
+      clusterId: cluster.id,
+      clusterName: cluster.name,
+    });
+
+    console.log(
+      `  ✅ "${article.title.slice(0, 40)}..." → "${
+        cluster.name || cluster.id
+      }" (${(similarity * 100).toFixed(1)}%)`
+    );
+
+    // Update centroid if configured
+    if (config.updateCentroids) {
+      const clusterEmbeddings = cluster.articleIds
+        .map(
+          (id) =>
+            allEmbeddings.get(id) ||
+            (id === article.id ? article.embedding : null)
+        )
+        .filter((e): e is number[] => e !== null);
+
+      if (clusterEmbeddings.length > 0) {
+        cluster.centroid = computeCentroid(clusterEmbeddings);
+      }
+    }
+  }
+
+  console.log(
+    `📥 Pass 1: Assigned ${assigned.length}/${articles.length} articles to existing clusters`
+  );
+
+  return {
+    updatedClusters: workingClusters,
+    unassigned,
+    assigned,
+    rejectedThreshold,
+    rejectedFull,
+  };
+}
+
+/**
+ * Mini-cluster noise articles to form new clusters (Pass 2)
+ *
+ * Runs DBSCAN on noise articles only to discover new story clusters.
+ * Much cheaper than full re-clustering.
+ *
+ * @param noiseArticles Articles that weren't assigned to existing clusters
+ * @param config Clustering configuration
+ * @returns New clusters and remaining noise
+ */
+export function clusterNoiseArticles(
+  noiseArticles: ArticleForClustering[],
+  config: ClusteringConfig = DEFAULT_CLUSTERING_CONFIG
+): { newClusters: Cluster[]; remainingNoise: string[] } {
+  if (noiseArticles.length < config.minClusterSize) {
+    console.log(
+      `📊 Pass 2: Only ${noiseArticles.length} noise articles, need at least ${config.minClusterSize} to cluster`
+    );
+    return {
+      newClusters: [],
+      remainingNoise: noiseArticles.map((a) => a.id),
+    };
+  }
+
+  console.log(
+    `📊 Pass 2: Attempting to cluster ${noiseArticles.length} noise articles...`
+  );
+
+  // Run DBSCAN on noise articles
+  const result = clusterArticles(noiseArticles, config);
+
+  console.log(
+    `📊 Pass 2: Found ${result.clusters.length} new clusters from noise (${result.noise.length} still unclustered)`
+  );
+
+  return {
+    newClusters: result.clusters,
+    remainingNoise: result.noise,
+  };
+}
+
+/**
+ * Full incremental assignment: Pass 1 + Pass 2
+ *
+ * 1. Assigns new articles to existing clusters
+ * 2. Mini-clusters remaining noise to form new clusters
+ *
+ * @param newArticles New articles with embeddings
+ * @param existingNoiseArticles Previously unclustered articles (optional)
+ * @param clusters Existing clusters
+ * @param allEmbeddings Map of all article IDs to embeddings
+ * @param articleTitlesMap Map of article IDs to titles (for logging new clusters)
+ * @param config Configuration
+ * @returns Complete incremental assignment result
+ */
+export function incrementalAssignment(
+  newArticles: ArticleForClustering[],
+  existingNoiseArticles: ArticleForClustering[],
+  clusters: Cluster[],
+  allEmbeddings: Map<string, number[]>,
+  articleTitlesMap: Map<string, string> = new Map(),
+  config: {
+    assignment: IncrementalAssignmentConfig;
+    clustering: ClusteringConfig;
+  } = {
+    assignment: DEFAULT_INCREMENTAL_CONFIG,
+    clustering: DEFAULT_CLUSTERING_CONFIG,
+  }
+): IncrementalAssignmentResult {
+  console.log(
+    `\n🔄 Incremental Assignment: ${newArticles.length} new + ${existingNoiseArticles.length} existing noise articles`
+  );
+
+  // Combine new and existing noise for assignment
+  const allCandidates = [...newArticles, ...existingNoiseArticles];
+
+  // Build titles map from candidates if not provided
+  for (const article of allCandidates) {
+    if (!articleTitlesMap.has(article.id)) {
+      articleTitlesMap.set(article.id, article.title);
+    }
+  }
+
+  // Pass 1: Assign to existing clusters
+  const pass1Result = assignArticlesToClusters(
+    allCandidates,
+    clusters,
+    allEmbeddings,
+    config.assignment
+  );
+
+  const clustersUpdatedCount = pass1Result.updatedClusters.filter(
+    (c, i) => c.articleIds.length !== clusters[i]?.articleIds.length
+  ).length;
+
+  // Pass 2: Mini-cluster noise articles
+  const { newClusters, remainingNoise } = clusterNoiseArticles(
+    pass1Result.unassigned,
+    config.clustering
+  );
+
+  const articlesInNewClusters = newClusters.reduce(
+    (sum, c) => sum + c.articleIds.length,
+    0
+  );
+
+  // Build new clusters details with article titles
+  const newClustersDetails = newClusters.map((cluster) => ({
+    id: cluster.id,
+    name: cluster.name,
+    articleIds: cluster.articleIds,
+    articleTitles: cluster.articleIds.map(
+      (id) => articleTitlesMap.get(id) || id
+    ),
+  }));
+
+  const stats = {
+    articlesAssigned: allCandidates.length - pass1Result.unassigned.length,
+    clustersUpdated: clustersUpdatedCount,
+    newClustersFormed: newClusters.length,
+    articlesInNewClusters,
+    remainingNoiseCount: remainingNoise.length,
+  };
+
+  console.log(`\n📈 Incremental Assignment Summary:`);
+  console.log(
+    `   • ${stats.articlesAssigned} articles assigned to ${stats.clustersUpdated} existing clusters`
+  );
+  console.log(
+    `   • ${stats.newClustersFormed} new clusters formed (${stats.articlesInNewClusters} articles)`
+  );
+  console.log(
+    `   • ${stats.remainingNoiseCount} articles remain unclustered\n`
+  );
+
+  return {
+    updatedClusters: pass1Result.updatedClusters,
+    newClusters,
+    remainingNoise,
+    stats,
+    details: {
+      assigned: pass1Result.assigned,
+      rejectedThreshold: pass1Result.rejectedThreshold,
+      rejectedFull: pass1Result.rejectedFull,
+      newClustersDetails,
+    },
+  };
+}

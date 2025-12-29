@@ -11,6 +11,7 @@ export function Header() {
     { href: "/all", label: "All Articles" },
     { href: "/clusters", label: "Clusters" },
     { href: "/sources", label: "Sources" },
+    { href: "/logs", label: "Logs" },
   ];
 
   return (

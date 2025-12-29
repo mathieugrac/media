@@ -271,32 +271,29 @@ curl -X POST http://localhost:3000/api/cluster
 
 ---
 
-## Phase 7: Incremental Assignment (Future)
+## Phase 7: Incremental Assignment ✅
 
 **Goal**: Automatically assign new articles to existing clusters during refresh.
 
-> **Note**: This phase is optional for MVP. Can run full re-clustering manually.
+### Implementation (Completed)
 
-### Tasks
+**Two-pass approach:**
+1. **Pass 1**: Assign unclustered articles to existing clusters via centroid similarity (threshold: 0.72)
+2. **Pass 2**: Run mini-DBSCAN on remaining noise to form new clusters
 
-1. **Update `/api/refresh`**
-   - After embedding new articles:
-     - Load existing clusters
-     - For each new article, find nearest cluster centroid
-     - If similarity > 0.75, assign to cluster
-     - Else mark as unclustered
-
-2. **Add `assignToCluster()` function**
-   - `assignToCluster(article: StoredArticle, clusters: Cluster[]): string | null`
-   - Returns cluster ID or null (unclustered)
-
-3. **Update cluster centroids**
-   - Recompute centroid when articles are added
+**Strategy decisions:**
+- Similarity threshold: 0.72 (stricter than DBSCAN's 0.68 for single-article-to-centroid comparison)
+- Centroid updates: Immediate (after each assignment)
+- Max cluster size: Respected (full clusters are skipped)
+- Cluster naming: Keep existing names, only name new clusters
 
 ### Deliverables
-- [ ] Incremental assignment in refresh flow
-- [ ] Centroid update logic
-- [ ] Articles auto-assigned between manual re-clusters
+- [x] `assignArticlesToClusters()` in `lib/clustering.ts`
+- [x] `clusterNoiseArticles()` in `lib/clustering.ts`
+- [x] `incrementalAssignment()` orchestrator function
+- [x] `runIncrementalAssignment()` in `/api/refresh/route.ts`
+- [x] Articles auto-assigned during refresh
+- [x] New clusters formed and named from noise
 
 ---
 

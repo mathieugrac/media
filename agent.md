@@ -4,94 +4,33 @@
 
 News aggregation platform for French independent media. An alternative to corporate media by unifying independent sources.
 
-## 🎯 Architecture Principles
+## ⛔ STOP — Before Any Technical Proposal
 
-### Core Philosophy: Clean, Readable, Scalable
+Do NOT suggest implementation until you have:
 
-**Always prioritize separation of concerns and reusable components.**
+1. End-user expected result (what they see/do)
+2. Concrete example of expected output
+3. Confirmed simplest approach solves actual problem, not generalized version
 
-### 1. Separate Data from Logic
+---
 
-✅ **DO:**
+## 🎯 Architecture Rules
 
-- Isolate data in dedicated files (`data/`)
-- Separate business logic from configuration
-- Use pure functions
+- Static data → `data/` | Logic → `lib/` | Prompts → `prompts/`
+- No hardcoded values in functions
+- One function = one responsibility
+- Fail gracefully, retry network requests
 
-❌ **DON'T:**
+---
 
-- Mix data and logic in the same file
-- Hardcode values in functions
+## 🎨 UI Rules
 
-```typescript
-// ✅ GOOD
-// data/sources.ts
-export const MEDIA_SOURCES = [...];
+Shadcn/UI only. Minimalist.
 
-// lib/sources.ts (or any file needing source helpers)
-import { getEnabledSources } from "@/lib/sources";
-
-// ❌ BAD - hardcoded in logic
-const sources = [{ name: "...", url: "..." }];
-```
-
-### 2. Enriched Types
-
-```typescript
-export interface MediaSource {
-  id: string;
-  name: string;
-  rssUrl: string;
-  baseUrl: string;
-  enabled: boolean;
-  category?: string;
-  priority?: number;
-  description?: string;
-}
-```
-
-### 3. Modular Functions
-
-✅ One function = one responsibility  
-❌ No 200-line monolithic functions
-
-### 4. Error Handling
-
-- Retry mechanism for network requests
-- Structured logging
-- Fail gracefully
-
-### 5. Performance
-
-- Smart caching
-- Parallel execution
-- Lazy loading when needed
-
-### 6. File Organization
-
-```
-data/
-├── sources.ts         # RSS sources data (static)
-└── categories.ts      # Category taxonomy data (static)
-
-lib/
-├── sources.ts         # Source helper functions
-├── categories.ts      # Category helper functions
-├── rss-fetcher.ts     # RSS fetching logic
-├── keywords.ts        # Keyword extraction (Anthropic Claude)
-├── storage.ts         # Vercel Blob storage (load/save articles)
-└── utils.ts           # Utilities
-
-prompts/
-└── keywords-extract.ts  # LLM prompt for keyword extraction
-
-scripts/
-├── reextract-keywords.ts  # Re-extract keywords for existing articles
-└── export-keywords.ts     # Export articles with keywords to JSON
-
-types/
-└── article.ts         # TypeScript types
-```
+- **Font size:** 14px default, 12px secondary. No other sizes unless justified.
+- **Colors:** Black text, gray text. Red = warning, green = validation. Nothing else.
+- **Weight:** Avoid bold. Use sparingly.
+- **No:** fancy boxes, unnecessary dividers, decorative elements, emojis
 
 ---
 
@@ -107,28 +46,31 @@ types/
 
 ### LLM Strategy
 
-| Service   | Model           | Use Case                           |
-| --------- | --------------- | ---------------------------------- |
-| Anthropic | Claude Sonnet 4 | Keyword extraction (for embedding) |
-| OpenAI    | text-embedding-3-small | Embeddings for clustering    |
+| Service   | Model                  | Use Case                   | Status          |
+| --------- | ---------------------- | -------------------------- | --------------- |
+| Anthropic | Claude Sonnet 4        | Story/event identification | ✅ Active       |
+| OpenAI    | text-embedding-3-small | Embeddings for clustering  | ⚠️ Under review |
 
-> **Note:** Keyword extraction runs only on NEW articles to minimize costs.
+> **Note:** LLM extraction runs only on NEW articles to minimize costs.
 
-### Clustering (DBSCAN)
+### Clustering (DBSCAN) — ⚠️ Under Review
+
+> **Note:** This approach is being reconsidered. See "Strategy Pivot" in Current Status.
 
 Articles are clustered using DBSCAN with cosine distance on embeddings.
 
 **Key parameter:** `epsilon` (ε) = max cosine distance for neighbors
 
-| Epsilon | Similarity | Effect |
-|---------|------------|--------|
-| 0.25 | > 75% | Too strict - few/no clusters |
-| **0.32** | **> 68%** | **Default - best results** |
-| 0.36 | > 64% | Looser - larger clusters |
+| Epsilon  | Similarity | Effect                       |
+| -------- | ---------- | ---------------------------- |
+| 0.25     | > 75%      | Too strict - few/no clusters |
+| **0.32** | **> 68%**  | **Default - best results**   |
+| 0.36     | > 64%      | Looser - larger clusters     |
 
 > **Best range:** ε = 0.31 to 0.36 based on testing with French news articles.
 
 **Other settings:**
+
 - `minClusterSize`: 2 (minimum articles to form a cluster)
 - `maxClusterSize`: 10 (cap to prevent mega-clusters)
 
@@ -137,18 +79,19 @@ Articles are clustered using DBSCAN with cosine distance on embeddings.
 New articles are automatically assigned to existing clusters during refresh, without full re-clustering.
 
 **Two-pass approach:**
+
 1. **Pass 1**: Assign new articles to existing clusters via centroid similarity
 2. **Pass 2**: Run mini-DBSCAN on noise articles to form new clusters
 
 **Strategy decisions:**
 
-| Setting | Value | Rationale |
-|---------|-------|-----------|
-| **Similarity threshold** | 0.72 | Stricter than DBSCAN (0.68) because centroid comparison is less robust than density-based clustering |
-| **Centroid update** | Immediate | Update after each assignment for accuracy in batch processing |
-| **Max cluster size** | Respect cap (10) | Full clusters are skipped; new articles stay as noise until re-clustering |
-| **Noise handling** | Two-pass | First assign to existing, then mini-cluster noise for new stories |
-| **Cluster naming** | Keep existing | Only name newly formed clusters from noise |
+| Setting                  | Value            | Rationale                                                                                            |
+| ------------------------ | ---------------- | ---------------------------------------------------------------------------------------------------- |
+| **Similarity threshold** | 0.72             | Stricter than DBSCAN (0.68) because centroid comparison is less robust than density-based clustering |
+| **Centroid update**      | Immediate        | Update after each assignment for accuracy in batch processing                                        |
+| **Max cluster size**     | Respect cap (10) | Full clusters are skipped; new articles stay as noise until re-clustering                            |
+| **Noise handling**       | Two-pass         | First assign to existing, then mini-cluster noise for new stories                                    |
+| **Cluster naming**       | Keep existing    | Only name newly formed clusters from noise                                                           |
 
 **Threshold rationale:** DBSCAN uses ε=0.32 (accepts ~68% similarity) but relies on density (multiple neighbors). Incremental assignment compares single article → centroid (an average), which is less robust. Using 72% prevents topic drift.
 
@@ -259,9 +202,17 @@ REFRESH_SECRET=your-secret-key   # optional
 
 🔜 **Next Steps:**
 
-- Embedding generation from keywords
-- Article clustering
-- Cluster naming (LLM)
+- Story/event identification (LLM-based, replacing embeddings approach)
+- Article grouping by story ID
+- Cluster display for end-users
+
+### ⚠️ Strategy Pivot: Clustering
+
+**Previous approach (deprecated):** Keywords → Embeddings → DBSCAN → Cluster naming
+
+**New approach:** LLM extracts a normalized `story_id` per article → Group by matching IDs
+
+**Why:** The goal is to group articles by **event/story** (all Mayotte articles together), not by **semantic similarity** (which separates different angles on the same story). Direct LLM classification is simpler, cheaper, and more aligned with the actual user need.
 
 **GitHub:** https://github.com/mathieugrac/media
 

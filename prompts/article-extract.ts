@@ -24,31 +24,37 @@ Name the NEWS STORY so that all articles about the same story are grouped togeth
 
 ### Required format
 - 2-5 words maximum
-- Simple noun phrase
-- No verbs, no complete sentences
+- Simple noun phrase in natural French
+- No verbs, no complete sentences, no awkward constructions
 
 ### ❌ NEVER DO
-- Describe the article: "Rethinking education in times of crisis" ❌
-- Include the angle: "Critique of migration policy" ❌
-- Be too vague: "Global trends 2026" ❌
-- Be too specific: "Kennedy's speech about Robert Frost" ❌
-- Thesis titles: "Digital transformation of society" ❌
+- Describe the article angle: "Repenser l'éducation face aux crises" ❌
+- Use the article FORMAT as subject: "Interview Émilie Hache" ❌ → name the TOPIC discussed
+- Be too vague with just a year: "Économie russe 2024" ❌ → name the specific phenomenon
+- Generic umbrella terms: "Réglementations environnementales" ❌ → name the specific regulation
+- Thesis-style titles: "Transformation numérique de la société" ❌
+- Awkward word order: "Renaissance forestière gaélique Écosse" ❌
 
 ### ✅ ALWAYS DO
-- Name the EVENT or AFFAIR: "Brigitte Bardot death" ✅
-- Name the CONCRETE TOPIC: "French pension reform 2023" ✅
+- Name the EVENT or AFFAIR: "Mort de Brigitte Bardot" ✅
+- Name the CONCRETE TOPIC: "Réforme des retraites 2023" ✅
+- For interviews: name what is DISCUSSED, not the person: "Écologie et égalité sociale" ✅
+- For economic news: name the PHENOMENON: "Récession industrielle russe" ✅
+- Use natural French word order: "Forêts et langue gaélique en Écosse" ✅
 - Stay GROUPABLE: another article on the same topic must match
 
 ### Concrete examples
 
-| Article title | ❌ Bad | ✅ Good |
-|---------------|--------|--------|
-| "Tim Ingold: «We need to bring education and democracy closer»" | Rethinking education and democracy in contemporary crises | Tim Ingold interview |
-| "No, Brigitte Bardot was not defending animals" | Brigitte Bardot death | Brigitte Bardot death |
-| "Racism: tributes to Brigitte Bardot divide opinion" | Brigitte Bardot tributes and controversies | Brigitte Bardot death |
-| "The stone of madness" (about digital) | Digital transformation of society | Digital technology critique |
-| "2025, the year of 120 temperature records" | Global temperature records 2025 | Climate change 2025 |
-| "In the Caribbean, fishermen terrified by Trump's bombs" | American bombings in the Caribbean | Trump foreign policy |
+| Titre de l'article | ❌ Mauvais | ✅ Bon |
+|-------------------|-----------|-------|
+| "Tim Ingold: «Il faut rapprocher l'éducation et la démocratie»" | Repenser l'éducation et la démocratie face aux crises | Éducation et démocratie |
+| "Non, Brigitte Bardot ne défendait pas les animaux" | Héritage controversé de Brigitte Bardot | Mort de Brigitte Bardot |
+| "Émilie Hache: Plus il y a d'égalité, plus il y a d'écologie" | Interview Émilie Hache | Écologie et égalité sociale |
+| "Économie russe: la production recule pour le 7e mois consécutif" | Économie russe 2024 | Récession industrielle russe |
+| "Gobelets plastiques: l'interdiction repoussée à 2030" | Réglementations environnementales 2026 | Report interdiction plastiques |
+| "En Écosse, la bataille de la langue gaélique pour les forêts" | Renaissance forestière gaélique Écosse | Forêts et langue gaélique en Écosse |
+| "Dormir dans le froid glace le sang: les sans-abri errent à Paris" | Plan grand froid Paris 2025 | Sans-abri et grand froid Paris |
+| "Dans les Caraïbes, des pêcheurs terrorisés par les bombes de Trump" | Bombardements américains Caraïbes | Politique étrangère de Trump |
 
 ### TOP PRIORITY: Reuse existing subjects
 If a subject from the provided list matches (even partially), REUSE IT EXACTLY.
@@ -74,8 +80,8 @@ For semantic clustering. DO NOT include domain (already extracted).
 - 1 geographic scope if relevant: france, europe, afrique, moyen-orient, asie, amériques, international
 
 ### Rules
-- Synthesize: "institutional migration repression" rather than "repression, migration, state"
-- Qualify: "Russo-Ukrainian war" rather than "war"
+- Synthesize: "répression institutionnelle des migrations" rather than "répression, migration, État"
+- Qualify: "guerre russo-ukrainienne" rather than "guerre"
 - No verbatim fragments from the title
 - French only, lowercase except proper nouns
 

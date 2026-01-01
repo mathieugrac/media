@@ -3,7 +3,6 @@
 import type { ArticleWithEmbedding } from "./page";
 import { useState, useMemo } from "react";
 import { format } from "date-fns";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   ChevronUp,
@@ -17,9 +16,9 @@ import {
   X,
 } from "lucide-react";
 import { RefreshButton } from "@/components/refresh-button";
-import { ExtractKeywordsButton } from "@/components/extract-keywords-button";
+import { EnrichArticlesButton } from "@/components/extract-keywords-button";
 
-type SortField = "id" | "datetime" | "source" | "title" | "excerpt" | "subject" | "domain" | "keywords" | "embedding" | "category";
+type SortField = "id" | "datetime" | "source" | "domain" | "subject" | "title" | "excerpt" | "keywords" | "embedding";
 type SortDirection = "asc" | "desc" | null;
 
 const ARTICLES_PER_PAGE = 100;
@@ -94,10 +93,6 @@ export function AllArticlesTable({ articles, totalInDatabase }: AllArticlesTable
         case "embedding":
           aValue = a.hasEmbedding ? 1 : 0;
           bValue = b.hasEmbedding ? 1 : 0;
-          break;
-        case "category":
-          aValue = (a.category || "").toLowerCase();
-          bValue = (b.category || "").toLowerCase();
           break;
         default:
           return 0;
@@ -186,7 +181,7 @@ export function AllArticlesTable({ articles, totalInDatabase }: AllArticlesTable
             </div>
             {/* Action Buttons */}
             <RefreshButton variant="default" />
-            <ExtractKeywordsButton />
+            <EnrichArticlesButton />
           </div>
         </div>
       </header>
@@ -218,12 +213,11 @@ export function AllArticlesTable({ articles, totalInDatabase }: AllArticlesTable
                 {getSortIcon("source")}
               </th>
               <th
-                className="px-2 py-2 text-left font-semibold cursor-pointer hover:bg-muted transition-colors"
-                onClick={() => handleSort("title")}
-                style={{ minWidth: "250px" }}
+                className="px-2 py-2 text-left font-semibold cursor-pointer hover:bg-muted transition-colors whitespace-nowrap"
+                onClick={() => handleSort("domain")}
               >
-                Title
-                {getSortIcon("title")}
+                Domain
+                {getSortIcon("domain")}
               </th>
               <th
                 className="px-2 py-2 text-left font-semibold cursor-pointer hover:bg-muted transition-colors"
@@ -234,11 +228,12 @@ export function AllArticlesTable({ articles, totalInDatabase }: AllArticlesTable
                 {getSortIcon("subject")}
               </th>
               <th
-                className="px-2 py-2 text-left font-semibold cursor-pointer hover:bg-muted transition-colors whitespace-nowrap"
-                onClick={() => handleSort("domain")}
+                className="px-2 py-2 text-left font-semibold cursor-pointer hover:bg-muted transition-colors"
+                onClick={() => handleSort("title")}
+                style={{ minWidth: "250px" }}
               >
-                Domain
-                {getSortIcon("domain")}
+                Title
+                {getSortIcon("title")}
               </th>
               <th
                 className="px-2 py-2 text-left font-semibold cursor-pointer hover:bg-muted transition-colors"
@@ -257,18 +252,11 @@ export function AllArticlesTable({ articles, totalInDatabase }: AllArticlesTable
                 {getSortIcon("keywords")}
               </th>
               <th
-                className="px-2 py-2 text-center font-semibold cursor-pointer hover:bg-muted transition-colors whitespace-nowrap"
+                className="pl-2 pr-4 py-2 text-center font-semibold cursor-pointer hover:bg-muted transition-colors whitespace-nowrap"
                 onClick={() => handleSort("embedding")}
               >
                 Emb
                 {getSortIcon("embedding")}
-              </th>
-              <th
-                className="pl-2 pr-4 py-2 text-left font-semibold cursor-pointer hover:bg-muted transition-colors whitespace-nowrap"
-                onClick={() => handleSort("category")}
-              >
-                Category
-                {getSortIcon("category")}
               </th>
             </tr>
           </thead>
@@ -287,6 +275,12 @@ export function AllArticlesTable({ articles, totalInDatabase }: AllArticlesTable
                 <td className="px-2 py-1.5 font-medium whitespace-nowrap">
                   {article.source}
                 </td>
+                <td className="px-2 py-1.5">
+                  {article.domain || <span className="text-muted-foreground/50">-</span>}
+                </td>
+                <td className="px-2 py-1.5" style={{ minWidth: "180px" }}>
+                  {article.subject || <span className="text-muted-foreground/50">-</span>}
+                </td>
                 <td className="px-2 py-1.5" style={{ minWidth: "250px" }}>
                   <a
                     href={article.url}
@@ -296,15 +290,6 @@ export function AllArticlesTable({ articles, totalInDatabase }: AllArticlesTable
                   >
                     {article.title}
                   </a>
-                </td>
-                <td
-                  className="px-2 py-1.5"
-                  style={{ minWidth: "180px" }}
-                >
-                  {article.subject || <span className="text-muted-foreground/50">-</span>}
-                </td>
-                <td className="px-2 py-1.5">
-                  {article.domain || <span className="text-muted-foreground/50">-</span>}
                 </td>
                 <td
                   className="px-2 py-1.5 text-muted-foreground"
@@ -318,20 +303,11 @@ export function AllArticlesTable({ articles, totalInDatabase }: AllArticlesTable
                 >
                   {article.keywords || <span className="text-muted-foreground/50">-</span>}
                 </td>
-                <td className="px-2 py-1.5 text-center">
+                <td className="pl-2 pr-4 py-1.5 text-center">
                   {article.hasEmbedding ? (
                     <Check className="h-4 w-4 text-green-500 inline" />
                   ) : (
                     <X className="h-4 w-4 text-muted-foreground/50 inline" />
-                  )}
-                </td>
-                <td className="pl-2 pr-4 py-1.5">
-                  {article.category ? (
-                    <Badge variant="secondary" className="text-[10px] px-1.5 py-0.5">
-                      {article.category}
-                    </Badge>
-                  ) : (
-                    <span className="text-muted-foreground">-</span>
                   )}
                 </td>
               </tr>

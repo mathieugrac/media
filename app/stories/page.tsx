@@ -40,7 +40,7 @@ export default async function StoriesPage() {
 
   // Convert to array and sort by article count
   const stories = Array.from(storiesMap.values())
-    .filter((s) => s.articles.length >= 3) // Only show stories with 3+ articles
+    .filter((s) => s.articles.length >= 2) // Only show stories with 2+ articles
     .sort((a, b) => b.articles.length - a.articles.length)
     .map((story) => ({
       ...story,
@@ -107,9 +107,9 @@ export default async function StoriesPage() {
       <div className="container mx-auto px-4 py-6">
         {stories.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground">
-            <p>Aucun sujet avec 3+ articles.</p>
+            <p>Aucun sujet avec 2+ articles.</p>
             <p className="text-sm mt-2">
-              Les sujets apparaîtront quand au moins 3 sources couvriront la
+              Les sujets apparaîtront quand au moins 2 sources couvriront la
               même actualité.
             </p>
           </div>
@@ -129,4 +129,3 @@ export default async function StoriesPage() {
     </div>
   );
 }
-

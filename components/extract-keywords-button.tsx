@@ -3,22 +3,22 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
-interface ExtractResult {
+interface EnrichResult {
   success: boolean;
   stats?: {
-    processed: number;
-    extracted: number;
-    remaining: number;
+    articlesProcessed: number;
+    articlesEnriched: number;
+    articlesRemaining: number;
   };
   message?: string;
   error?: string;
 }
 
-export function ExtractKeywordsButton() {
+export function EnrichArticlesButton() {
   const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState<ExtractResult | null>(null);
+  const [result, setResult] = useState<EnrichResult | null>(null);
 
-  const handleExtract = async () => {
+  const handleEnrich = async () => {
     setIsLoading(true);
     setResult(null);
 
@@ -27,11 +27,10 @@ export function ExtractKeywordsButton() {
         method: "POST",
       });
 
-      const data: ExtractResult = await response.json();
+      const data: EnrichResult = await response.json();
       setResult(data);
 
       if (data.success) {
-        // Reload after showing result
         setTimeout(() => {
           window.location.replace(window.location.pathname);
         }, 1500);
@@ -56,21 +55,24 @@ export function ExtractKeywordsButton() {
           }`}
         >
           {result.success
-            ? result.stats?.extracted === 0
+            ? result.stats?.articlesEnriched === 0
               ? "All done!"
-              : `+${result.stats?.extracted} keywords (${result.stats?.remaining} left)`
+              : `+${result.stats?.articlesEnriched} enriched (${result.stats?.articlesRemaining} left)`
             : result.message || "Error"}
         </span>
       )}
       <Button
-        onClick={handleExtract}
+        onClick={handleEnrich}
         disabled={isLoading}
         variant="outline"
         size="sm"
       >
-        {isLoading ? "Extracting..." : "Extract Keywords"}
+        {isLoading ? "Enriching..." : "Enrich Articles"}
       </Button>
     </div>
   );
 }
+
+// Keep old export for backward compatibility
+export { EnrichArticlesButton as ExtractKeywordsButton };
 

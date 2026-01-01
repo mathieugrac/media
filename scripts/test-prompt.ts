@@ -35,9 +35,7 @@ async function testPrompt() {
     if (result) {
       console.log(`→ SUBJECT: ${result.subject}`);
       console.log(`→ DOMAIN: ${result.domain}`);
-      if (Array.isArray(result.keywords)) {
-        console.log(`→ KEYWORDS: ${result.keywords.slice(0, 5).join(", ")}`);
-      }
+      console.log(`→ KEYWORDS: ${result.keywords}`);
     } else {
       console.log("→ ❌ FAILED");
     }

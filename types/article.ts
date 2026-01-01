@@ -11,6 +11,10 @@ export interface Article {
   category?: string;
   /** Comma-separated keywords for embedding-based clustering */
   keywords?: string;
+  /** Human-readable subject/story identifier for grouping */
+  subject?: string;
+  /** Domain category (politique, société, etc.) */
+  domain?: string;
 }
 
 /**

@@ -19,7 +19,7 @@ import {
 import { RefreshButton } from "@/components/refresh-button";
 import { ExtractKeywordsButton } from "@/components/extract-keywords-button";
 
-type SortField = "id" | "datetime" | "source" | "title" | "excerpt" | "keywords" | "embedding" | "category";
+type SortField = "id" | "datetime" | "source" | "title" | "excerpt" | "subject" | "domain" | "keywords" | "embedding" | "category";
 type SortDirection = "asc" | "desc" | null;
 
 const ARTICLES_PER_PAGE = 100;
@@ -78,6 +78,14 @@ export function AllArticlesTable({ articles, totalInDatabase }: AllArticlesTable
         case "excerpt":
           aValue = a.excerpt.toLowerCase();
           bValue = b.excerpt.toLowerCase();
+          break;
+        case "subject":
+          aValue = (a.subject || "").toLowerCase();
+          bValue = (b.subject || "").toLowerCase();
+          break;
+        case "domain":
+          aValue = (a.domain || "").toLowerCase();
+          bValue = (b.domain || "").toLowerCase();
           break;
         case "keywords":
           aValue = (a.keywords || "").toLowerCase();
@@ -219,6 +227,21 @@ export function AllArticlesTable({ articles, totalInDatabase }: AllArticlesTable
               </th>
               <th
                 className="px-2 py-2 text-left font-semibold cursor-pointer hover:bg-muted transition-colors"
+                onClick={() => handleSort("subject")}
+                style={{ minWidth: "180px" }}
+              >
+                Subject
+                {getSortIcon("subject")}
+              </th>
+              <th
+                className="px-2 py-2 text-left font-semibold cursor-pointer hover:bg-muted transition-colors whitespace-nowrap"
+                onClick={() => handleSort("domain")}
+              >
+                Domain
+                {getSortIcon("domain")}
+              </th>
+              <th
+                className="px-2 py-2 text-left font-semibold cursor-pointer hover:bg-muted transition-colors"
                 onClick={() => handleSort("excerpt")}
                 style={{ minWidth: "300px" }}
               >
@@ -273,6 +296,15 @@ export function AllArticlesTable({ articles, totalInDatabase }: AllArticlesTable
                   >
                     {article.title}
                   </a>
+                </td>
+                <td
+                  className="px-2 py-1.5"
+                  style={{ minWidth: "180px" }}
+                >
+                  {article.subject || <span className="text-muted-foreground/50">-</span>}
+                </td>
+                <td className="px-2 py-1.5">
+                  {article.domain || <span className="text-muted-foreground/50">-</span>}
                 </td>
                 <td
                   className="px-2 py-1.5 text-muted-foreground"

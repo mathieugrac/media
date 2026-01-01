@@ -24,6 +24,10 @@ import {
 import { extractKeywordsForArticles } from "@/lib/keywords";
 import { embedKeywordsBatch } from "@/lib/embeddings";
 import {
+  getActiveSubjects,
+  trackSubjectsBatch,
+} from "@/lib/subject-storage";
+import {
   incrementalAssignment,
   type ArticleForClustering,
   type IncrementalAssignmentResult,
@@ -247,16 +251,34 @@ async function handleRefresh(): Promise<NextResponse> {
       url: a.url,
     }));
 
-    // Step 4: Extract keywords for new articles only
+    // Step 4: Extract subject, domain, and keywords for new articles
     let articlesToSave = allStoredArticles;
     let keywordsSucceeded = 0;
     let keywordsFailed = 0;
 
     if (newArticles.length > 0) {
-      console.log("🔑 Step 4: Extracting keywords for new articles...");
+      console.log("🔑 Step 4: Extracting data for new articles...");
       log.keywords.attempted = newArticles.length;
 
-      const newWithKeywords = await extractKeywordsForArticles(newArticles);
+      // Load existing subjects for consistency
+      const existingSubjects = await getActiveSubjects();
+      console.log(`📋 Loaded ${existingSubjects.length} existing subjects`);
+
+      const newWithData = await extractKeywordsForArticles(
+        newArticles,
+        existingSubjects
+      );
+
+      // Track new subjects
+      const newSubjects = newWithData
+        .filter((a) => a.subject)
+        .map((a) => a.subject!);
+      if (newSubjects.length > 0) {
+        await trackSubjectsBatch(newSubjects);
+        console.log(`📋 Tracked ${newSubjects.length} subjects`);
+      }
+
+      const newWithKeywords = newWithData;
 
       // Count successes and failures
       keywordsSucceeded = newWithKeywords.filter((a) => a.keywords).length;
@@ -279,15 +301,24 @@ async function handleRefresh(): Promise<NextResponse> {
           }));
       }
 
-      // Replace new articles in the full list with keyword-enriched versions
+      // Replace new articles in the full list with enriched versions
       const newUrlsSet = new Set(newArticles.map((a) => a.url));
-      const keywordsByUrl = new Map(
-        newWithKeywords.map((a) => [a.url, a.keywords])
+      const enrichedByUrl = new Map(
+        newWithKeywords.map((a) => [
+          a.url,
+          { keywords: a.keywords, subject: a.subject, domain: a.domain },
+        ])
       );
 
       articlesToSave = allStoredArticles.map((article) => {
         if (newUrlsSet.has(article.url)) {
-          return { ...article, keywords: keywordsByUrl.get(article.url) };
+          const enriched = enrichedByUrl.get(article.url);
+          return {
+            ...article,
+            keywords: enriched?.keywords,
+            subject: enriched?.subject,
+            domain: enriched?.domain,
+          };
         }
         return article;
       });
@@ -385,6 +416,7 @@ async function handleRefresh(): Promise<NextResponse> {
     revalidatePath("/");
     revalidatePath("/all");
     revalidatePath("/clusters");
+    revalidatePath("/stories");
     revalidatePath("/logs");
     console.log("🔄 Page caches revalidated");
 

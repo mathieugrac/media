@@ -8,6 +8,8 @@ export const dynamic = "force-dynamic";
 /** Extended Article with embedding info for the table */
 export interface ArticleWithEmbedding extends Article {
   hasEmbedding: boolean;
+  subject?: string;
+  domain?: string;
 }
 
 /**
@@ -26,6 +28,8 @@ function toArticle(stored: StoredArticle): ArticleWithEmbedding {
     category: stored.category,
     keywords: stored.keywords,
     hasEmbedding: Array.isArray(stored.embedding) && stored.embedding.length > 0,
+    subject: stored.subject,
+    domain: stored.domain,
   };
 }
 

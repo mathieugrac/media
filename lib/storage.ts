@@ -31,6 +31,10 @@ export interface StoredArticle {
   keywords?: string;
   /** 512-dimensional embedding vector from keywords (OpenAI text-embedding-3-small) */
   embedding?: number[];
+  /** Human-readable subject/story identifier for grouping */
+  subject?: string;
+  /** Domain category (politique, société, etc.) */
+  domain?: string;
 }
 
 interface ArticlesFile {
@@ -121,4 +125,31 @@ export async function saveArticles(
     newCount: uniqueNewArticles.length,
     total: mergedArticles.length,
   };
+}
+
+/**
+ * Replace all articles in Vercel Blob (for backfill/updates)
+ * Does NOT merge - directly overwrites with provided articles
+ */
+export async function replaceAllArticles(
+  articles: StoredArticle[]
+): Promise<void> {
+  // Sort by date (newest first)
+  const sorted = [...articles].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
+
+  const data: ArticlesFile = {
+    totalArticles: sorted.length,
+    lastUpdated: new Date().toISOString(),
+    articles: sorted,
+  };
+
+  await put(BLOB_FILENAME, JSON.stringify(data, null, 2), {
+    access: "public",
+    addRandomSuffix: false,
+    allowOverwrite: true,
+  });
+
+  console.log(`💾 Replaced all articles in Blob (${sorted.length} total)`);
 }

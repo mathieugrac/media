@@ -121,7 +121,23 @@ export async function POST(): Promise<NextResponse> {
       console.log(`🔢 Generated ${embeddingsGenerated} embeddings`);
     }
 
-    // Step 5: Save to Blob
+    // Step 5: Safety check - reload and verify article count before saving
+    const freshArticles = await loadArticles();
+    if (freshArticles.length > updatedArticles.length) {
+      console.error(
+        `❌ ABORT: Would lose ${freshArticles.length - updatedArticles.length} articles. Stale data detected.`
+      );
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Stale data detected",
+          message: `Loaded ${updatedArticles.length} but database has ${freshArticles.length}. Retry.`,
+        },
+        { status: 409 }
+      );
+    }
+
+    // Save to Blob
     const data: ArticlesFile = {
       totalArticles: updatedArticles.length,
       lastUpdated: new Date().toISOString(),

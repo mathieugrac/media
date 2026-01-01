@@ -130,10 +130,20 @@ export async function saveArticles(
 /**
  * Replace all articles in Vercel Blob (for backfill/updates)
  * Does NOT merge - directly overwrites with provided articles
+ * Includes safety check to prevent data loss from stale reads
  */
 export async function replaceAllArticles(
   articles: StoredArticle[]
 ): Promise<void> {
+  // Safety check: reload to verify we're not losing articles
+  const freshArticles = await loadArticles();
+  if (freshArticles.length > articles.length) {
+    throw new Error(
+      `ABORT: Would lose ${freshArticles.length - articles.length} articles. ` +
+        `Loaded ${articles.length} but database has ${freshArticles.length}.`
+    );
+  }
+
   // Sort by date (newest first)
   const sorted = [...articles].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()

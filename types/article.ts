@@ -45,6 +45,8 @@ export interface MediaSource {
   cacheMinutes?: number;
   /** Short description of the media source */
   description?: string;
+  /** Full description with more details about coverage and history */
+  fullDescription?: string;
   /** Last successful fetch timestamp (for monitoring) */
   lastFetched?: Date;
   /** Error count (for reliability tracking) */

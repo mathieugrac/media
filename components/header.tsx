@@ -7,7 +7,7 @@ export function Header() {
   const pathname = usePathname();
 
   const links = [
-    { href: "/", label: "Latest" },
+    { href: "/", label: "Latest Articles" },
     { href: "/all", label: "All Articles" },
     { href: "/stories", label: "Stories" },
     { href: "/themes", label: "Themes" },

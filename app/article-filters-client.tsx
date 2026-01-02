@@ -1,11 +1,11 @@
 "use client";
 
 import { useMemo, useState, useCallback, useEffect } from "react";
+import Image from "next/image";
 import { Article } from "@/types/article";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { ArticleCard } from "@/components/article-card";
+import { MEDIA_SOURCES } from "@/data/sources";
 
 const ARTICLES_PER_PAGE = 20;
 
@@ -86,6 +86,11 @@ export function ArticleFiltersClient({
     };
   }, [isFilterOpen]);
 
+  // Reset display count when filters change (always start with 20 articles)
+  useEffect(() => {
+    setDisplayCount(ARTICLES_PER_PAGE);
+  }, [selectedSources]);
+
   const selectSource = useCallback(
     (sourceName: string) => {
       if (selectedSources === null) {
@@ -115,22 +120,18 @@ export function ArticleFiltersClient({
     setSelectedSources(null);
   }, []);
 
-  // First: paginate all articles (load N articles)
-  const paginatedArticles = useMemo(() => {
-    return articles.slice(0, displayCount);
-  }, [articles, displayCount]);
-
-  // Then: filter within the paginated articles
-  const displayedArticles = useMemo(() => {
-    let result = paginatedArticles;
-
-    // Filter by sources
-    if (selectedSources !== null) {
-      result = result.filter((article) => selectedSources.has(article.source));
+  // First: filter all articles by selected sources
+  const filteredArticles = useMemo(() => {
+    if (selectedSources === null) {
+      return articles;
     }
+    return articles.filter((article) => selectedSources.has(article.source));
+  }, [articles, selectedSources]);
 
-    return result;
-  }, [paginatedArticles, selectedSources]);
+  // Then: paginate the filtered results (always show at least 20 matching articles)
+  const displayedArticles = useMemo(() => {
+    return filteredArticles.slice(0, displayCount);
+  }, [filteredArticles, displayCount]);
 
   // Check if a source is selected (for visual feedback)
   const isSourceSelected = useCallback(
@@ -143,20 +144,19 @@ export function ArticleFiltersClient({
     [selectedSources]
   );
 
-  const hasMoreArticles = displayCount < articles.length;
+  const hasMoreArticles = displayCount < filteredArticles.length;
 
   const loadMoreArticles = useCallback(() => {
     setDisplayCount((prev) => prev + ARTICLES_PER_PAGE);
   }, []);
 
-  // Compute source counts based on paginated articles
+  // Compute source counts based on all articles (show total available per source)
   const sourcesWithDynamicCounts = useMemo(() => {
     return sources.map((source) => ({
       ...source,
-      articleCount: paginatedArticles.filter((a) => a.source === source.name)
-        .length,
+      articleCount: articles.filter((a) => a.source === source.name).length,
     }));
-  }, [sources, paginatedArticles]);
+  }, [sources, articles]);
 
   // Sort sources by article count (most articles first)
   const sortedSources = useMemo(() => {
@@ -168,22 +168,32 @@ export function ArticleFiltersClient({
   // Count active filters
   const activeFilterCount = selectedSources?.size ?? 0;
 
+  // Get selected source data when exactly one source is selected
+  const selectedSourceData = useMemo(() => {
+    if (selectedSources?.size !== 1) return null;
+    const selectedName = Array.from(selectedSources)[0];
+    return MEDIA_SOURCES.find((s) => s.name === selectedName) ?? null;
+  }, [selectedSources]);
+
   // Sources filter content (reused in sidebar and mobile overlay)
   const sourcesFilterContent = (
     <>
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold">Sources</h2>
-        {selectedSources !== null && (
-          <button
-            type="button"
-            onClick={resetSourceSelection}
-            className="text-xs text-primary hover:underline"
-          >
-            Tout activer
-          </button>
-        )}
       </div>
       <div className="flex flex-wrap gap-2">
+        {/* "Tout" tag - first element, selected by default */}
+        <button
+          type="button"
+          onClick={resetSourceSelection}
+          className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+            selectedSources === null
+              ? "border-transparent bg-primary text-primary-foreground hover:bg-primary/90"
+              : "border-border bg-background text-muted-foreground hover:bg-muted"
+          }`}
+        >
+          Tout
+        </button>
         {sortedSources.map((source) => {
           const isSelected = isSourceSelected(source.name);
           const isDisabled = source.articleCount === 0;
@@ -196,7 +206,7 @@ export function ArticleFiltersClient({
               className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
                 isDisabled
                   ? "border-border bg-muted/50 text-muted-foreground/50 cursor-not-allowed"
-                  : isSelected
+                  : isSelected && selectedSources !== null
                   ? "border-transparent bg-primary text-primary-foreground hover:bg-primary/90"
                   : "border-border bg-background text-muted-foreground hover:bg-muted"
               }`}
@@ -264,51 +274,47 @@ export function ArticleFiltersClient({
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-[1fr_minmax(auto,620px)_1fr] gap-[60px]">
+      <div className="grid grid-cols-1 md:grid-cols-[1fr_minmax(auto,620px)_1fr] gap-6 md:gap-[90px]">
         {/* Column 1: Sidebar with filters - hidden on mobile */}
         <aside className="hidden md:block md:sticky md:top-16 md:self-start">
-          <Card className="border bg-card gap-2">
-            {/* Sources section */}
-            <CardHeader className="">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Sources</CardTitle>
-                {selectedSources !== null && (
+          <h2 className="text-base font-semibold mb-4">Sources</h2>
+          <div className="max-w-[200px]">
+            {/* "Tout" tag - on its own line */}
+            <button
+              type="button"
+              onClick={resetSourceSelection}
+              className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium transition-colors mb-2 ${
+                selectedSources === null
+                  ? "border-transparent bg-primary text-primary-foreground hover:bg-primary/90"
+                  : "border-border bg-background text-muted-foreground hover:bg-muted"
+              }`}
+            >
+              Tout
+            </button>
+            <div className="flex flex-wrap gap-2">
+              {sortedSources.map((source) => {
+                const isSelected = isSourceSelected(source.name);
+                const isDisabled = source.articleCount === 0;
+                return (
                   <button
+                    key={source.id}
                     type="button"
-                    onClick={resetSourceSelection}
-                    className="text-xs text-primary hover:underline"
+                    onClick={() => !isDisabled && selectSource(source.name)}
+                    disabled={isDisabled}
+                    className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                      isDisabled
+                        ? "border-border bg-muted/50 text-muted-foreground/50 cursor-not-allowed"
+                        : isSelected && selectedSources !== null
+                        ? "border-transparent bg-primary text-primary-foreground hover:bg-primary/90"
+                        : "border-border bg-background text-muted-foreground hover:bg-muted"
+                    }`}
                   >
-                    Tout activer
+                    {source.name}
                   </button>
-                )}
-              </div>
-            </CardHeader>
-            <CardContent className="pb-4">
-              <div className="flex flex-wrap gap-2">
-                {sortedSources.map((source) => {
-                  const isSelected = isSourceSelected(source.name);
-                  const isDisabled = source.articleCount === 0;
-                  return (
-                    <button
-                      key={source.id}
-                      type="button"
-                      onClick={() => !isDisabled && selectSource(source.name)}
-                      disabled={isDisabled}
-                      className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
-                        isDisabled
-                          ? "border-border bg-muted/50 text-muted-foreground/50 cursor-not-allowed"
-                          : isSelected
-                          ? "border-transparent bg-primary text-primary-foreground hover:bg-primary/90"
-                          : "border-border bg-background text-muted-foreground hover:bg-muted"
-                      }`}
-                    >
-                      {source.name}
-                    </button>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
+                );
+              })}
+            </div>
+          </div>
         </aside>
 
         {/* Column 2: Article list */}
@@ -339,8 +345,47 @@ export function ArticleFiltersClient({
           )}
         </section>
 
-        {/* Column 3: Empty for balance */}
-        <div className="hidden md:block" />
+        {/* Column 3: Source info when single source selected */}
+        <aside className="hidden md:block md:sticky md:top-16 md:self-start">
+          {selectedSourceData && (
+            <div className="space-y-3">
+              {/* Logo */}
+              {selectedSourceData.logo && (
+                <Image
+                  src={selectedSourceData.logo}
+                  alt={`Logo ${selectedSourceData.name}`}
+                  width={20}
+                  height={20}
+                  className="rounded"
+                />
+              )}
+
+              {/* Name */}
+              <h2 className="text-base font-semibold">
+                {selectedSourceData.name}
+              </h2>
+
+              {/* Full description */}
+              {selectedSourceData.fullDescription && (
+                <p className="text-xs text-foreground leading-relaxed mb-4">
+                  {selectedSourceData.fullDescription}
+                </p>
+              )}
+
+              {/* Visit website button */}
+              <a
+                href={selectedSourceData.baseUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block"
+              >
+                <Button variant="outline" size="sm">
+                  Visiter le site
+                </Button>
+              </a>
+            </div>
+          )}
+        </aside>
       </div>
     </>
   );

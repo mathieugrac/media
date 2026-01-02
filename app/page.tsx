@@ -1,6 +1,5 @@
 import { Article } from "@/types/article";
 import { ArticleFiltersClient } from "./article-filters-client";
-import { PageHeader } from "@/components/page-header";
 import { MEDIA_SOURCES } from "@/data/sources";
 import { loadArticles, type StoredArticle } from "@/lib/storage";
 
@@ -59,12 +58,12 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-background">
-      <PageHeader
-        title="Derniers articles"
-        description="Tous les articles de vos sources"
-      />
+      <div className="container mx-auto px-5 py-20">
+        {/* Page header */}
+        <div className="flex flex-col items-center text-center mb-12">
+          <h1 className="text-3xl font-bold mb-1">Derniers articles</h1>
+        </div>
 
-      <div className="container mx-auto px-4 py-8">
         {error && (
           <div className="mb-6 p-4 bg-destructive/10 text-destructive rounded-lg">
             <p>Erreur lors du chargement des articles: {error}</p>

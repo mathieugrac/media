@@ -7,6 +7,8 @@ export interface MediaSourceLinkProps {
   name: string;
   /** Size variant */
   size?: "small" | "medium";
+  /** Additional CSS classes */
+  className?: string;
 }
 
 const sizeConfig = {
@@ -28,14 +30,13 @@ const sizeConfig = {
 export function MediaSourceLink({
   name,
   size = "small",
+  className = "",
 }: MediaSourceLinkProps) {
   const source = getSourceByName(name);
   const config = sizeConfig[size];
 
-  const content = (
-    <span
-      className={`inline-flex items-center ${config.gap} ${config.fontSize} text-black hover:text-gray-600 transition-colors`}
-    >
+  const innerContent = (
+    <>
       {source?.logo && (
         <Image
           src={source.logo}
@@ -46,21 +47,29 @@ export function MediaSourceLink({
         />
       )}
       <span>{name}</span>
-    </span>
+    </>
   );
 
   if (source?.baseUrl) {
     return (
-      <Link
-        href={source.baseUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex no-underline"
-      >
-        {content}
-      </Link>
+      <div className={className}>
+        <Link
+          href={source.baseUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`inline-flex items-center ${config.gap} ${config.fontSize} text-black hover:text-gray-600 transition-colors no-underline`}
+        >
+          {innerContent}
+        </Link>
+      </div>
     );
   }
 
-  return content;
+  return (
+    <span
+      className={`inline-flex items-center ${config.gap} ${config.fontSize} text-black ${className}`}
+    >
+      {innerContent}
+    </span>
+  );
 }

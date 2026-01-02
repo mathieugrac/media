@@ -5,6 +5,7 @@ interface PageHeaderProps {
   description: string;
   action?: ReactNode;
   titleClassName?: string;
+  mobileActionPortalId?: string;
 }
 
 export function PageHeader({
@@ -12,6 +13,7 @@ export function PageHeader({
   description,
   action,
   titleClassName,
+  mobileActionPortalId,
 }: PageHeaderProps) {
   return (
     <header className="border-b border-border py-6">
@@ -28,7 +30,13 @@ export function PageHeader({
             <p className="text-muted-foreground">{description}</p>
           )}
         </div>
-        {action && <div>{action}</div>}
+        <div className="flex items-center gap-2">
+          {/* Portal target for mobile actions */}
+          {mobileActionPortalId && (
+            <div id={mobileActionPortalId} className="md:hidden" />
+          )}
+          {action && <div>{action}</div>}
+        </div>
       </div>
     </header>
   );

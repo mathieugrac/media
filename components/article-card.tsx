@@ -66,29 +66,29 @@ export function ArticleCard({
       : new Date(article.publicationDate);
 
   return (
-    <Card className="gap-3 hover:shadow-lg transition-shadow">
-      <CardHeader>
-        <div className="flex items-center justify-between gap-2">
-          <MediaSourceLink name={article.source} size="small" />
-        </div>
-        <CardTitle className="leading-snug">
-          <Link
-            href={article.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:underline"
-          >
-            {article.title}
-          </Link>
-        </CardTitle>
+    <Card className="gap-2 pt-5 pb-5 shadow-none hover:shadow-lg transition-shadow">
+      <CardHeader className="px-5">
+        <MediaSourceLink name={article.source} size="small" />
       </CardHeader>
-      <CardContent>
-        {showDescription && article.excerpt && (
-          <p className="text-sm line-clamp-3 mb-3">{article.excerpt}</p>
-        )}
-        <span className="text-xs text-muted-foreground">
-          {formatRelativeDate(publicationDate)}
-        </span>
+      <CardContent className="px-5">
+        <div>
+          <CardTitle className="leading-snug mb-2">
+            <Link
+              href={article.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline"
+            >
+              {article.title}
+            </Link>
+          </CardTitle>
+          {showDescription && article.excerpt && (
+            <p className="text-sm line-clamp-3 mb-1">{article.excerpt}</p>
+          )}
+          <span className="text-xs text-muted-foreground">
+            {formatRelativeDate(publicationDate)}
+          </span>
+        </div>
       </CardContent>
     </Card>
   );

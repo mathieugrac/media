@@ -13,6 +13,8 @@ const MIN_ARTICLES = 3;
 const MIN_SOURCES = 2;
 // Maximum themes to display
 const MAX_THEMES = 15;
+// Overlap threshold for deduplication (50% = themes sharing half their articles)
+const OVERLAP_THRESHOLD = 0.5;
 
 // Path to local extraction results for development
 const LOCAL_RESULTS_PATH = join(process.cwd(), "data/extraction-results.json");
@@ -107,10 +109,48 @@ export default async function ThemesPage() {
   });
 
   // Filter: min articles AND min sources (source diversity requirement)
-  // Sort by score, cap at MAX_THEMES
-  const themes = themesWithScore
+  // Sort by score (highest first)
+  const filteredThemes = themesWithScore
     .filter((t) => t.articles.length >= MIN_ARTICLES && t.uniqueSources >= MIN_SOURCES)
-    .sort((a, b) => b.score - a.score)
+    .sort((a, b) => b.score - a.score);
+
+  // Deduplicate: if two themes share 50%+ articles, keep only the higher-scoring one
+  const deduplicatedThemes: typeof filteredThemes = [];
+  const removedByOverlap: string[] = [];
+
+  for (const theme of filteredThemes) {
+    const themeArticleIds = new Set(theme.articles.map((a) => a.id));
+
+    // Check overlap with already-kept themes
+    let shouldKeep = true;
+    for (const keptTheme of deduplicatedThemes) {
+      const keptArticleIds = new Set(keptTheme.articles.map((a) => a.id));
+
+      // Count shared articles
+      let sharedCount = 0;
+      for (const id of themeArticleIds) {
+        if (keptArticleIds.has(id)) sharedCount++;
+      }
+
+      // Overlap = shared / smaller theme size
+      const smallerSize = Math.min(themeArticleIds.size, keptArticleIds.size);
+      const overlap = sharedCount / smallerSize;
+
+      if (overlap >= OVERLAP_THRESHOLD) {
+        // This theme overlaps too much with a higher-scoring theme
+        shouldKeep = false;
+        removedByOverlap.push(theme.theme);
+        break;
+      }
+    }
+
+    if (shouldKeep) {
+      deduplicatedThemes.push(theme);
+    }
+  }
+
+  // Cap at MAX_THEMES and format for display
+  const themes = deduplicatedThemes
     .slice(0, MAX_THEMES)
     .map((themeGroup) => ({
       theme: themeGroup.theme,
@@ -129,11 +169,16 @@ export default async function ThemesPage() {
 
   // Stats
   const uniqueArticleIds = new Set<string>();
+  let totalArticleAppearances = 0;
   for (const theme of themes) {
     for (const article of theme.articles) {
       uniqueArticleIds.add(article.id);
+      totalArticleAppearances++;
     }
   }
+
+  // Doublons = articles appearing in multiple themes
+  const doublons = totalArticleAppearances - uniqueArticleIds.size;
 
   // Count themes that passed min articles but failed source diversity
   const themesFilteredByDiversity = themesWithScore.filter(
@@ -145,7 +190,10 @@ export default async function ThemesPage() {
     themesDisplayed: themes.length,
     themesTotal: themesWithScore.filter((t) => t.articles.length >= MIN_ARTICLES).length,
     articlesGrouped: uniqueArticleIds.size,
+    totalAppearances: totalArticleAppearances,
+    doublons,
     filteredByDiversity: themesFilteredByDiversity,
+    filteredByOverlap: removedByOverlap.length,
   };
 
   return (
@@ -177,11 +225,23 @@ export default async function ThemesPage() {
             <span>
               <strong>{stats.articlesGrouped}</strong> articles groupés
             </span>
-            {stats.filteredByDiversity > 0 && (
+            {stats.doublons > 0 && (
+              <>
+                <span className="text-muted-foreground">•</span>
+                <span>
+                  <strong>{stats.doublons}</strong> doublons
+                </span>
+              </>
+            )}
+            {(stats.filteredByDiversity > 0 || stats.filteredByOverlap > 0) && (
               <>
                 <span className="text-muted-foreground">•</span>
                 <span className="text-muted-foreground">
-                  {stats.filteredByDiversity} thèmes exclus (1 seule source)
+                  {stats.filteredByDiversity + stats.filteredByOverlap} exclus
+                  {stats.filteredByDiversity > 0 && ` (${stats.filteredByDiversity} mono-source`}
+                  {stats.filteredByDiversity > 0 && stats.filteredByOverlap > 0 && ", "}
+                  {stats.filteredByOverlap > 0 && `${stats.filteredByOverlap} doublons`}
+                  {stats.filteredByDiversity > 0 && ")"}
                 </span>
               </>
             )}

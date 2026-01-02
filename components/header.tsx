@@ -10,6 +10,7 @@ export function Header() {
     { href: "/", label: "Latest" },
     { href: "/all", label: "All Articles" },
     { href: "/stories", label: "Stories" },
+    { href: "/themes", label: "Themes" },
     { href: "/clusters", label: "Clusters" },
     { href: "/sources", label: "Sources" },
     { href: "/logs", label: "Logs" },

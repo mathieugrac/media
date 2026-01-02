@@ -1,0 +1,2625 @@
+{
+  "runAt": "2026-01-02T11:43:35.074Z",
+  "totalProcessed": 199,
+  "successCount": 199,
+  "failCount": 1,
+  "results": [
+    {
+      "articleId": "22788a39a7c9",
+      "title": "Il y a deux cents ans, la révolte décembriste secouait la Russie",
+      "themes": [
+        "révolutions européennes",
+        "histoire russe"
+      ],
+      "domain": "histoire",
+      "reasoning": "Article about the 1825 Decembrist revolt in Russia - fits into the broader theme of 19th century European revolutionary movements and specifically Russian historical events",
+      "source": "Mediapart",
+      "date": "2026-01-02T08:16:16.000Z"
+    },
+    {
+      "articleId": "6346841a37c8",
+      "title": "Six mégabassines en Charente-Maritime: la crainte d’un gouffre écologique et économique",
+      "themes": [
+        "gestion de l'eau",
+        "agriculture intensive"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about megabassins (water reservoirs) in Charente-Maritime - directly relates to water management issues and intensive agricultural practices that require such water storage systems",
+      "source": "Mediapart",
+      "date": "2026-01-02T08:06:31.000Z"
+    },
+    {
+      "articleId": "dcbb955c6c71",
+      "title": "Les mégafermes à saumons, ou quand les « industriels se prennent pour des dieux »",
+      "themes": [
+        "aquaculture industrielle",
+        "agriculture intensive"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about industrial salmon farming in massive facilities - relates to industrial aquaculture (new theme for intensive fish farming) and existing 'agriculture intensive' theme as it covers similar industrial food production concerns",
+      "source": "Reporterre",
+      "date": "2026-01-02T08:00:00.000Z"
+    },
+    {
+      "articleId": "f505a9d52631",
+      "title": "En Syrie, les Druzes face à une « politique de la terre brûlée »",
+      "themes": [
+        "conflit syrien",
+        "communautés religieuses"
+      ],
+      "domain": "international",
+      "reasoning": "Article about the ongoing Syrian conflict specifically affecting the Druze religious community - relates to the broader Syrian war and religious/ethnic minorities' situation in conflict zones",
+      "source": "Reporterre",
+      "date": "2026-01-02T07:30:00.000Z"
+    },
+    {
+      "articleId": "88f312753543",
+      "title": "Dans ce marché, les clients choisissent leur prix",
+      "themes": [
+        "circuits courts",
+        "justice alimentaire"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about a market experiment in Bergerac where customers choose their own prices, focusing on local food accessibility and fair producer compensation - relates to short supply chains and food justice/equity",
+      "source": "Reporterre",
+      "date": "2026-01-02T07:00:00.000Z"
+    },
+    {
+      "articleId": "3fb8a819ab08",
+      "title": "Tout comprendre à la dérégulation des prix de l’électricité en trois minutes",
+      "themes": [
+        "transition énergétique",
+        "politique énergétique"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about electricity price deregulation - relates to energy transition and energy policy themes. These are reusable themes that could apply to multiple articles about energy sector reforms and policies.",
+      "source": "Alternatives Économiques",
+      "date": "2026-01-02T06:00:00.000Z"
+    },
+    {
+      "articleId": "be9dc2c5418d",
+      "title": "19 livres à lire en janvier 2026",
+      "themes": [
+        "littérature contemporaine",
+        "édition française"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about book recommendations for January 2026 - relates to contemporary literature and French publishing industry",
+      "source": "Le Grand Continent",
+      "date": "2026-01-02T06:00:00.000Z"
+    },
+    {
+      "articleId": "f792a918d64f",
+      "title": "Les dessous de la politique de l'Oncle Sam - Noam Chomsky",
+      "themes": [
+        "politique étrangère américaine",
+        "géopolitique mondiale"
+      ],
+      "domain": "international",
+      "reasoning": "Article about US foreign policy since 1945 and American global dominance - relates to American foreign policy strategies and broader global geopolitical dynamics",
+      "source": "Elucid",
+      "date": "2026-01-02T05:35:17.000Z"
+    },
+    {
+      "articleId": "95f6926467dd",
+      "title": "En Iran, les manifestations menacent-elles le régime ?",
+      "themes": [
+        "géopolitique mondiale",
+        "mouvements de contestation"
+      ],
+      "domain": "international",
+      "reasoning": "Article about Iranian protests potentially threatening the regime, following international military strikes. Fits global geopolitics and introduces a new theme for internal political resistance movements that could apply to similar situations worldwide.",
+      "source": "Le Grand Continent",
+      "date": "2026-01-02T05:30:00.000Z"
+    },
+    {
+      "articleId": "9399781c8d6f",
+      "title": "Les produits allégés sont-ils vraiment meilleurs pour la santé ?",
+      "themes": [
+        "industrie alimentaire",
+        "santé publique"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about light/reduced products and their health impact - relates to food industry practices and public health concerns. Creating new themes as existing ones focus on agriculture/production rather than processed food industry and health aspects.",
+      "source": "60M de Consommateurs",
+      "date": "2026-02-02T07:44:21.000Z"
+    },
+    {
+      "articleId": "52a2411167fd",
+      "title": "La Bulgarie adopte l’euro en pleine crise politique",
+      "themes": [
+        "géopolitique mondiale",
+        "intégration européenne"
+      ],
+      "domain": "international",
+      "reasoning": "Article about Bulgaria adopting the euro amid political crisis - relates to global geopolitics and European integration processes. Created 'intégration européenne' as existing themes don't capture the EU expansion/monetary union aspect well enough.",
+      "source": "Alternatives Économiques",
+      "date": "2026-01-02T05:00:00.000Z"
+    },
+    {
+      "articleId": "98788ea2c49f",
+      "title": "Pour résister à la dérive autoritaire, les acteurs de l'économie sociale et solidaire doivent coopérer entre eux",
+      "themes": [
+        "économie sociale et solidaire",
+        "démocratie économique"
+      ],
+      "domain": "économie",
+      "reasoning": "Article focuses on social and solidarity economy (ESS) and its role in resisting authoritarianism - this is about alternative economic models and democratic participation in economics",
+      "source": "Alternatives Économiques",
+      "date": "2026-01-02T04:00:00.000Z"
+    },
+    {
+      "articleId": "f3fc066a2e27",
+      "title": "Zohran Mamdani, intronisé maire de New York, donne des ailes aux candidats progressistes",
+      "themes": [
+        "politique étrangère américaine",
+        "mouvements de contestation"
+      ],
+      "domain": "international",
+      "reasoning": "Article about Zohran Mamdani becoming NYC mayor and progressive political movements in the US - fits existing themes for American politics and progressive/contestation movements",
+      "source": "Mediapart",
+      "date": "2026-01-01T17:15:45.000Z"
+    },
+    {
+      "articleId": "b9f0b1f52f67",
+      "title": "Tim Ingold: «Il faut rapprocher l’éducation et la démocratie»",
+      "themes": [
+        "éducation démocratique",
+        "anthropologie politique"
+      ],
+      "domain": "culture",
+      "reasoning": "Article featuring anthropologist Tim Ingold discussing the relationship between education and democracy - creates new theme for democratic education as it doesn't fit well with existing culture themes, and adds anthropology as a political/social analysis approach",
+      "source": "Mediapart",
+      "date": "2026-01-01T16:50:02.000Z"
+    },
+    {
+      "articleId": "6250b0594c49",
+      "title": "Non, Brigitte Bardot ne défendait pas les animaux",
+      "themes": [
+        "activisme animalier",
+        "figures publiques"
+      ],
+      "domain": "culture",
+      "reasoning": "Article analyzing Brigitte Bardot's relationship with animal activism - creates new themes as existing ones don't cover animal rights activism or public figure analysis adequately",
+      "source": "Politis",
+      "date": "2026-01-01T15:26:57.000Z"
+    },
+    {
+      "articleId": "30c8cdfd561c",
+      "title": "Non, les antifascistes ne sont pas les « nouveaux fascistes »",
+      "themes": [
+        "mouvements politiques",
+        "débat démocratique"
+      ],
+      "domain": "culture",
+      "reasoning": "Article analyzing the discourse around antifascism and its media portrayal - relates to political movements and democratic debate rather than existing themes like literature or anthropology",
+      "source": "Blast",
+      "date": "2026-01-01T15:00:00.000Z"
+    },
+    {
+      "articleId": "dc36d5aeddc5",
+      "title": "Verdun-en-Donbass",
+      "themes": [
+        "géopolitique mondiale",
+        "conflit syrien"
+      ],
+      "domain": "international",
+      "reasoning": "Article about Verdun-en-Donbass refers to armed conflict with strategic territory battles, fitting geopolitical context. While not specifically Syrian conflict, it relates to similar international conflict dynamics - though 'conflit ukrainien' or 'guerre en ukraine' might be more appropriate new themes if this is about Ukraine conflict",
+      "source": "Le Monde Diplomatique",
+      "date": "2026-01-01T14:54:04.000Z"
+    },
+    {
+      "articleId": "8538f956953c",
+      "title": "«On n’a pas d’horizon»: au Maghreb, une jeunesse en quête d’avenir",
+      "themes": [
+        "mouvements de contestation",
+        "politique migratoire"
+      ],
+      "domain": "international",
+      "reasoning": "Article focuses on Maghreb youth facing institutional rejection, migration temptation, and barriers to emancipation - relates to existing 'mouvements de contestation' theme and creates new 'politique migratoire' theme as migration appears to be a significant recurring topic that would cluster well with other migration-related articles",
+      "source": "Mediapart",
+      "date": "2026-01-01T13:52:04.000Z"
+    },
+    {
+      "articleId": "4076748805fb",
+      "title": "Sextape de Saint-Étienne: «Le pouvoir rend fou! C’est terrifiant»",
+      "themes": [
+        "figures publiques",
+        "scandales politiques"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about a sextape scandal involving public figures in Saint-Étienne. 'Figures publiques' already exists and fits well. Creating 'scandales politiques' as a new theme since this type of political scandal coverage is likely to be a recurring topic that could group multiple similar articles about corruption, misconduct, or other political scandals.",
+      "source": "Mediapart",
+      "date": "2026-01-01T13:23:12.000Z"
+    },
+    {
+      "articleId": "0e4fa302f601",
+      "title": "2025 dans l’œil des « Jours »",
+      "themes": [
+        "photojournalisme",
+        "médias indépendants"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about photographers and illustrators reflecting on their work for 'Les Jours' - relates to visual journalism and independent media practices",
+      "source": "Les Jours",
+      "date": "2026-01-01T12:59:00.000Z"
+    },
+    {
+      "articleId": "65cefd2622bf",
+      "title": "Incendie dans un bar à Crans-Montana en Suisse: au moins une «quarantaine de morts» et 115 blessés",
+      "themes": [
+        "catastrophes et accidents",
+        "sécurité publique"
+      ],
+      "domain": "international",
+      "reasoning": "Article about a deadly fire in a Swiss bar with many casualties - this is a major accident/disaster with public safety implications. Creating 'catastrophes et accidents' as this type of tragic incident would likely recur in news coverage, and 'sécurité publique' relates to safety regulations and emergency response.",
+      "source": "Mediapart",
+      "date": "2026-01-01T11:28:22.000Z"
+    },
+    {
+      "articleId": "ac79594598ab",
+      "title": "Après deux siècles de conflit en Suisse, Moutier change de canton",
+      "themes": [
+        "intégration européenne",
+        "mouvements de contestation"
+      ],
+      "domain": "international",
+      "reasoning": "Article about Moutier switching cantons in Switzerland, ending a 210-year territorial/political conflict. This relates to regional integration processes and historical resistance movements, though the existing 'intégration européenne' theme is somewhat broad for this Swiss cantonal issue.",
+      "source": "Mediapart",
+      "date": "2026-01-01T11:24:37.000Z"
+    },
+    {
+      "articleId": "c30b9bba6b2c",
+      "title": "À France Travail, un an après la loi plein-emploi: des métiers vides de sens ",
+      "themes": [
+        "service public",
+        "conditions de travail"
+      ],
+      "domain": "société",
+      "reasoning": "Article about working conditions at France Travail (employment agency) following employment law reforms - relates to public service functioning and workplace conditions for civil servants",
+      "source": "Mediapart",
+      "date": "2026-01-01T09:43:04.000Z"
+    },
+    {
+      "articleId": "1ef7d0599958",
+      "title": "Le Collectif du 1er janvier ravive la mémoire des travailleurs immigrés",
+      "themes": [
+        "politique migratoire",
+        "mémoire collective"
+      ],
+      "domain": "société",
+      "reasoning": "Article about immigrant workers' memory and recognition - relates to migration policy from existing themes, and creates 'mémoire collective' as a new theme for historical memory and recognition issues",
+      "source": "Mediapart",
+      "date": "2026-01-01T09:40:34.000Z"
+    },
+    {
+      "articleId": "33f6b1727b74",
+      "title": "Polluants éternels, prix de l'essence... Les changements écolos (ou pas) en 2026",
+      "themes": [
+        "transition énergétique",
+        "politique énergétique"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article covers environmental policy changes for 2026 including fuel prices, eternal pollutants regulations, and energy renovation aids - fits existing energy transition and policy themes",
+      "source": "Reporterre",
+      "date": "2026-01-01T08:30:00.000Z"
+    },
+    {
+      "articleId": "3bd2d6d33ff3",
+      "title": "Dans les Caraïbes, les pêcheurs terrifiés par les bombes de Trump",
+      "themes": [
+        "géopolitique mondiale",
+        "politique étrangère américaine"
+      ],
+      "domain": "international",
+      "reasoning": "Article about US military operations in the Caribbean against drug trafficking, affecting local fishermen - relates to global geopolitics and specifically American foreign policy implementation in the region",
+      "source": "Reporterre",
+      "date": "2026-01-01T07:00:00.000Z"
+    },
+    {
+      "articleId": "d062a1d806f2",
+      "title": "Hausse de l’euro, dollar en baisse, yuan manipulé : que se passe-t-il avec les monnaies ?",
+      "themes": [
+        "politique monétaire",
+        "géopolitique économique"
+      ],
+      "domain": "économie",
+      "reasoning": "Article about currency manipulation, dollar weakness, euro rise, and gold speculation - covers monetary policy decisions by states and the geopolitical economic tensions around currency wars. These are broader economic themes that would apply to multiple future articles on similar topics.",
+      "source": "Elucid",
+      "date": "2026-01-01T05:35:15.000Z"
+    },
+    {
+      "articleId": "5f422e11f5d6",
+      "title": "Élections, droits de douane, guerre, IA : six tendances à suivre en 2026",
+      "themes": [
+        "géopolitique mondiale",
+        "politique étrangère américaine"
+      ],
+      "domain": "international",
+      "reasoning": "Article analyzing major global trends for 2026 including elections, trade wars, conflicts, and AI - fits geopolitical analysis and likely involves US foreign policy given mention of trade tariffs",
+      "source": "Le Grand Continent",
+      "date": "2026-01-01T05:30:00.000Z"
+    },
+    {
+      "articleId": "aa2c40eeae10",
+      "title": "Un président pouvait dire ça : Kennedy, Frost et l’effondrement américain",
+      "themes": [
+        "figures publiques",
+        "littérature contemporaine"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about JFK's speech honoring poet Robert Frost - combines political figure (JFK) with literary figure (Frost), fits existing themes for public figures and contemporary literature",
+      "source": "Le Grand Continent",
+      "date": "2026-01-01T05:00:00.000Z"
+    },
+    {
+      "articleId": "80fb158e43cd",
+      "title": "Trump va-t-il faire baisser le prix du champagne ?",
+      "themes": [
+        "géopolitique économique",
+        "politique migratoire"
+      ],
+      "domain": "économie",
+      "reasoning": "Article about Trump's tariffs affecting champagne imports - relates to economic geopolitics and trade policy. The second theme 'politique migratoire' doesn't fit well - this should be about trade policy, but there's no specific 'politique commerciale' theme in the existing list, so géopolitique économique is the closest match.",
+      "source": "Le Grand Continent",
+      "date": "2025-12-31T17:56:27.000Z"
+    },
+    {
+      "articleId": "ee33e9ecfcda",
+      "title": "Le langage nocturne",
+      "themes": [
+        "intégration européenne",
+        "littérature contemporaine"
+      ],
+      "domain": "culture",
+      "reasoning": "Article discusses the Ventotene Manifesto and Altiero Spinelli in relation to European integration. The 'intégration européenne' theme from international domain fits perfectly. Given the literary/intellectual treatment of the subject, 'littérature contemporaine' from culture domain also applies.",
+      "source": "Le Grand Continent",
+      "date": "2025-12-31T16:00:00.000Z"
+    },
+    {
+      "articleId": "decfe94c13a8",
+      "title": "Outre-Mer : l’Azerbaïdjan drague des indépendantistes",
+      "themes": [
+        "politique étrangère américaine",
+        "mouvements de contestation"
+      ],
+      "domain": "international",
+      "reasoning": "Article about Azerbaijan courting independence movements in French overseas territories - relates to foreign policy influence operations and independence/protest movements in French territories",
+      "source": "Off Investigation",
+      "date": "2025-12-31T15:58:00.000Z"
+    },
+    {
+      "articleId": "bef6d6b88562",
+      "title": "La célébrité d'un oiseau rare trouble la tranquillité d'un village breton",
+      "themes": [
+        "biodiversité",
+        "tourisme ornithologique"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about a rare bird attracting crowds of photographers to a Breton village - relates to biodiversity (rare species observation) and the emerging phenomenon of birdwatching tourism that can impact local communities",
+      "source": "Reporterre",
+      "date": "2025-12-31T15:51:36.000Z"
+    },
+    {
+      "articleId": "093909f8ab1e",
+      "title": "Inéluctable confrontation sino-américaine ?",
+      "themes": [
+        "géopolitique mondiale",
+        "politique étrangère américaine"
+      ],
+      "domain": "international",
+      "reasoning": "Article about Taiwan tensions and potential US-China confrontation, with Japanese involvement and military exercises - clearly fits global geopolitics and US foreign policy themes",
+      "source": "Le Monde Diplomatique",
+      "date": "2025-12-31T15:34:02.000Z"
+    },
+    {
+      "articleId": "967a96c432b6",
+      "title": "Protoxyde d’azote : ces sites vendent du rêve mais volent des vies",
+      "themes": [
+        "santé publique",
+        "commerce en ligne"
+      ],
+      "domain": "société",
+      "reasoning": "Article about nitrous oxide sales online and their health consequences - relates to public health issues and online commerce practices. 'santé publique' exists in environnement domain but fits better here as a société theme for this context.",
+      "source": "60M de Consommateurs",
+      "date": "2025-12-31T15:21:44.000Z"
+    },
+    {
+      "articleId": "2a572e29a426",
+      "title": "Littérature de la résistance : Céline contre Desnos",
+      "themes": [
+        "littérature contemporaine",
+        "mémoire collective"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about a 1941 literary quarrel between Desnos and Céline during German occupation - fits literature theme and relates to collective memory of wartime period and resistance literature",
+      "source": "Blast",
+      "date": "2025-12-31T15:00:00.000Z"
+    },
+    {
+      "articleId": "ee6c6be353e6",
+      "title": "L'A69 ressuscitée par la justice : explication d'un rétropédalage « lapidaire »",
+      "themes": [
+        "a69",
+        "transition énergétique"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about the A69 highway controversy - a specific named infrastructure project that has generated multiple articles and legal challenges. Also relates to energy transition as infrastructure projects often involve environmental impact debates.",
+      "source": "Reporterre",
+      "date": "2025-12-31T14:31:22.000Z"
+    },
+    {
+      "articleId": "ddfd7ac1dcf5",
+      "title": "2025, l'année des 120 records de température battus dans le monde",
+      "themes": [
+        "transition énergétique",
+        "santé publique"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about record-breaking global temperatures in 2025 - directly relates to climate change and energy transition policies, with implications for public health from extreme weather events",
+      "source": "Reporterre",
+      "date": "2025-12-31T13:21:05.000Z"
+    },
+    {
+      "articleId": "caab185eb595",
+      "title": "Le calendrier écologiste de Reporterre : une année de temps libre et de révolution !",
+      "themes": [
+        "médias indépendants",
+        "mouvements de contestation"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about Reporterre's ecological calendar - relates to independent media publishing and references environmental/social movements like Notre-Dame-des-Landes",
+      "source": "Reporterre",
+      "date": "2025-12-31T13:00:00.000Z"
+    },
+    {
+      "articleId": "da7f761c3272",
+      "title": "Bernard Arnault achète les magazines « Challenges », « Sciences et Avenir » et « La Recherche »",
+      "themes": [
+        "médias indépendants",
+        "figures publiques"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about Bernard Arnault's acquisition of magazines - relates to media ownership/independence issues and involves a prominent public figure's business moves in media sector",
+      "source": "Reporterre",
+      "date": "2025-12-31T12:40:53.000Z"
+    },
+    {
+      "articleId": "67ef422cf658",
+      "title": "Dans onze États membres, les Labubu ont suscité plus d’intérêt que l’Ukraine en 2025",
+      "themes": [
+        "figures publiques",
+        "phénomènes culturels"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about Labubu (toy/character phenomenon) trending more than Ukraine in Google searches across 11 EU states. This relates to popular cultural phenomena and public figures/characters that capture collective attention.",
+      "source": "Le Grand Continent",
+      "date": "2025-12-31T12:11:56.000Z"
+    },
+    {
+      "articleId": "3cb0115c4864",
+      "title": "2025, un an de « Jours » par les journalistes indépendant·es qui les font",
+      "themes": [
+        "médias indépendants",
+        "photojournalisme"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about independent journalists at 'Les Jours' reflecting on their published series - directly relates to independent media, and likely includes visual journalism given the retrospective format",
+      "source": "Les Jours",
+      "date": "2025-12-31T10:59:00.000Z"
+    },
+    {
+      "articleId": "e0e0d1510ec9",
+      "title": "Dermatose nodulaire : l'alliance avec la Coordination rurale crée le malaise à la Confédération paysanne ",
+      "themes": [
+        "agriculture intensive",
+        "santé publique"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about livestock disease protocol protests involving farmer unions - relates to industrial agriculture practices and public health measures in farming",
+      "source": "Reporterre",
+      "date": "2025-12-31T08:41:00.000Z"
+    },
+    {
+      "articleId": "3c0450269f0b",
+      "title": "Les radars vont-ils vraiment verbaliser trois nouvelles infractions dès 2026 ?",
+      "themes": [
+        "sécurité routière",
+        "désinformation"
+      ],
+      "domain": "société",
+      "reasoning": "Article de fact-checking sur des rumeurs concernant de nouvelles infractions routières détectées par radar - traite à la fois de sécurité routière et de vérification d'informations virales",
+      "source": "Les Surligneurs",
+      "date": "2025-12-31T08:40:04.000Z"
+    },
+    {
+      "articleId": "d662b50dc38c",
+      "title": "Maquillage et soins pour enfant : des irritants et des allergènes en pagaille",
+      "themes": [
+        "santé publique",
+        "industrie cosmétique"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about harmful substances in children's cosmetics - directly relates to public health concerns. Creates new theme 'industrie cosmétique' as existing themes don't cover cosmetics industry specifically, and this is a reusable theme for future articles about cosmetics regulation, safety, etc.",
+      "source": "60M de Consommateurs",
+      "date": "2025-12-31T06:30:00.000Z"
+    },
+    {
+      "articleId": "1acfc5cd6d8a",
+      "title": "Racisme : les hommages à Brigitte Bardot divisent les défenseurs des animaux",
+      "themes": [
+        "figures publiques",
+        "activisme animalier"
+      ],
+      "domain": "société",
+      "reasoning": "Article about tributes to Brigitte Bardot from animal rights organizations, addressing the controversy around her far-right connections. Fits existing themes: 'figures publiques' (public figures) from culture domain and 'activisme animalier' (animal activism) from culture domain, though the overall discussion is more societal.",
+      "source": "Reporterre",
+      "date": "2025-12-31T06:30:00.000Z"
+    },
+    {
+      "articleId": "f7c4fda406ba",
+      "title": " Marie Chureau, l'activiste qui veut la peau des « vieux idoles blancs »",
+      "themes": [
+        "activisme animalier",
+        "mouvements de contestation"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about Marie Chureau, an activist who confronted Paul Watson - relates to animal rights activism and broader protest movements challenging established figures",
+      "source": "Reporterre",
+      "date": "2025-12-31T06:30:00.000Z"
+    },
+    {
+      "articleId": "5df7e91184b0",
+      "title": "Vaisselle ancienne : une mode dangereuse pour votre santé (et celle de vos convives)",
+      "themes": [
+        "santé publique",
+        "industrie alimentaire"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about health risks from vintage dishware containing heavy metals - directly relates to public health concerns and food safety in the food industry context",
+      "source": "60M de Consommateurs",
+      "date": "2025-12-31T06:00:00.000Z"
+    },
+    {
+      "articleId": "968343b641e2",
+      "title": "Retour en images sur les temps forts de l'année 2025",
+      "themes": [
+        "photojournalisme",
+        "mémoire collective"
+      ],
+      "domain": "culture",
+      "reasoning": "This is a year-end photo retrospective covering major events of 2025. It fits photojournalisme as it uses images to document news, and mémoire collective as it's creating a visual record of significant moments for collective memory.",
+      "source": "Alternatives Économiques",
+      "date": "2025-12-31T06:00:00.000Z"
+    },
+    {
+      "articleId": "d07f478a83b7",
+      "title": "Une IA nommée ministre : un nouveau pas vers l’absurde technopolitique en Albanie",
+      "themes": [
+        "géopolitique mondiale",
+        "technopolitique"
+      ],
+      "domain": "international",
+      "reasoning": "Article about AI appointment as minister in Albania - relates to global political trends and the emerging intersection of technology and governance, which could be a recurring theme as more countries experiment with AI in political roles",
+      "source": "Elucid",
+      "date": "2025-12-31T05:35:38.000Z"
+    },
+    {
+      "articleId": "69e2f3eccbc7",
+      "title": "En une décennie, la Chine est devenue le premier exportateur de caviar au monde",
+      "themes": [
+        "géopolitique économique",
+        "industrie alimentaire"
+      ],
+      "domain": "économie",
+      "reasoning": "Article about China becoming the world's largest caviar exporter - involves both economic geopolitics (China's rise in global markets) and food industry transformation (caviar production shifting from traditional regions to China)",
+      "source": "Le Grand Continent",
+      "date": "2025-12-31T05:30:00.000Z"
+    },
+    {
+      "articleId": "ddaf742ae21d",
+      "title": "Textiles usagés : recycler plutôt qu’exporter ?",
+      "themes": [
+        "économie circulaire",
+        "géopolitique économique"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about textile waste management policy, recycling vs exports to Africa - fits environmental domain with circular economy theme (new but reusable for textile/waste recycling topics) and economic geopolitics given the France-Africa trade dimension",
+      "source": "Alternatives Économiques",
+      "date": "2025-12-31T05:00:00.000Z"
+    },
+    {
+      "articleId": "ba052d410bf4",
+      "title": "La pierre de folie",
+      "themes": [
+        "littérature contemporaine",
+        "phénomènes culturels"
+      ],
+      "domain": "culture",
+      "reasoning": "Article appears to discuss literary/cultural analysis referencing Lovecraft, Philip K. Dick, and Hilbert in relation to internet culture - fits contemporary literature theme and broader cultural phenomena",
+      "source": "Le Grand Continent",
+      "date": "2025-12-31T05:00:00.000Z"
+    },
+    {
+      "articleId": "6db6badc391c",
+      "title": "Face à la Chine, l'Europe doit montrer ses muscles industriels",
+      "themes": [
+        "géopolitique économique",
+        "intégration européenne"
+      ],
+      "domain": "économie",
+      "reasoning": "Article about Europe's industrial response to Chinese economic power - fits existing 'géopolitique économique' theme and relates to European integration challenges. Using existing theme from économie domain rather than creating new one.",
+      "source": "Alternatives Économiques",
+      "date": "2025-12-31T04:00:00.000Z"
+    },
+    {
+      "articleId": "5c0d0cb55db5",
+      "title": "Poutine a souhaité une bonne année à 36 dirigeants — dont Trump, le pape Léon XIV et Orbán",
+      "themes": [
+        "géopolitique mondiale",
+        "politique étrangère américaine"
+      ],
+      "domain": "international",
+      "reasoning": "Article about Putin's New Year greetings to world leaders including Trump - clearly relates to global geopolitics and US foreign policy dynamics",
+      "source": "Le Grand Continent",
+      "date": "2025-12-30T19:07:44.000Z"
+    },
+    {
+      "articleId": "ec6d37757f1f",
+      "title": "Vers une nouvelle monnaie ? Avec Eichengreen, Kazāks, Knot, Lalucq, Rey et Tolosa",
+      "themes": [
+        "politique monétaire",
+        "géopolitique économique"
+      ],
+      "domain": "économie",
+      "reasoning": "Article discusses monetary policy with focus on stablecoins, dollar weaponization, and European monetary sovereignty - fits existing themes about monetary policy and economic geopolitics",
+      "source": "Le Grand Continent",
+      "date": "2025-12-30T18:00:00.000Z"
+    },
+    {
+      "articleId": "f39e1ed74688",
+      "title": "2025, l’année où la politique a tourné à la débâcle",
+      "themes": [
+        "crise institutionnelle",
+        "gouvernance politique"
+      ],
+      "domain": "société",
+      "reasoning": "Article about institutional chaos with two resigned Prime Ministers and dysfunctional Assembly - this represents a broader institutional crisis theme that could apply to multiple articles about governmental dysfunction, plus the specific governance issues",
+      "source": "Les Jours",
+      "date": "2025-12-30T17:59:00.000Z"
+    },
+    {
+      "articleId": "0dc7f6de39bb",
+      "title": "L’Arcom tance CNews pour des propos discriminatoires à l’égard des personnes musulmanes ou d’origine immigrée",
+      "themes": [
+        "désinformation",
+        "communautés religieuses"
+      ],
+      "domain": "société",
+      "reasoning": "Article about French broadcast regulator sanctioning CNews for discriminatory content targeting Muslims and immigrants - relates to disinformation/hate speech in media and religious communities discrimination",
+      "source": "Mediapart",
+      "date": "2025-12-30T17:31:25.000Z"
+    },
+    {
+      "articleId": "8f7bc7f94a06",
+      "title": "Fan de Dieudonné et proche de l’extrême droite radicale, le candidat du RN à la mairie de Saint-Malo jette déjà l’éponge",
+      "themes": [
+        "mouvements politiques",
+        "scandales politiques"
+      ],
+      "domain": "société",
+      "reasoning": "Article about a RN candidate withdrawing due to controversies involving antisemitic figures and far-right connections - fits political movements and political scandals themes",
+      "source": "Mediapart",
+      "date": "2025-12-30T16:38:20.000Z"
+    },
+    {
+      "articleId": "0242f6f4f47f",
+      "title": "Liquidation de Brandt : en cas de panne, le SAV va-t-il fonctionner ?",
+      "themes": [
+        "service public",
+        "conditions de travail"
+      ],
+      "domain": "économie",
+      "reasoning": "Article about Brandt liquidation and after-sales service concerns - relates to consumer protection (public service aspect) and likely job impacts from company closure (working conditions). However, neither theme fits perfectly - this is more about industrial restructuring and consumer rights, which aren't well represented in existing themes.",
+      "source": "60M de Consommateurs",
+      "date": "2025-12-30T16:30:00.000Z"
+    },
+    {
+      "articleId": "f19d783b85a1",
+      "title": "La psychanalyse est-elle bourgeoise ?",
+      "themes": [
+        "service public",
+        "conditions de travail"
+      ],
+      "domain": "société",
+      "reasoning": "Article questioning whether psychoanalysis is bourgeois due to its cost - relates to access to services and potentially working conditions of practitioners. However, this seems like it could warrant a new theme about 'accessibilité des soins' or 'inégalités sociales' as it's specifically about social barriers to mental health services.",
+      "source": "Le Monde Diplomatique",
+      "date": "2025-12-30T16:13:57.000Z"
+    },
+    {
+      "articleId": "5b3796cce69b",
+      "title": "Vente de l’album avec la place de concert : la technique commerciale de Jul et Aya Nakamura bientôt interdite ?",
+      "themes": [
+        "industrie musicale",
+        "pratiques commerciales"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about album bundling with concert tickets - relates to music industry business practices and commercial strategies used by artists like Jul and Aya Nakamura",
+      "source": "Les Surligneurs",
+      "date": "2025-12-30T16:01:05.000Z"
+    },
+    {
+      "articleId": "93d03cff03db",
+      "title": "L’Europe laisse les morts s’empiler à ses frontières",
+      "themes": [
+        "politique migratoire",
+        "intégration européenne"
+      ],
+      "domain": "international",
+      "reasoning": "Article about Frontex and border deaths clearly relates to EU migration policy and European integration challenges around border management and fundamental rights",
+      "source": "Off Investigation",
+      "date": "2025-12-30T15:56:40.000Z"
+    },
+    {
+      "articleId": "887e8a9600f0",
+      "title": "Gobelets contenant du plastique : l'interdiction repoussée à 2030",
+      "themes": [
+        "politique énergétique",
+        "industrie alimentaire"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about postponing the ban on plastic cups - relates to environmental policy decisions and regulations affecting the food/beverage industry",
+      "source": "Reporterre",
+      "date": "2025-12-30T15:33:48.000Z"
+    },
+    {
+      "articleId": "bedf5b7901d2",
+      "title": "Le président de la chambre de métiers d’Alsace privé d’apprentis pour cinq ans après des violences",
+      "themes": [
+        "conditions de travail",
+        "service public"
+      ],
+      "domain": "société",
+      "reasoning": "Article about workplace violence by a professional training organization leader - relates to working conditions and public service institutions (chamber of crafts managing apprentices)",
+      "source": "Mediapart",
+      "date": "2025-12-30T15:15:50.000Z"
+    },
+    {
+      "articleId": "740e4b682194",
+      "title": "Émilie Hache: «Plus il y a d’égalité, plus il y a d’écologie, et plus il y a d’écologie, plus il y a d’égalité»",
+      "themes": [
+        "transition énergétique",
+        "justice alimentaire"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article featuring philosopher Émilie Hache discussing the interconnection between equality and ecology - fits environmental domain and relates to broader ecological transition themes and social justice aspects of environmental issues",
+      "source": "Mediapart",
+      "date": "2025-12-30T15:07:39.000Z"
+    },
+    {
+      "articleId": "16745d982261",
+      "title": "En Écosse, la bataille de la langue gaélique pour faire renaître des forêts",
+      "themes": [
+        "biodiversité",
+        "communautés religieuses"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about Gaelic language revival in Scotland connected to forest restoration - relates to biodiversity conservation efforts and indigenous/minority community cultural practices. Using 'communautés religieuses' as closest existing theme for indigenous/minority communities, though 'communautés indigènes' would be more precise.",
+      "source": "Reporterre",
+      "date": "2025-12-30T15:02:03.000Z"
+    },
+    {
+      "articleId": "3dde6b344c5e",
+      "title": "«Dormir dans le froid glace le sang»: les personnes sans abri errent dans Paris en quête d’un toit",
+      "themes": [
+        "service public",
+        "conditions de travail"
+      ],
+      "domain": "société",
+      "reasoning": "Article about homeless people seeking shelter during cold weather, highlighting failures in public assistance systems and the working conditions of social workers/associations trying to help - fits existing themes about public service inadequacy and working conditions of care workers",
+      "source": "Mediapart",
+      "date": "2025-12-30T15:00:16.000Z"
+    },
+    {
+      "articleId": "24be587ed5c3",
+      "title": "Au tribunal : Francine, femme de ménage à la retraite et trafiquante d’héroïne",
+      "themes": [
+        "justice pénale",
+        "précarité sociale"
+      ],
+      "domain": "société",
+      "reasoning": "Article about a criminal trial of an elderly cleaning lady turned drug trafficker - relates to criminal justice system and social precarity issues that can lead to crime",
+      "source": "Blast",
+      "date": "2025-12-30T15:00:00.000Z"
+    },
+    {
+      "articleId": "48ba7206011c",
+      "title": "Le plan de Lula pour casser la vague Trump, une conversation avec le ministre brésilien Wellington Dias",
+      "themes": [
+        "géopolitique mondiale",
+        "politique étrangère américaine"
+      ],
+      "domain": "international",
+      "reasoning": "Article about Lula's strategy against Trump's influence in Latin America - directly relates to global geopolitics and American foreign policy dynamics in the region",
+      "source": "Le Grand Continent",
+      "date": "2025-12-30T15:00:00.000Z"
+    },
+    {
+      "articleId": "295bbfa9d071",
+      "title": "Économie russe : la production industrielle recule pour le septième mois consécutif",
+      "themes": [
+        "géopolitique économique",
+        "politique monétaire"
+      ],
+      "domain": "économie",
+      "reasoning": "Article about Russian industrial production decline relates to economic geopolitics (sanctions impact on Russian economy) and potentially monetary policy (economic consequences affecting central bank decisions)",
+      "source": "Le Grand Continent",
+      "date": "2025-12-30T14:45:38.000Z"
+    },
+    {
+      "articleId": "04fc2f9151a8",
+      "title": "Le Royaume-Uni veut interdire d'ébouillanter les homards et crevettes",
+      "themes": [
+        "santé publique",
+        "industrie alimentaire"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about UK legislation to ban boiling lobsters and prawns alive - relates to animal welfare in food industry practices and public health considerations around humane treatment of animals",
+      "source": "Reporterre",
+      "date": "2025-12-30T14:35:24.000Z"
+    },
+    {
+      "articleId": "a27f3fa97e5f",
+      "title": "Un Nouvel An dans un aquarium ? À Paris, la fête maintenue malgré son interdiction",
+      "themes": [
+        "conditions de travail",
+        "activisme animalier"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about a New Year's party at Paris aquarium despite its prohibition - involves animal welfare concerns (aquarium setting) and likely worker conditions issues related to the event authorization conflicts",
+      "source": "Reporterre",
+      "date": "2025-12-30T14:02:32.000Z"
+    },
+    {
+      "articleId": "fe3115d71e2e",
+      "title": "Attention à ces images montrant des personnes s’en prendre à des sapins de Noël",
+      "themes": [
+        "désinformation",
+        "sécurité publique"
+      ],
+      "domain": "société",
+      "reasoning": "Article about false claims regarding Christmas tree vandalism - clearly relates to misinformation spreading online, and secondarily touches on public safety concerns around alleged incidents",
+      "source": "Les Surligneurs",
+      "date": "2025-12-30T13:56:31.000Z"
+    },
+    {
+      "articleId": "58b486e54292",
+      "title": "Jean-Luc Mélenchon a-t-il vraiment dit que le Front national est « le seul parti qui réhabilite la politique » ?",
+      "themes": [
+        "désinformation",
+        "mouvements politiques"
+      ],
+      "domain": "société",
+      "reasoning": "Article about a truncated/misleading quote attributed to Mélenchon regarding the Front National - this is clearly about misinformation/disinformation. The political context also makes it relevant to political movements theme from culture domain, but since it's more about false information than cultural analysis of political movements, I'm keeping it in société domain.",
+      "source": "Les Surligneurs",
+      "date": "2025-12-30T13:51:31.000Z"
+    },
+    {
+      "articleId": "a58ff3231e0d",
+      "title": "Amza, Français et ex-enfant de Daech, risque la prison à vie en Irak",
+      "themes": [
+        "politique migratoire",
+        "communautés religieuses"
+      ],
+      "domain": "international",
+      "reasoning": "Article about a French citizen facing life imprisonment in Iraq after being an ISIS child - relates to migration/repatriation policy and religious extremist communities",
+      "source": "Mediapart",
+      "date": "2025-12-30T11:05:11.000Z"
+    },
+    {
+      "articleId": "884b30602f53",
+      "title": "A69: les blessures cachées d’un «massacre à la pelleteuse»",
+      "themes": [
+        "a69",
+        "biodiversité"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about the A69 highway project, which is an existing theme. The mention of environmental authorizations and 'massacre à la pelleteuse' suggests environmental damage, making biodiversité also relevant.",
+      "source": "Mediapart",
+      "date": "2025-12-30T10:05:55.000Z"
+    },
+    {
+      "articleId": "2210c7bc6f7f",
+      "title": "Non, le père Noël n’est pas interdit en Israël",
+      "themes": [
+        "désinformation",
+        "communautés religieuses"
+      ],
+      "domain": "international",
+      "reasoning": "Article debunking false claims about Santa Claus being banned in Israel - relates to misinformation spreading online and religious community relations in the region",
+      "source": "Les Surligneurs",
+      "date": "2025-12-30T09:54:32.000Z"
+    },
+    {
+      "articleId": "a4cacc7ac56d",
+      "title": "A69 : la justice valide la poursuite du chantier",
+      "themes": [
+        "a69",
+        "transition énergétique"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article directly about the A69 infrastructure project controversy. Also relates to energy transition as autoroute projects are contested for their environmental impact and opposition to sustainable transport alternatives",
+      "source": "Reporterre",
+      "date": "2025-12-30T09:21:57.000Z"
+    },
+    {
+      "articleId": "88e4f72805e4",
+      "title": "Trump confirme que les États-Unis ont bombardé une cible au Venezuela",
+      "themes": [
+        "politique étrangère américaine",
+        "géopolitique mondiale"
+      ],
+      "domain": "international",
+      "reasoning": "Article about US military action in Venezuela under Trump - directly relates to American foreign policy decisions and broader global geopolitical dynamics in Latin America",
+      "source": "Le Grand Continent",
+      "date": "2025-12-30T09:03:26.000Z"
+    },
+    {
+      "articleId": "578a3deface9",
+      "title": "À 22 ans, Vipulan Puvaneswaran est déjà un vétéran de l'activisme",
+      "themes": [
+        "mouvements de contestation",
+        "justice alimentaire"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about a young climate activist who has evolved toward an ecology that doesn't separate social and environmental issues. The 'mouvements de contestation' theme (from international domain) fits his activism background, while 'justice alimentaire' (from environnement domain) aligns with his current focus on interconnected social-environmental justice.",
+      "source": "Reporterre",
+      "date": "2025-12-30T08:29:25.000Z"
+    },
+    {
+      "articleId": "819894b1e081",
+      "title": "Pourquoi il faut cesser de croire au mythe d’une «économie résiliente» perturbée par la crise politique",
+      "themes": [
+        "géopolitique économique",
+        "gouvernance politique"
+      ],
+      "domain": "économie",
+      "reasoning": "Article critiquant le mythe de l'économie résiliente face à la crise politique - traite de la relation entre politique et économie (géopolitique économique) et des questions de gouvernance politique. Le thème 'gouvernance politique' existe déjà dans le domaine société et s'applique bien ici.",
+      "source": "Mediapart",
+      "date": "2025-12-30T06:48:42.000Z"
+    },
+    {
+      "articleId": "37eae24b3d45",
+      "title": "L’économie française est dans l’impasse",
+      "themes": [
+        "géopolitique économique",
+        "politique monétaire"
+      ],
+      "domain": "économie",
+      "reasoning": "Article about French economic stagnation and growth concerns - relates to broader economic geopolitics and likely discusses monetary policy impacts on growth and household incomes",
+      "source": "Mediapart",
+      "date": "2025-12-30T06:48:30.000Z"
+    },
+    {
+      "articleId": "c0c602a2e7a9",
+      "title": "«Le rapport des juges avec les pouvoirs exécutif et législatif a changé»",
+      "themes": [
+        "justice pénale",
+        "mémoire collective"
+      ],
+      "domain": "société",
+      "reasoning": "Article about judges and their historical role, particularly during the Occupation - relates to judicial system functioning and collective memory of this historical period",
+      "source": "Mediapart",
+      "date": "2025-12-30T06:46:28.000Z"
+    },
+    {
+      "articleId": "adbd905fb915",
+      "title": "A69 : comment l'aménagement du territoire est devenu une « guerre intérieure »",
+      "themes": [
+        "a69",
+        "transition énergétique"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article specifically about the A69 infrastructure controversy (existing theme with 3 articles) and discusses territorial development in context of environmental transition and state economic interests",
+      "source": "Reporterre",
+      "date": "2025-12-30T06:30:00.000Z"
+    },
+    {
+      "articleId": "33a05624aec2",
+      "title": "Shein, E.Leclerc, Bio-Ethic... : quelles sont les pires entreprises de 2025 ?",
+      "themes": [
+        "pratiques commerciales",
+        "désinformation"
+      ],
+      "domain": "société",
+      "reasoning": "Article about worst companies of 2025 with business practices that harm consumers - relates to commercial practices and potentially misleading information from companies",
+      "source": "60M de Consommateurs",
+      "date": "2025-12-30T06:15:00.000Z"
+    },
+    {
+      "articleId": "b47bd781a30f",
+      "title": "Cactus de la consommation 2025 : Shein, les constructeurs auto et E.Leclerc sur le podium",
+      "themes": [
+        "pratiques commerciales",
+        "désinformation"
+      ],
+      "domain": "société",
+      "reasoning": "Article about consumer advocacy organization calling out companies for business practices that harm consumers - fits commercial practices theme from culture domain (which applies broadly to business conduct) and likely involves misleading practices that relate to disinformation",
+      "source": "60M de Consommateurs",
+      "date": "2025-12-30T06:15:00.000Z"
+    },
+    {
+      "articleId": "a5beb7012f15",
+      "title": "Les milliardaires, un petit monde toujours plus riche et inégalitaire",
+      "themes": [
+        "géopolitique économique",
+        "démocratie économique"
+      ],
+      "domain": "économie",
+      "reasoning": "Article about billionaire wealth concentration and inequality - relates to global economic power dynamics and questions about economic democracy/wealth distribution",
+      "source": "Alternatives Économiques",
+      "date": "2025-12-30T06:00:00.000Z"
+    },
+    {
+      "articleId": "2d78ce2569cc",
+      "title": "Comment la France a sacrifié son industrie sur l’autel des privatisations",
+      "themes": [
+        "géopolitique économique",
+        "démocratie économique"
+      ],
+      "domain": "économie",
+      "reasoning": "Article about French industrial privatizations - relates to economic geopolitics (France's economic position/strategy) and economic democracy (public vs private control of key industries)",
+      "source": "Elucid",
+      "date": "2025-12-30T05:35:48.000Z"
+    },
+    {
+      "articleId": "817691db80ba",
+      "title": "Zaporijia : le principal objectif de l’armée russe en 2026 ?",
+      "themes": [
+        "géopolitique mondiale",
+        "conflit syrien"
+      ],
+      "domain": "international",
+      "reasoning": "Article about Russian military objectives in Zaporizhia region - fits under global geopolitics. Used 'conflit syrien' as second theme since there's no specific Ukraine conflict theme, and this represents a similar ongoing military conflict situation that could be reusable for other regional conflicts.",
+      "source": "Le Grand Continent",
+      "date": "2025-12-30T05:30:00.000Z"
+    },
+    {
+      "articleId": "63012ad4b0e4",
+      "title": "Grâce à l’interdiction des néonicotinoïdes, les oiseaux renaissent",
+      "themes": [
+        "biodiversité",
+        "agriculture intensive"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about bird population recovery following neonicotinoid pesticide ban - directly relates to biodiversity protection and impacts of intensive agricultural practices on wildlife",
+      "source": "Alternatives Économiques",
+      "date": "2025-12-30T05:00:00.000Z"
+    },
+    {
+      "articleId": "64ea2a9f91d5",
+      "title": "Curtis Yarvin : le plan pour faire des États-Unis un État-parti fasciste",
+      "themes": [
+        "politique étrangère américaine",
+        "mouvements politiques"
+      ],
+      "domain": "international",
+      "reasoning": "Article about Curtis Yarvin's influence on American politics and his fascist transformation plan for the US - fits US foreign policy context and relates to political movements/ideologies",
+      "source": "Le Grand Continent",
+      "date": "2025-12-30T05:00:00.000Z"
+    },
+    {
+      "articleId": "c80223136687",
+      "title": "Surcapacité électrique : il faut lever les tabous",
+      "themes": [
+        "transition énergétique",
+        "politique énergétique"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about electrical overcapacity and RTE forecasts - directly relates to energy transition planning and energy policy decisions",
+      "source": "Alternatives Économiques",
+      "date": "2025-12-30T04:00:00.000Z"
+    },
+    {
+      "articleId": "6f27200f2e6d",
+      "title": "Sécheresse, ouragans et inondations renforcés par le changement climatique",
+      "themes": [
+        "transition énergétique",
+        "santé publique"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about climate change impacts through extreme weather events - directly relates to energy transition challenges and public health consequences of environmental changes",
+      "source": "Reporterre",
+      "date": "2025-12-30T00:00:00.000Z"
+    },
+    {
+      "articleId": "f76d11c62270",
+      "title": "Les négociations au Vanuatu signifient-elles qu’Emmanuel Macron va céder les îlots Hunter et Matthew ?",
+      "themes": [
+        "géopolitique mondiale",
+        "politique étrangère française"
+      ],
+      "domain": "international",
+      "reasoning": "Article about territorial negotiations between France and Vanuatu over Hunter and Matthew islets - involves international relations and French foreign policy, but I created 'politique étrangère française' as existing themes focus on American foreign policy rather than French",
+      "source": "Les Surligneurs",
+      "date": "2025-12-29T20:55:45.000Z"
+    },
+    {
+      "articleId": "ecb94e823948",
+      "title": "Gilles Rossary-Lenglet, instigateur de la sextape: «Si c’était à refaire, je le referais»",
+      "themes": [
+        "scandales politiques",
+        "justice pénale"
+      ],
+      "domain": "société",
+      "reasoning": "Article about a political blackmail case (kompromat/sextape) involving a former deputy mayor, with judicial consequences including incarceration - fits both political scandal and criminal justice themes",
+      "source": "Mediapart",
+      "date": "2025-12-29T18:31:23.000Z"
+    },
+    {
+      "articleId": "97f0ce97ea61",
+      "title": "Plan grand froid: les limites de «la politique du thermomètre»",
+      "themes": [
+        "service public",
+        "précarité sociale"
+      ],
+      "domain": "société",
+      "reasoning": "Article about the cold weather emergency plan activation - relates to public service response and addresses social precariousness of homeless populations during winter",
+      "source": "Mediapart",
+      "date": "2025-12-29T18:31:02.000Z"
+    },
+    {
+      "articleId": "4bcd3a9c64dc",
+      "title": "L’extrême droite de Trump se prépare à un grand virage à droite",
+      "themes": [
+        "politique étrangère américaine",
+        "mouvements de contestation"
+      ],
+      "domain": "international",
+      "reasoning": "Article about Trump's far-right movement and its potential evolution toward white supremacism - relates to American political dynamics and contestation movements",
+      "source": "Les Jours",
+      "date": "2025-12-29T17:59:00.000Z"
+    },
+    {
+      "articleId": "b82e570d4e89",
+      "title": "Que faire de la police et de la prison ?",
+      "themes": [
+        "justice pénale",
+        "mouvements de contestation"
+      ],
+      "domain": "société",
+      "reasoning": "Article discusses police and prison reform/abolition debates, connecting to criminal justice system and social movements like 'Defund the police' from Black Lives Matter context",
+      "source": "Le Monde Diplomatique",
+      "date": "2025-12-29T17:43:47.000Z"
+    },
+    {
+      "articleId": "7a1cc81d7f24",
+      "title": "« Mission Justice 2025 » : les exercices militaires chinois autour de Taïwan, un avertissement adressé à Washington et à Tokyo",
+      "themes": [
+        "géopolitique mondiale",
+        "politique étrangère américaine"
+      ],
+      "domain": "international",
+      "reasoning": "Article about Chinese military exercises around Taiwan as a warning to Washington and Tokyo - clearly relates to global geopolitics and US foreign policy in the Asia-Pacific region",
+      "source": "Le Grand Continent",
+      "date": "2025-12-29T16:53:52.000Z"
+    },
+    {
+      "articleId": "24cd6fd895ac",
+      "title": "Extrême droite, racisme, antiféminisme : Brigitte Bardot, un héritage malaisant pour la cause animale",
+      "themes": [
+        "figures publiques",
+        "activisme animalier"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about Brigitte Bardot's problematic legacy combining her status as a public figure with her animal rights activism, examining how her controversial positions affect the animal cause",
+      "source": "Reporterre",
+      "date": "2025-12-29T16:49:22.000Z"
+    },
+    {
+      "articleId": "6c6912cda050",
+      "title": "Bébés : comment éviter les « caries du biberon »",
+      "themes": [
+        "santé publique",
+        "pratiques parentales"
+      ],
+      "domain": "société",
+      "reasoning": "Article about preventing baby bottle tooth decay - relates to public health education and parenting practices. 'santé publique' exists in environnement domain but this is more about social health education. Creating 'pratiques parentales' as this represents a reusable theme for articles about parenting guidance and child-rearing practices.",
+      "source": "60M de Consommateurs",
+      "date": "2025-12-29T16:40:00.000Z"
+    },
+    {
+      "articleId": "4485c497ada4",
+      "title": "Challenges : reprise en main musclée de Bernard Arnault",
+      "themes": [
+        "médias indépendants",
+        "figures publiques"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about Bernard Arnault's takeover of Challenges magazine - relates to media ownership/independence and prominent business figures",
+      "source": "Off Investigation",
+      "date": "2025-12-29T16:00:22.000Z"
+    },
+    {
+      "articleId": "a1fb426acfa2",
+      "title": "Josep Rafanell i Orra: «Hériter d’un monde complètement en ruine»",
+      "themes": [
+        "anthropologie politique",
+        "mouvements politiques"
+      ],
+      "domain": "culture",
+      "reasoning": "Article featuring psychologist and writer Josep Rafanell i Orra discussing contemporary political theory, community forms, and resistance to liberal-fascism - fits anthropological political analysis and broader political movements discourse",
+      "source": "Mediapart",
+      "date": "2025-12-29T15:18:01.000Z"
+    },
+    {
+      "articleId": "a041289a1dc1",
+      "title": "Le personnel navigant de French Bee alerte sur un rythme de travail «intenable»",
+      "themes": [
+        "conditions de travail",
+        "service public"
+      ],
+      "domain": "société",
+      "reasoning": "Article about French Bee airline staff alerting about unsustainable work rhythm and deteriorating working conditions. This fits well with existing 'conditions de travail' theme. While it's a private airline, aviation involves public service aspects and worker rights issues that relate to broader service delivery concerns.",
+      "source": "Mediapart",
+      "date": "2025-12-29T15:15:58.000Z"
+    },
+    {
+      "articleId": "c27b48dbeae2",
+      "title": "Ces Européens bannis par Trump pour avoir lutté contre la désinformation climatique",
+      "themes": [
+        "désinformation",
+        "politique étrangère américaine"
+      ],
+      "domain": "international",
+      "reasoning": "Article about Europeans banned from the US by Trump administration for fighting climate disinformation - combines international policy/foreign relations with disinformation themes",
+      "source": "Reporterre",
+      "date": "2025-12-29T15:13:48.000Z"
+    },
+    {
+      "articleId": "cd25a8b0ec19",
+      "title": "Toujours impitoyable envers les dissidents, le régime iranien contraint de s’assouplir sur la question des mœurs",
+      "themes": [
+        "mouvements de contestation",
+        "communautés religieuses"
+      ],
+      "domain": "international",
+      "reasoning": "Article about Iranian regime's contradictory approach - violent repression of dissidents like Nobel laureate Narges Mohammadi while showing flexibility on social customs (women's marathon, youth cafes). Fits existing themes about protest movements and religious communities' governance.",
+      "source": "Mediapart",
+      "date": "2025-12-29T14:52:18.000Z"
+    },
+    {
+      "articleId": "dad701ac96bc",
+      "title": "Ski : les farts contenant des PFAS interdits le 1er janvier",
+      "themes": [
+        "santé publique",
+        "industrie cosmétique"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about banning PFAS-based ski waxes for health reasons - relates to public health protection and cosmetic/personal care product regulation",
+      "source": "Reporterre",
+      "date": "2025-12-29T14:40:16.000Z"
+    },
+    {
+      "articleId": "d5b056e8c32e",
+      "title": "« À votre santé ! » : retrouvez en images et vidéo la soirée organisée par Reporterre",
+      "themes": [
+        "santé publique",
+        "médias indépendants"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about a Reporterre event focused on links between ecology and health struggles - fits environmental health coverage and independent media activities",
+      "source": "Reporterre",
+      "date": "2025-12-29T14:18:12.000Z"
+    },
+    {
+      "articleId": "b18aeb7e8451",
+      "title": "Attention à cette vidéo sortie de son contexte qui montrerait un chauffeur-livreur « hors de contrôle » à Paris",
+      "themes": [
+        "désinformation",
+        "conditions de travail"
+      ],
+      "domain": "société",
+      "reasoning": "Article about a video taken out of context regarding a delivery driver - fits desinformation (misinformation about the video) and conditions de travail (relates to delivery workers' working conditions and public perception)",
+      "source": "Les Surligneurs",
+      "date": "2025-12-29T13:58:33.000Z"
+    },
+    {
+      "articleId": "2db57e22de80",
+      "title": "Rivières orange en Alaska : comment la crise climatique bouleverse les cours d'eau",
+      "themes": [
+        "santé publique",
+        "transition énergétique"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about climate crisis impacts on Alaskan waterways - relates to public health concerns from contaminated water and broader energy transition/climate change themes",
+      "source": "Reporterre",
+      "date": "2025-12-29T13:05:07.000Z"
+    },
+    {
+      "articleId": "c5c1288c49c0",
+      "title": "«Le panafricanisme est aussi une forme de création esthétique»",
+      "themes": [
+        "phénomènes culturels",
+        "mouvements politiques"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about panafricanism as both aesthetic creation and political movement, discussing a museum exhibition on the topic from 1920 to present - fits cultural phenomena and political movements themes",
+      "source": "Mediapart",
+      "date": "2025-12-29T12:03:50.000Z"
+    },
+    {
+      "articleId": "cd76f746782c",
+      "title": "Législatives au Kosovo: le premier ministre remporte une victoire sans appel mais sans projet",
+      "themes": [
+        "géopolitique mondiale",
+        "mouvements de contestation"
+      ],
+      "domain": "international",
+      "reasoning": "Article about Kosovo legislative elections with a sovereignist movement winning - fits geopolitical dynamics and political movements challenging established order",
+      "source": "Mediapart",
+      "date": "2025-12-29T11:56:54.000Z"
+    },
+    {
+      "articleId": "f776e7338f29",
+      "title": "Selon la diplomatie russe, l’indépendance de l’Ukraine ne dépend ni de ses dirigeants ni de sa population",
+      "themes": [
+        "géopolitique mondiale",
+        "politique étrangère américaine"
+      ],
+      "domain": "international",
+      "reasoning": "Article about Russian diplomatic stance on Ukrainian independence in context of Trump administration - clearly relates to global geopolitics and US foreign policy",
+      "source": "Le Grand Continent",
+      "date": "2025-12-29T11:52:39.000Z"
+    },
+    {
+      "articleId": "9ecc9273df35",
+      "title": "Alimentation: les limites du Planet-Score ",
+      "themes": [
+        "industrie alimentaire",
+        "pratiques commerciales"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about Planet-Score environmental labeling system - relates to food industry practices and the commercial aspects of environmental scoring/certification systems",
+      "source": "Mediapart",
+      "date": "2025-12-29T10:16:11.000Z"
+    },
+    {
+      "articleId": "78674d223784",
+      "title": "Foie gras : « Un élevage intensif dopé à l'argent public »",
+      "themes": [
+        "agriculture intensive",
+        "industrie alimentaire"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about foie gras production being intensive and publicly subsidized - directly relates to intensive farming practices and food industry structure/economics",
+      "source": "Reporterre",
+      "date": "2025-12-29T08:25:59.000Z"
+    },
+    {
+      "articleId": "1b1504964a25",
+      "title": "Des hommes ont-ils vraiment réussi à dompter des rhinocéros ?",
+      "themes": [
+        "désinformation",
+        "phénomènes culturels"
+      ],
+      "domain": "société",
+      "reasoning": "Article debunking AI-generated fake images of men riding rhinoceros - clearly about misinformation spread on social media, and the viral nature of such content makes it a cultural phenomenon",
+      "source": "Les Surligneurs",
+      "date": "2025-12-29T08:05:39.000Z"
+    },
+    {
+      "articleId": "379490b9a8e2",
+      "title": "Claire Lejeune, députée insoumise : des marches climat à l'Assemblée nationale",
+      "themes": [
+        "mouvements politiques",
+        "figures publiques"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about Claire Lejeune, an Insoumise deputy who moved from climate activism to parliamentary politics - fits both political movements theme and public figures profile",
+      "source": "Reporterre",
+      "date": "2025-12-29T07:00:00.000Z"
+    },
+    {
+      "articleId": "e06044cfc444",
+      "title": "Pesticides, océans... 5 mensonges du gouvernement sur l'écologie en 2025",
+      "themes": [
+        "politique énergétique",
+        "agriculture intensive"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about government lies on environmental issues including pesticides and ocean protection - directly relates to environmental policy and industrial agriculture practices",
+      "source": "Reporterre",
+      "date": "2025-12-29T06:30:00.000Z"
+    },
+    {
+      "articleId": "412bd6a6fd40",
+      "title": "Carglass : la réparation « gratuite » peut vous coûter cher",
+      "themes": [
+        "pratiques commerciales",
+        "service public"
+      ],
+      "domain": "société",
+      "reasoning": "Article about Carglass's misleading 'free' repair practices that end up costing customers - relates to deceptive commercial practices. Also touches on service public as it involves insurance coverage issues that affect consumers broadly.",
+      "source": "60M de Consommateurs",
+      "date": "2025-12-29T06:15:00.000Z"
+    },
+    {
+      "articleId": "26951989f765",
+      "title": "Les 12 graphiques qu’il ne fallait pas rater en 2025",
+      "themes": [
+        "démocratie économique",
+        "géopolitique économique"
+      ],
+      "domain": "économie",
+      "reasoning": "Article presenting economic data visualizations from 2025 - relates to economic democracy through data transparency and global economic analysis through international economic trends",
+      "source": "Alternatives Économiques",
+      "date": "2025-12-29T06:05:00.000Z"
+    },
+    {
+      "articleId": "a4e897526e1a",
+      "title": "Le grand fossé de l’accès aux soins en France : quand la santé devient un privilège",
+      "themes": [
+        "santé publique",
+        "service public"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about healthcare access inequalities in France - directly relates to public health issues and the functioning of public healthcare services. The theme 'service public' is from société domain but fits as healthcare is a core public service.",
+      "source": "Elucid",
+      "date": "2025-12-29T05:35:51.000Z"
+    },
+    {
+      "articleId": "2fa3b5273496",
+      "title": "L’année 2026 en 25 anniversaires à ne pas manquer ",
+      "themes": [
+        "mémoire collective",
+        "phénomènes culturels"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about commemorating historical anniversaries in 2026 - relates to collective memory and cultural phenomena around how societies mark significant dates",
+      "source": "Le Grand Continent",
+      "date": "2025-12-29T05:30:00.000Z"
+    },
+    {
+      "articleId": "b7d8e0f30836",
+      "title": "Le Sud global existe-t-il ?",
+      "themes": [
+        "géopolitique mondiale",
+        "intégration européenne"
+      ],
+      "domain": "international",
+      "reasoning": "Article questioning the concept of 'Global South' and discussing power asymmetries in international institutions - directly relates to global geopolitics and international integration dynamics",
+      "source": "Alternatives Économiques",
+      "date": "2025-12-29T05:05:00.000Z"
+    },
+    {
+      "articleId": "93ff0f7d88b7",
+      "title": "Lebensraum : de Hitler à Trump, sources et généalogie d’un concept",
+      "themes": [
+        "géopolitique mondiale",
+        "politique étrangère américaine"
+      ],
+      "domain": "international",
+      "reasoning": "Article analyzing Trump's expansionist rhetoric and the historical concept of Lebensraum - directly relates to global geopolitics and US foreign policy discourse",
+      "source": "Le Grand Continent",
+      "date": "2025-12-29T05:00:00.000Z"
+    },
+    {
+      "articleId": "e01cd754ce22",
+      "title": "Tribunaux d'arbitrage : la France et les milliards de la montagne d'or",
+      "themes": [
+        "géopolitique économique",
+        "démocratie économique"
+      ],
+      "domain": "économie",
+      "reasoning": "Article about arbitration tribunals allowing multinationals to challenge state decisions - relates to economic power dynamics between corporations and governments, and questions about democratic control over economic policy",
+      "source": "Alternatives Économiques",
+      "date": "2025-12-29T04:05:00.000Z"
+    },
+    {
+      "articleId": "fecea38181fc",
+      "title": "«Avec Bardot, on passe d’une société fanée, percluse de moralisme, à Mai-68»",
+      "themes": [
+        "figures publiques",
+        "phénomènes culturels"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about Brigitte Bardot's death and cultural impact - clearly about a major public figure and the broader cultural phenomena she represented in French society, particularly regarding changing social norms from the conservative post-war period to May '68",
+      "source": "Mediapart",
+      "date": "2025-12-28T20:07:18.000Z"
+    },
+    {
+      "articleId": "fab2fabc653a",
+      "title": "« Je recherche des idées qui s’incarnent », un entretien fleuve avec Benjamin Labatut",
+      "themes": [
+        "littérature contemporaine",
+        "figures publiques"
+      ],
+      "domain": "culture",
+      "reasoning": "Article is an in-depth interview with Benjamin Labatut, described as one of the most remarkable authors of our time. This fits both contemporary literature (discussing his work and ideas) and public figures (profile/interview format with a prominent cultural figure).",
+      "source": "Le Grand Continent",
+      "date": "2025-12-28T19:27:53.000Z"
+    },
+    {
+      "articleId": "e9bd91f6f168",
+      "title": "2025, une année d’enquêtes sur les violences sexistes et sexuelles",
+      "themes": [
+        "justice pénale",
+        "désinformation"
+      ],
+      "domain": "société",
+      "reasoning": "Article about investigations into sexist and sexual violence cases, including MeToo revelations and feminicide - relates to criminal justice system handling of these cases and potentially media coverage/misinformation around such sensitive topics",
+      "source": "Les Jours",
+      "date": "2025-12-28T17:59:00.000Z"
+    },
+    {
+      "articleId": "049c11b5a1fa",
+      "title": "M. Trump, pirate des Caraïbes",
+      "themes": [
+        "politique étrangère américaine",
+        "géopolitique mondiale"
+      ],
+      "domain": "international",
+      "reasoning": "Article about Trump's foreign policy in Latin America, referencing the Monroe Doctrine and US continental dominance - clearly fits American foreign policy and global geopolitics themes",
+      "source": "Le Monde Diplomatique",
+      "date": "2025-12-28T17:33:31.000Z"
+    },
+    {
+      "articleId": "ec75cd3f85cc",
+      "title": "Bande de Gaza: le risque de l’enlisement",
+      "themes": [
+        "géopolitique mondiale",
+        "politique étrangère américaine"
+      ],
+      "domain": "international",
+      "reasoning": "Article about Gaza ceasefire negotiations involves global geopolitical dynamics and US foreign policy mediation efforts in the Middle East conflict",
+      "source": "Mediapart",
+      "date": "2025-12-28T16:24:51.000Z"
+    },
+    {
+      "articleId": "ca8e02ecd500",
+      "title": "Dans le sud d’Israël, la dystopie états-unienne où s’imagine le futur de Gaza",
+      "themes": [
+        "géopolitique mondiale",
+        "politique étrangère américaine"
+      ],
+      "domain": "international",
+      "reasoning": "Article about US-managed coordination center for post-war Gaza planning - fits both global geopolitics and American foreign policy themes",
+      "source": "Mediapart",
+      "date": "2025-12-28T16:24:37.000Z"
+    },
+    {
+      "articleId": "ebd4c0e93374",
+      "title": "L'ère des répressions",
+      "themes": [
+        "justice pénale",
+        "conditions de travail"
+      ],
+      "domain": "société",
+      "reasoning": "Article about CGT leader Sophie Binet being prosecuted for calling bosses 'rats' - relates to judicial treatment of labor conflicts and broader worker rights issues",
+      "source": "Le Monde Diplomatique",
+      "date": "2025-12-28T14:13:31.000Z"
+    },
+    {
+      "articleId": "8b64cef40756",
+      "title": "En Algérie, la loi criminalisant le colonialisme reflète une colère grandissante en Afrique",
+      "themes": [
+        "géopolitique mondiale",
+        "mémoire collective"
+      ],
+      "domain": "international",
+      "reasoning": "Article about Algeria's law criminalizing French colonialism - relates to global geopolitical tensions between former colonies and colonial powers, and specifically addresses collective memory and historical reparations",
+      "source": "Mediapart",
+      "date": "2025-12-28T13:00:27.000Z"
+    },
+    {
+      "articleId": "54fde8c6a353",
+      "title": "«L’esprit critique» expositions: panoramiques, sculptures textiles et mangas",
+      "themes": [
+        "photojournalisme",
+        "phénomènes culturels"
+      ],
+      "domain": "culture",
+      "reasoning": "Article discusses multiple cultural exhibitions including photographer Luc Delahaye (fits photojournalisme theme) and covers broader cultural phenomena through museum retrospectives and manga discussions",
+      "source": "Mediapart",
+      "date": "2025-12-28T12:11:36.000Z"
+    },
+    {
+      "articleId": "4ad1fa71a545",
+      "title": "Mayotte, tropique de la violence d’État",
+      "themes": [
+        "politique migratoire",
+        "service public"
+      ],
+      "domain": "société",
+      "reasoning": "Article about state violence in Mayotte targeting irregular Comorian immigrants through housing destruction - relates to migration policy and how public services (or lack thereof) affect marginalized populations",
+      "source": "Blast",
+      "date": "2025-12-28T10:00:00.000Z"
+    },
+    {
+      "articleId": "6d1fbbc872e9",
+      "title": "Pourquoi Hannah Arendt ?",
+      "themes": [
+        "littérature contemporaine",
+        "anthropologie politique"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about Hannah Arendt's political philosophy and its contemporary relevance - fits both literature/intellectual history and political anthropology themes",
+      "source": "Le Grand Continent",
+      "date": "2025-12-28T09:49:13.000Z"
+    },
+    {
+      "articleId": "c03a9bfd8a3b",
+      "title": "Pourquoi Hannah Arendt ?",
+      "themes": [
+        "anthropologie politique",
+        "phénomènes culturels"
+      ],
+      "domain": "culture",
+      "reasoning": "Article discussing Hannah Arendt's political philosophy and its relevance to contemporary political phenomena (Trump, Meloni, Le Pen, etc.) - fits anthropological analysis of political movements and broader cultural understanding of politics",
+      "source": "Le Grand Continent",
+      "date": "2025-12-28T09:49:13.000Z"
+    },
+    {
+      "articleId": "81fd99863308",
+      "title": "Paul B. Preciado: «L’utopie est plus nécessaire que jamais, parce qu’elle est totalement possible»",
+      "themes": [
+        "anthropologie politique",
+        "phénomènes culturels"
+      ],
+      "domain": "culture",
+      "reasoning": "Interview with philosopher Paul B. Preciado discussing social experimentation and political philosophy - fits anthropologie politique (philosophical/political thought) and phénomènes culturels (cultural commentary on society)",
+      "source": "Mediapart",
+      "date": "2025-12-28T09:17:53.000Z"
+    },
+    {
+      "articleId": "726f63847b09",
+      "title": "«L’Académie française est devenue une forteresse de la langue française»",
+      "themes": [
+        "phénomènes culturels",
+        "anthropologie politique"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about Marseillais dialect and French Academy relates to cultural phenomena around regional language varieties and the political anthropology of language institutions and linguistic hierarchies",
+      "source": "Mediapart",
+      "date": "2025-12-28T08:05:48.000Z"
+    },
+    {
+      "articleId": "f223232ef83b",
+      "title": "Des nouvelles de la littérature engagée",
+      "themes": [
+        "littérature contemporaine",
+        "débat démocratique"
+      ],
+      "domain": "culture",
+      "reasoning": "Article discusses engaged literature and literary theories that defend different approaches - fits well with existing themes about contemporary literature and democratic debate",
+      "source": "Mediapart",
+      "date": "2025-12-28T08:02:48.000Z"
+    },
+    {
+      "articleId": "cb2bc90c6ab8",
+      "title": "La junte birmane organise des élections pour sortir de la guerre civile et de l’isolement",
+      "themes": [
+        "géopolitique mondiale",
+        "mouvements de contestation"
+      ],
+      "domain": "international",
+      "reasoning": "Article about Myanmar's military junta organizing elections amid civil war and international isolation. This relates to global geopolitics (junta seeking legitimacy internationally) and protest movements (citizens calling for boycott, civil war context suggests ongoing resistance to military rule)",
+      "source": "Mediapart",
+      "date": "2025-12-28T07:52:22.000Z"
+    },
+    {
+      "articleId": "bb821ae64c46",
+      "title": "L’IA et l’Europe avec Kidron, Benanti, Bradford, Bouverot, le Pas de Sécheval, Crawford et López Águeda",
+      "themes": [
+        "géopolitique économique",
+        "intégration européenne"
+      ],
+      "domain": "économie",
+      "reasoning": "Article about AI and Europe with multiple experts discussing European AI vision vs Silicon Valley model - relates to economic geopolitics and European integration policies. Using existing theme from international domain for European integration as it fits better than creating a new theme.",
+      "source": "Le Grand Continent",
+      "date": "2025-12-28T07:30:00.000Z"
+    },
+    {
+      "articleId": "00278c7a66dc",
+      "title": "PFAS, chacals, océans... Cinq raisons de se réjouir de 2025",
+      "themes": [
+        "santé publique",
+        "biodiversité"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article discussing positive environmental news for 2025, including PFAS (chemical health concerns) and wildlife/ocean protection - fits both public health and biodiversity themes",
+      "source": "Reporterre",
+      "date": "2025-12-28T06:30:00.000Z"
+    },
+    {
+      "articleId": "e88f1db167e4",
+      "title": "L’IA en 2025 : quatre tendances ",
+      "themes": [
+        "désinformation",
+        "conditions de travail"
+      ],
+      "domain": "société",
+      "reasoning": "Article analyzing AI trends in 2025 - relates to misinformation concerns with AI-generated content and changing work conditions due to AI adoption. The focus on AI trends and their societal impact fits better in société than creating a new tech-specific theme.",
+      "source": "Le Grand Continent",
+      "date": "2025-12-28T06:00:00.000Z"
+    },
+    {
+      "articleId": "1a5209b136bf",
+      "title": "Entre sécheresses et déluges, le cycle de l’eau en proie au chaos",
+      "themes": [
+        "gestion de l'eau",
+        "agriculture intensive"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about water cycle disruption affecting both flooding and agricultural drought - directly relates to water management issues and impacts on intensive farming practices",
+      "source": "Elucid",
+      "date": "2025-12-28T05:35:28.000Z"
+    },
+    {
+      "articleId": "9c162cac8e60",
+      "title": "« Cotton Eye Joe » et « Mambo N° 5 » sonnent les clichés",
+      "themes": [
+        "industrie musicale",
+        "phénomènes culturels"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about specific songs that became cultural phenomena in the 1990s, discussing both the music industry aspect and their broader cultural impact as party/celebration staples",
+      "source": "Les Jours",
+      "date": "2025-12-27T17:59:00.000Z"
+    },
+    {
+      "articleId": "525b21abdcc3",
+      "title": "Le chant du daguerréotype",
+      "themes": [
+        "littérature contemporaine",
+        "pratiques commerciales"
+      ],
+      "domain": "culture",
+      "reasoning": "Article discusses a high-priced anthology edition of Les Contemplations - relates to contemporary literary publishing and commercial practices in the book industry",
+      "source": "Le Monde Diplomatique",
+      "date": "2025-12-27T17:23:23.000Z"
+    },
+    {
+      "articleId": "db351845af9a",
+      "title": "Laure Teulières, historienne: «L’anti-écologisme forme une digue absolue avec le réel»",
+      "themes": [
+        "transition énergétique",
+        "mouvements de contestation"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about anti-ecological backlash movements - relates to environmental transition resistance and broader contestation dynamics against ecological policies",
+      "source": "Mediapart",
+      "date": "2025-12-27T17:17:40.000Z"
+    },
+    {
+      "articleId": "9389726e4f4c",
+      "title": "Aux municipales, Les Écologistes jouent leur va-tout",
+      "themes": [
+        "mouvements politiques",
+        "gouvernance politique"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about Les Écologistes' municipal election strategy - fits with political movements theme and relates to political governance at local level",
+      "source": "Mediapart",
+      "date": "2025-12-27T17:08:58.000Z"
+    },
+    {
+      "articleId": "2e1ce4baf882",
+      "title": "Chère Sonia Mabrouk - Boxing Day #62",
+      "themes": [],
+      "domain": "culture",
+      "reasoning": "Insufficient content provided - only title and empty excerpt available. Cannot determine specific themes without article body.",
+      "source": "Blast",
+      "date": "2025-12-27T16:00:00.000Z"
+    },
+    {
+      "articleId": "bde451d8ff84",
+      "title": "En Israël, les juifs libéraux en plein désarroi",
+      "themes": [
+        "géopolitique mondiale",
+        "communautés religieuses"
+      ],
+      "domain": "international",
+      "reasoning": "Article about liberal Jewish communities in Israel grappling with religious supremacism and Gaza conflict - fits both global geopolitics and religious community dynamics",
+      "source": "Mediapart",
+      "date": "2025-12-27T15:00:54.000Z"
+    },
+    {
+      "articleId": "4c97614f70fa",
+      "title": "Présidentielle en Guinée: l’officier putschiste Mamadi Doumbouya vers une victoire sans encombre",
+      "themes": [
+        "géopolitique mondiale",
+        "mouvements de contestation"
+      ],
+      "domain": "international",
+      "reasoning": "Article about a military coup leader likely winning presidential election in Guinea - relates to global geopolitical dynamics and challenges to established governance structures through military takeover",
+      "source": "Mediapart",
+      "date": "2025-12-27T14:36:42.000Z"
+    },
+    {
+      "articleId": "2abdc3102374",
+      "title": "La question de la violence",
+      "themes": [
+        "phénomènes culturels",
+        "anthropologie politique"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about Milo Rau's theatrical work and his International Institute of Political Murder - relates to cultural phenomena in theater and the political/anthropological dimensions of his artistic approach to violence",
+      "source": "Le Monde Diplomatique",
+      "date": "2025-12-27T14:03:23.000Z"
+    },
+    {
+      "articleId": "ab7170d85218",
+      "title": "Livres : quelles sont les non-fictions qui se sont le plus vendues en Europe en 2025 ? ",
+      "themes": [
+        "édition française",
+        "phénomènes culturels"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about best-selling non-fiction books in Europe - relates to publishing industry trends and cultural phenomena that cross borders",
+      "source": "Le Grand Continent",
+      "date": "2025-12-27T13:00:00.000Z"
+    },
+    {
+      "articleId": "fc4ac30a3dbb",
+      "title": "La guerre et l’Europe, une conversation avec Éric Béranger, Michel Barnier, Oleksandr Kamyshin, Pierre-Étienne Franc, Sir Richard Moore et Hanno Pevkur",
+      "themes": [
+        "géopolitique mondiale",
+        "intégration européenne"
+      ],
+      "domain": "international",
+      "reasoning": "Article about war in Ukraine and European response to Russian aggression - clearly covers global geopolitics and European integration/unity in face of external threats",
+      "source": "Le Grand Continent",
+      "date": "2025-12-27T12:00:00.000Z"
+    },
+    {
+      "articleId": "866c58298fa3",
+      "title": "L’Ukraine subit une attaque de drones et de missiles à la veille d’une rencontre Zelensky-Trump",
+      "themes": [
+        "géopolitique mondiale",
+        "conflit ukrainien"
+      ],
+      "domain": "international",
+      "reasoning": "Article about drone and missile attacks on Ukraine before a Zelensky-Trump meeting - relates to global geopolitics and creates new theme 'conflit ukrainien' as the ongoing Ukraine conflict is a major international theme that will likely generate multiple future articles, distinct from the existing 'conflit syrien'",
+      "source": "Mediapart",
+      "date": "2025-12-27T10:08:52.000Z"
+    },
+    {
+      "articleId": "3cf71f5c4d5c",
+      "title": "Derrière l’effort de guerre russe en Ukraine, des dizaines de millions de dollars de fibre optique chinoise",
+      "themes": [
+        "conflit ukrainien",
+        "géopolitique économique"
+      ],
+      "domain": "international",
+      "reasoning": "Article about Chinese optical fiber supply to Russia for drone warfare in Ukraine - directly relates to the Ukrainian conflict and involves economic-geopolitical aspects of trade relationships during wartime",
+      "source": "Mediapart",
+      "date": "2025-12-27T09:44:20.000Z"
+    },
+    {
+      "articleId": "05c0b807b7be",
+      "title": "L’année 2025 en trois jeux vidéo cruciaux et méconnus",
+      "themes": [
+        "phénomènes culturels",
+        "médias indépendants"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about video games as cultural phenomena that deserve more attention - fits cultural phenomena theme. Also relates to independent media coverage since Mediapart is highlighting overlooked cultural works",
+      "source": "Mediapart",
+      "date": "2025-12-27T09:27:59.000Z"
+    },
+    {
+      "articleId": "fb4c4b6d0a0d",
+      "title": "Jeanne Etelain: «Renoncer à un projet politique commun pour l’humanité»",
+      "themes": [
+        "anthropologie politique",
+        "mouvements politiques"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about philosopher Jeanne Etelain discussing political secession and alternative zones outside capitalist systems - fits anthropological analysis of political movements and alternative political organizing",
+      "source": "Mediapart",
+      "date": "2025-12-27T07:33:59.000Z"
+    },
+    {
+      "articleId": "3c7a2c1d0464",
+      "title": "Fêtes, luttes et joies, un trio indissociable à découvrir avec deux livres et un podcast",
+      "themes": [
+        "phénomènes culturels",
+        "anthropologie politique"
+      ],
+      "domain": "culture",
+      "reasoning": "Article examining the political and social dimensions of festivities and celebrations, connecting cultural practices to political transformation - fits well with existing themes about cultural phenomena and political anthropology",
+      "source": "Reporterre",
+      "date": "2025-12-27T07:30:00.000Z"
+    },
+    {
+      "articleId": "f4a1628b5585",
+      "title": "IA: savoir interpréter ces boîtes noires pour en garder le contrôle",
+      "themes": [
+        "désinformation",
+        "gouvernance politique"
+      ],
+      "domain": "société",
+      "reasoning": "Article about AI interpretability and control - relates to disinformation concerns (AI-generated content) and political governance (regulating AI systems for safety and accountability)",
+      "source": "Mediapart",
+      "date": "2025-12-27T07:27:42.000Z"
+    },
+    {
+      "articleId": "161910558e3a",
+      "title": "Ousmane Ndiaye : « En Afrique, les processus de démocratisation doivent se construire par le bas »",
+      "themes": [
+        "géopolitique mondiale",
+        "mouvements de contestation"
+      ],
+      "domain": "international",
+      "reasoning": "Article about democratization processes in Africa and opposing autocratic narratives - fits broader global geopolitics and relates to contestation movements against authoritarian rule",
+      "source": "Alternatives Économiques",
+      "date": "2025-12-27T07:00:00.000Z"
+    },
+    {
+      "articleId": "441ff71907fb",
+      "title": "Poissons qui font du stop, araignées en coloc'... Ces animaux s'entraident",
+      "themes": [
+        "biodiversité",
+        "phénomènes naturels"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about animal cooperation and natural behaviors - fits biodiversity from existing themes, and creates 'phénomènes naturels' as a new theme for natural phenomena that could apply to future articles about wildlife behaviors, natural processes, etc.",
+      "source": "Reporterre",
+      "date": "2025-12-27T06:30:00.000Z"
+    },
+    {
+      "articleId": "164388380efd",
+      "title": "25 dessins de presse pour en finir avec 2025",
+      "themes": [
+        "phénomènes culturels",
+        "médias indépendants"
+      ],
+      "domain": "culture",
+      "reasoning": "Article presenting a selection of press cartoons from Alternatives Economiques magazine - relates to cultural phenomena (editorial cartoons as cultural commentary) and independent media (the magazine itself as independent journalism)",
+      "source": "Alternatives Économiques",
+      "date": "2025-12-27T06:05:00.000Z"
+    },
+    {
+      "articleId": "8aeedaef28cc",
+      "title": "Ces utopies rurales qui réinventent la démocratie face à l'impuissance politique",
+      "themes": [
+        "démocratie économique",
+        "gouvernance politique"
+      ],
+      "domain": "société",
+      "reasoning": "Article about alternative collective organization models and democratic experimentation in rural areas - fits with economic democracy (alternative organizational models) and political governance (reinventing democratic forms)",
+      "source": "Elucid",
+      "date": "2025-12-27T05:35:30.000Z"
+    },
+    {
+      "articleId": "3b187d6d498f",
+      "title": "Aux États-Unis, plus de la moitié des animaux domestiques sont en surpoids",
+      "themes": [
+        "santé publique",
+        "industrie alimentaire"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about pet obesity in the US - relates to public health trends and likely involves commercial pet food industry practices contributing to the problem",
+      "source": "Le Grand Continent",
+      "date": "2025-12-27T05:30:00.000Z"
+    },
+    {
+      "articleId": "e8dcc91d9628",
+      "title": "La leçon de Raymond Aron face au tragique de l’histoire ",
+      "themes": [
+        "anthropologie politique",
+        "littérature contemporaine"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about Raymond Aron's philosophical and political thought - fits anthropologie politique for political philosophy analysis, and littérature contemporaine as it discusses intellectual/academic work and ideas",
+      "source": "Le Grand Continent",
+      "date": "2025-12-27T05:00:00.000Z"
+    },
+    {
+      "articleId": "f163e5c6567c",
+      "title": "Quiz : avez-vous bien suivi l’actualité cette année ? (2/2)",
+      "themes": [
+        "phénomènes culturels",
+        "médias indépendants"
+      ],
+      "domain": "culture",
+      "reasoning": "Article is a quiz format testing readers' knowledge of current events - fits cultural phenomena as media content, and represents independent media's approach to engaging audiences with news",
+      "source": "Alternatives Économiques",
+      "date": "2025-12-27T04:00:00.000Z"
+    },
+    {
+      "articleId": "875ce2d8e8b8",
+      "title": "Une enquête sur le business de la mort, et 3 autres conseils de lecture",
+      "themes": [
+        "édition française",
+        "pratiques commerciales"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about book recommendations/literary selection, fitting the publishing/editorial domain. The mention of investigating business practices (death industry) also connects to commercial practices theme.",
+      "source": "Alternatives Économiques",
+      "date": "2025-12-27T03:00:00.000Z"
+    },
+    {
+      "articleId": "996b84bb0ab3",
+      "title": "États-Unis : faut-il faire vraiment confiance aux résultats économiques mis en avant par Donald Trump ?",
+      "themes": [
+        "géopolitique économique",
+        "politique étrangère américaine"
+      ],
+      "domain": "économie",
+      "reasoning": "Article analyzing US economic results under Trump - combines economic analysis with American foreign/domestic policy implications, fitting both economic geopolitics and US policy themes",
+      "source": "Le Grand Continent",
+      "date": "2025-12-26T18:56:30.000Z"
+    },
+    {
+      "articleId": "e8ddda48547e",
+      "title": "Livres : les essais les plus attendus de 2026",
+      "themes": [
+        "littérature contemporaine",
+        "édition française"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about anticipated essay books for 2026 - fits directly with contemporary literature and French publishing industry themes",
+      "source": "Le Grand Continent",
+      "date": "2025-12-26T18:00:00.000Z"
+    },
+    {
+      "articleId": "cf6ed53ff0a0",
+      "title": "2025, l’année où « Les Jours » ont exposé les brebis galeuses du RN",
+      "themes": [
+        "médias indépendants",
+        "scandales politiques"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about Les Jours' investigative reporting exposing RN scandals - fits media independence theme and political scandal coverage",
+      "source": "Les Jours",
+      "date": "2025-12-26T17:59:00.000Z"
+    },
+    {
+      "articleId": "21183af69973",
+      "title": "L’électricité, symbole de la crise du pouvoir d’achat aux États-Unis",
+      "themes": [
+        "géopolitique économique",
+        "démocratie économique"
+      ],
+      "domain": "économie",
+      "reasoning": "Article about US electricity costs and purchasing power crisis, driven by AI bubble - relates to economic geopolitics (US energy/tech policy impacts) and economic democracy (household affordability and inequality issues)",
+      "source": "Mediapart",
+      "date": "2025-12-26T17:03:27.000Z"
+    },
+    {
+      "articleId": "ea71e90ff7d4",
+      "title": "Le mari de Martine Aubry cause un accident de voiture, part, et s’en sort sans poursuites",
+      "themes": [
+        "justice pénale",
+        "figures publiques"
+      ],
+      "domain": "société",
+      "reasoning": "Article about a legal case involving hit-and-run accident by a public figure's spouse - relates to criminal justice system and how public figures are treated by the law",
+      "source": "Mediapart",
+      "date": "2025-12-26T17:03:22.000Z"
+    },
+    {
+      "articleId": "e117ca2bb707",
+      "title": "Temps de parole: les grosses ficelles de CNews que l’Arcom n’a pas vues",
+      "themes": [
+        "médias indépendants",
+        "gouvernance politique"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about CNews manipulating speaking time regulations to avoid sanctions from media regulator Arcom - relates to media governance and regulatory oversight of broadcast media",
+      "source": "Mediapart",
+      "date": "2025-12-26T17:02:52.000Z"
+    },
+    {
+      "articleId": "a35cdb4676a0",
+      "title": "La maladie de Parkinson, fléau du monde agricole",
+      "themes": [
+        "santé publique",
+        "agriculture intensive"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about Parkinson's disease linked to pesticide exposure in agriculture - directly relates to public health impacts of intensive farming practices",
+      "source": "Off Investigation",
+      "date": "2025-12-26T16:04:39.000Z"
+    },
+    {
+      "articleId": "fffc5310fcec",
+      "title": "Pluie et inondations : Aude, Haute-Corse et Pyrénées-Orientales en alerte orange",
+      "themes": [
+        "phénomènes naturels",
+        "sécurité publique"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about weather alerts for rain and flooding in French departments - relates to natural weather phenomena and public safety measures through official alerts",
+      "source": "Reporterre",
+      "date": "2025-12-26T15:34:40.000Z"
+    },
+    {
+      "articleId": "65788c0321b7",
+      "title": "Piratage du ministère de l’Intérieur : l'État était pourtant prévenu",
+      "themes": [
+        "sécurité publique",
+        "gouvernance politique"
+      ],
+      "domain": "société",
+      "reasoning": "Article about a cyberattack on the Interior Ministry - relates to public security (cybersecurity threats) and political governance (government institutional security and preparedness)",
+      "source": "Blast",
+      "date": "2025-12-26T15:00:00.000Z"
+    },
+    {
+      "articleId": "e8a1c650d29e",
+      "title": "Les algues puantes, ce fléau qui engloutit un bout de Guadeloupe",
+      "themes": [
+        "phénomènes naturels",
+        "biodiversité"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about sargassum seaweed washing up on Guadeloupe beaches - relates to natural environmental phenomena and their impact on marine/coastal biodiversity",
+      "source": "Reporterre",
+      "date": "2025-12-26T14:00:00.000Z"
+    },
+    {
+      "articleId": "fdd58fade74f",
+      "title": "Le « Noël le plus froid depuis 15 ans » est à une température normale pour la saison",
+      "themes": [
+        "phénomènes naturels",
+        "désinformation"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article debunks misleading claims about Christmas temperatures being exceptionally cold, when they're actually normal for the season - relates to natural weather phenomena and misinformation about climate/weather",
+      "source": "Reporterre",
+      "date": "2025-12-26T13:49:46.000Z"
+    },
+    {
+      "articleId": "afad292b7242",
+      "title": "Des chats à tête plate, que l'on pensait disparus en Thaïlande, refont surface",
+      "themes": [
+        "biodiversité"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about flat-headed cats thought to be extinct in Thailand being rediscovered - directly relates to biodiversity conservation and species protection",
+      "source": "Reporterre",
+      "date": "2025-12-26T13:32:42.000Z"
+    },
+    {
+      "articleId": "81e1dba138ff",
+      "title": " « Des toilettes aux champs » : cette usine transforme l'urine en engrais",
+      "themes": [
+        "économie circulaire",
+        "agriculture intensive"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about transforming urine into fertilizer - fits circular economy (waste-to-resource cycle) and relates to sustainable agricultural practices as an alternative to intensive farming methods",
+      "source": "Reporterre",
+      "date": "2025-12-26T13:30:00.000Z"
+    },
+    {
+      "articleId": "b06d024f72c8",
+      "title": "Les forêts couvrent près de 40 % de la surface de l’Union, contre 34 % au début du siècle",
+      "themes": [
+        "biodiversité",
+        "politique énergétique"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about European forest coverage growth over decades - directly relates to biodiversity conservation and forest management policies, which are part of energy/environmental policy frameworks",
+      "source": "Le Grand Continent",
+      "date": "2025-12-26T12:30:00.000Z"
+    },
+    {
+      "articleId": "52c421b4da9c",
+      "title": "Nigeria: les États-Unis annoncent avoir mené des frappes meurtrières contre l’État islamique",
+      "themes": [
+        "politique étrangère américaine",
+        "communautés religieuses"
+      ],
+      "domain": "international",
+      "reasoning": "Article about US military strikes in Nigeria under Trump, framed as protecting Christians - combines American foreign policy with religious community protection dynamics",
+      "source": "Mediapart",
+      "date": "2025-12-26T11:39:35.000Z"
+    },
+    {
+      "articleId": "a1e8787abe18",
+      "title": "Décembre 1995 – décembre 2025: en finir avec les Trente Désastreuses de la gauche française",
+      "themes": [
+        "mouvements politiques",
+        "mémoire collective"
+      ],
+      "domain": "culture",
+      "reasoning": "Article analyzing 30 years of French left politics since 1995 strikes - fits political movements analysis and collective memory of political periods",
+      "source": "Mediapart",
+      "date": "2025-12-26T11:05:46.000Z"
+    },
+    {
+      "articleId": "4924713eee63",
+      "title": "Mouvement social: le mythe de la «victoire» de 1995",
+      "themes": [
+        "mouvements de contestation",
+        "mémoire collective"
+      ],
+      "domain": "société",
+      "reasoning": "Article analyzing the 1995 social movement and its mythologized memory - fits 'mouvements de contestation' (social movements/protests) and 'mémoire collective' (how society remembers and interprets past events)",
+      "source": "Mediapart",
+      "date": "2025-12-26T11:04:51.000Z"
+    },
+    {
+      "articleId": "f6f2190d78c3",
+      "title": "«Ils ont tout brûlé»: au nord de l’Éthiopie, le conflit entre le pouvoir central et les milices des Fano se réveille ",
+      "themes": [
+        "géopolitique mondiale",
+        "mouvements de contestation"
+      ],
+      "domain": "international",
+      "reasoning": "Article about armed conflict between Ethiopian central government and Fano militias in Amhara region - fits under global geopolitics and contestation movements as it involves organized resistance against state authority",
+      "source": "Mediapart",
+      "date": "2025-12-26T11:03:48.000Z"
+    },
+    {
+      "articleId": "603530474139",
+      "title": "Acné : les nouvelles solutions pour s’en débarrasser à tout âge",
+      "themes": [
+        "santé publique",
+        "industrie cosmétique"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about acne treatments and solutions - directly relates to public health (skin conditions affecting multiple age groups) and cosmetic industry (treatments and products for acne management)",
+      "source": "60M de Consommateurs",
+      "date": "2025-12-26T11:00:00.000Z"
+    },
+    {
+      "articleId": "c6128469b4a4",
+      "title": "Malcom Ferdinand: «Habiter avec l’ensemble du vivant qui ne nous ressemble pas»",
+      "themes": [
+        "santé publique",
+        "biodiversité"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about living with environmental contamination (pesticides, chlordane, PFAS, plastics) and protecting inhabitants while maintaining connection to living environment - directly relates to public health impacts of pollution and broader biodiversity/ecosystem concerns",
+      "source": "Mediapart",
+      "date": "2025-12-26T10:45:31.000Z"
+    },
+    {
+      "articleId": "9ca4649b69e3",
+      "title": "Génie de Gotlib",
+      "themes": [
+        "littérature contemporaine",
+        "figures publiques"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about Gotlib, focusing on biographical works and complete collection of his comics - relates to contemporary literature (graphic novels/comics) and public figures (celebrating an important artist's legacy)",
+      "source": "Blast",
+      "date": "2025-12-26T10:00:00.000Z"
+    },
+    {
+      "articleId": "548bd8228218",
+      "title": "Enregistrements de conversations de Thomas Legrand: une enquête ouverte, nouvelle plainte du journaliste",
+      "themes": [
+        "médias indépendants",
+        "scandales politiques"
+      ],
+      "domain": "culture",
+      "reasoning": "Article about secretly recorded conversations involving journalists Patrick Cohen and Thomas Legrand - relates to media ethics/scandals and involves public figures in controversial situations",
+      "source": "Mediapart",
+      "date": "2025-12-26T09:47:06.000Z"
+    },
+    {
+      "articleId": "58579ffde52b",
+      "title": "Des décharges dans la mer : un scandale négligé par Macron",
+      "themes": [
+        "santé publique",
+        "politique énergétique"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about coastal waste dumps affecting marine environment - relates to public health risks from pollution and government environmental policy implementation",
+      "source": "Reporterre",
+      "date": "2025-12-26T08:12:32.000Z"
+    },
+    {
+      "articleId": "3c42792cf1cf",
+      "title": "Les bonnes recettes économiques des superstars de la gastronomie",
+      "themes": [
+        "pratiques commerciales",
+        "phénomènes culturels"
+      ],
+      "domain": "économie",
+      "reasoning": "Article about starred chefs' business models and diversification strategies - relates to commercial practices in the food industry and cultural phenomena around celebrity chefs",
+      "source": "Alternatives Économiques",
+      "date": "2025-12-26T08:00:00.000Z"
+    },
+    {
+      "articleId": "20db64bd5ae3",
+      "title": "Sandy Olivar Calvo, celle qui incarne le combat « fin du monde, fin du mois »",
+      "themes": [
+        "transition énergétique",
+        "agriculture intensive"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about Sandy Olivar Calvo's trajectory from climate movement to agricultural campaign work at Greenpeace. The 'fin du monde, fin du mois' framing connects environmental and social justice concerns, fitting transition énergétique. Her current focus on agriculture campaigns aligns with agriculture intensive theme.",
+      "source": "Reporterre",
+      "date": "2025-12-26T07:00:00.000Z"
+    },
+    {
+      "articleId": "067b81d6a060",
+      "title": "Sandy Olivar Calvo, celle qui incarne le combat « fin du monde, fin du mois »",
+      "themes": [
+        "transition énergétique",
+        "justice alimentaire"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about Sandy Olivar Calvo's climate activism journey from Alternatiba to Greenpeace agriculture campaigns - fits climate movement (transition énergétique) and her focus on agriculture/food systems (justice alimentaire)",
+      "source": "Reporterre",
+      "date": "2025-12-26T07:00:00.000Z"
+    },
+    {
+      "articleId": "d320a8e6a159",
+      "title": "L’irrésistible ascension de l’éolien et du solaire",
+      "themes": [
+        "transition énergétique",
+        "politique énergétique"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about the rise of wind and solar energy - directly relates to energy transition and energy policy themes already well-established in the environment domain",
+      "source": "Alternatives Économiques",
+      "date": "2025-12-26T07:00:00.000Z"
+    },
+    {
+      "articleId": "bf59901b61f8",
+      "title": "Pour renflouer ses caisses, l’Olympique lyonnais s’allie avec le régime autoritaire de la République du Congo",
+      "themes": [
+        "géopolitique mondiale",
+        "pratiques commerciales"
+      ],
+      "domain": "international",
+      "reasoning": "Article about OL's partnership with Congo-Brazzaville's authoritarian regime - involves international geopolitics and commercial practices in sports. 'Pratiques commerciales' borrowed from culture domain as it fits the business aspect of this sports partnership.",
+      "source": "Mediapart",
+      "date": "2025-12-26T06:53:54.000Z"
+    },
+    {
+      "articleId": "006e54e1121c",
+      "title": "Nausée, diarrhée… Les méthodes naturelles contre le mal de ventre ",
+      "themes": [
+        "santé publique"
+      ],
+      "domain": "environnement",
+      "reasoning": "Article about natural remedies for stomach problems - fits under health and wellness which is covered by the existing 'santé publique' theme in the environment domain",
+      "source": "60M de Consommateurs",
+      "date": "2025-12-26T06:30:00.000Z"
+    }
+  ],
+  "themeStats": [
+    {
+      "theme": "géopolitique mondiale",
+      "count": 30
+    },
+    {
+      "theme": "politique étrangère américaine",
+      "count": 20
+    },
+    {
+      "theme": "santé publique",
+      "count": 20
+    },
+    {
+      "theme": "mouvements de contestation",
+      "count": 18
+    },
+    {
+      "theme": "phénomènes culturels",
+      "count": 18
+    },
+    {
+      "theme": "géopolitique économique",
+      "count": 17
+    },
+    {
+      "theme": "transition énergétique",
+      "count": 14
+    },
+    {
+      "theme": "désinformation",
+      "count": 14
+    },
+    {
+      "theme": "figures publiques",
+      "count": 13
+    },
+    {
+      "theme": "littérature contemporaine",
+      "count": 12
+    },
+    {
+      "theme": "médias indépendants",
+      "count": 12
+    },
+    {
+      "theme": "agriculture intensive",
+      "count": 10
+    },
+    {
+      "theme": "anthropologie politique",
+      "count": 10
+    },
+    {
+      "theme": "mouvements politiques",
+      "count": 10
+    },
+    {
+      "theme": "service public",
+      "count": 10
+    },
+    {
+      "theme": "conditions de travail",
+      "count": 10
+    },
+    {
+      "theme": "biodiversité",
+      "count": 10
+    },
+    {
+      "theme": "pratiques commerciales",
+      "count": 9
+    },
+    {
+      "theme": "communautés religieuses",
+      "count": 8
+    },
+    {
+      "theme": "politique énergétique",
+      "count": 8
+    },
+    {
+      "theme": "industrie alimentaire",
+      "count": 8
+    },
+    {
+      "theme": "intégration européenne",
+      "count": 8
+    },
+    {
+      "theme": "mémoire collective",
+      "count": 8
+    },
+    {
+      "theme": "démocratie économique",
+      "count": 7
+    },
+    {
+      "theme": "gouvernance politique",
+      "count": 7
+    },
+    {
+      "theme": "justice pénale",
+      "count": 7
+    },
+    {
+      "theme": "politique migratoire",
+      "count": 6
+    },
+    {
+      "theme": "activisme animalier",
+      "count": 5
+    },
+    {
+      "theme": "scandales politiques",
+      "count": 5
+    },
+    {
+      "theme": "justice alimentaire",
+      "count": 4
+    },
+    {
+      "theme": "édition française",
+      "count": 4
+    },
+    {
+      "theme": "photojournalisme",
+      "count": 4
+    },
+    {
+      "theme": "sécurité publique",
+      "count": 4
+    },
+    {
+      "theme": "politique monétaire",
+      "count": 4
+    },
+    {
+      "theme": "a69",
+      "count": 4
+    },
+    {
+      "theme": "phénomènes naturels",
+      "count": 4
+    },
+    {
+      "theme": "conflit syrien",
+      "count": 3
+    },
+    {
+      "theme": "industrie cosmétique",
+      "count": 3
+    },
+    {
+      "theme": "gestion de l'eau",
+      "count": 2
+    },
+    {
+      "theme": "débat démocratique",
+      "count": 2
+    },
+    {
+      "theme": "économie circulaire",
+      "count": 2
+    },
+    {
+      "theme": "industrie musicale",
+      "count": 2
+    },
+    {
+      "theme": "précarité sociale",
+      "count": 2
+    },
+    {
+      "theme": "conflit ukrainien",
+      "count": 2
+    },
+    {
+      "theme": "révolutions européennes",
+      "count": 1
+    },
+    {
+      "theme": "histoire russe",
+      "count": 1
+    },
+    {
+      "theme": "aquaculture industrielle",
+      "count": 1
+    },
+    {
+      "theme": "circuits courts",
+      "count": 1
+    },
+    {
+      "theme": "économie sociale et solidaire",
+      "count": 1
+    },
+    {
+      "theme": "éducation démocratique",
+      "count": 1
+    },
+    {
+      "theme": "catastrophes et accidents",
+      "count": 1
+    },
+    {
+      "theme": "tourisme ornithologique",
+      "count": 1
+    },
+    {
+      "theme": "commerce en ligne",
+      "count": 1
+    },
+    {
+      "theme": "sécurité routière",
+      "count": 1
+    },
+    {
+      "theme": "technopolitique",
+      "count": 1
+    },
+    {
+      "theme": "crise institutionnelle",
+      "count": 1
+    },
+    {
+      "theme": "politique étrangère française",
+      "count": 1
+    },
+    {
+      "theme": "pratiques parentales",
+      "count": 1
+    }
+  ]
+}

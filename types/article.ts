@@ -15,6 +15,8 @@ export interface Article {
   subject?: string;
   /** Domain category (politique, société, etc.) */
   domain?: string;
+  /** Thematic tags for grouping (2-3 mid-level topics) */
+  themes?: string[];
 }
 
 /**

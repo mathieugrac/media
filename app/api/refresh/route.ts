@@ -21,7 +21,14 @@ import {
   generateArticleId,
   type StoredArticle,
 } from "@/lib/storage";
-import { extractKeywordsForArticles } from "@/lib/keywords";
+import {
+  extractKeywordsForArticles,
+  extractThemesForArticles,
+} from "@/lib/keywords";
+import {
+  getActiveThemes,
+  trackThemesBatch,
+} from "@/lib/theme-storage";
 import { embedKeywordsBatch } from "@/lib/embeddings";
 import {
   getActiveSubjects,
@@ -350,6 +357,41 @@ async function handleRefresh(): Promise<NextResponse> {
         log.embeddings.generated = embeddings.length;
         console.log(`🔢 Generated ${embeddings.length} embeddings`);
       }
+
+      // Step 4c: Extract themes for new articles
+      console.log("🏷️ Step 4c: Extracting themes for new articles...");
+      const existingThemes = await getActiveThemes();
+      console.log(`📚 Loaded ${existingThemes.length} existing themes`);
+
+      const articlesToExtractThemes = articlesToSave.filter((a) =>
+        newUrlsSet.has(a.url)
+      );
+
+      const { articles: articlesWithThemes, themeUsages } =
+        await extractThemesForArticles(articlesToExtractThemes, existingThemes);
+
+      // Track new theme usages
+      if (themeUsages.length > 0) {
+        await trackThemesBatch(themeUsages);
+        console.log(`📚 Tracked ${themeUsages.length} theme usages`);
+      }
+
+      // Merge themes back into articlesToSave
+      const themesByUrl = new Map(
+        articlesWithThemes.map((a) => [a.url, a.themes])
+      );
+      articlesToSave = articlesToSave.map((article) => {
+        const themes = themesByUrl.get(article.url);
+        if (themes) {
+          return { ...article, themes };
+        }
+        return article;
+      });
+
+      const themesExtracted = articlesWithThemes.filter(
+        (a) => a.themes && a.themes.length > 0
+      ).length;
+      console.log(`🏷️ Extracted themes for ${themesExtracted} articles`);
     } else {
       console.log("⏭️ Step 4: No new articles, skipping keyword extraction");
     }
@@ -417,6 +459,7 @@ async function handleRefresh(): Promise<NextResponse> {
     revalidatePath("/all");
     revalidatePath("/clusters");
     revalidatePath("/stories");
+    revalidatePath("/themes");
     revalidatePath("/logs");
     console.log("🔄 Page caches revalidated");
 
